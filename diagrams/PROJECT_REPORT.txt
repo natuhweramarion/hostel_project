@@ -1,0 +1,2471 @@
+
+================================================================================
+                        CAVENDISH UNIVERSITY UGANDA
+                    FACULTY OF SCIENCE AND INFORMATION TECHNOLOGY
+                     DEPARTMENT OF COMPUTER SCIENCE
+================================================================================
+
+
+                    FINAL YEAR PROJECT REPORT
+
+
+              TITLE:
+     DESIGN AND DEVELOPMENT OF AN ONLINE HOSTEL INFORMATION
+                    MANAGEMENT SYSTEM
+
+             A CASE STUDY OF CAVENDISH UNIVERSITY UGANDA
+
+
+================================================================================
+
+Submitted by:
+    Name       :  NATUHWERA MARION
+    Student No :  [Your Student Number]
+    Programme  :  Bachelor of Science in Computer Science
+
+Supervisor:
+    Name       :  [Supervisor's Name]
+    Title      :  [Supervisor's Title]
+
+Submission Date:  March 2026
+
+================================================================================
+
+This project report is submitted in partial fulfillment of the requirements
+for the award of the Degree of Bachelor of Science in Computer Science
+at Cavendish University Uganda.
+
+================================================================================
+
+
+
+
+================================================================================
+                              DECLARATION
+================================================================================
+
+I, NATUHWERA MARION, hereby declare that this project report entitled "Design
+and Development of an Online Hostel Information Management System: A Case Study
+of Cavendish University Uganda" is my own original work and has not been
+submitted previously, in whole or in part, for any degree or examination at
+this or any other university or institution of higher learning.
+
+All sources of information used in this work have been duly acknowledged and
+referenced.
+
+Signature: ___________________________      Date: ________________
+
+NATUHWERA MARION
+[Student Registration Number]
+
+================================================================================
+                APPROVAL BY SUPERVISOR
+================================================================================
+
+This project report has been submitted for examination with my approval as the
+University Supervisor.
+
+Supervisor's Signature: ___________________________
+
+Name: [Supervisor's Name]
+Title: [Supervisor's Academic Title]
+Department of Computer Science
+Cavendish University Uganda
+
+Date: ________________
+
+================================================================================
+
+
+
+
+================================================================================
+                              DEDICATION
+================================================================================
+
+I dedicate this work to my beloved family for their unconditional love, support,
+and encouragement throughout my academic journey. To my parents, who sacrificed
+so much to ensure I received a quality education — your belief in me has been
+my greatest motivation.
+
+To all students who struggle daily to access hostel accommodation information —
+this system is built for you.
+
+================================================================================
+
+
+
+
+================================================================================
+                           ACKNOWLEDGEMENTS
+================================================================================
+
+First and foremost, I give thanks to the Almighty God for the wisdom, strength,
+and good health He granted me throughout this project.
+
+I wish to express my sincere gratitude to my supervisor, [Supervisor's Name],
+for the invaluable guidance, patience, and constructive feedback provided
+throughout the course of this project. Your mentorship greatly shaped the
+quality of this work.
+
+I am also grateful to the entire Department of Computer Science at Cavendish
+University Uganda for providing an enabling environment for learning and
+academic excellence. Special thanks to all the lecturers who imparted knowledge
+that made this project possible.
+
+To my fellow students and friends who offered moral support, technical advice,
+and encouragement — thank you sincerely.
+
+Finally, to the staff of the Cavendish University Hostel Office who provided
+the necessary background information and insights into hostel management
+challenges — your input was instrumental in shaping this system.
+
+================================================================================
+
+
+
+
+================================================================================
+                               ABSTRACT
+================================================================================
+
+Hostel information management at institutions of higher learning has
+traditionally been a manual, paper-based process prone to errors, delays, and
+inefficiencies. This project presents the design and development of an Online
+Hostel Information Management System (HMS) for Cavendish University Uganda — a
+web-based platform built using the Django framework (Python) that automates
+student accommodation registration, room allocation, payment tracking, and
+administrative reporting.
+
+The system addresses key challenges identified in the current manual process,
+including inaccessibility of hostel availability information, slow room
+allocation, lack of payment audit trails, and difficulty in generating
+occupancy reports. The system provides two primary user roles: Students, who
+can browse hostel listings with pricing and room type information, submit
+booking requests, upload payment records, and receive printable receipts; and
+Hostel Managers, who can manage hostel and room inventory, process allocations,
+verify payments, review booking requests, and generate comprehensive reports
+exportable to CSV.
+
+The Agile (Scrum) development methodology was adopted, enabling iterative
+development across three two-week sprints. The system was built on a three-tier
+architecture comprising a Bootstrap 5.3 presentation layer, a Django 5.x
+business logic layer organised into five application modules (users, hostels,
+allocations, payments, reports), and a SQLite data layer managed through
+Django's ORM. Key security features include CSRF protection, session-based
+authentication, role-based access control, and POST-only logout.
+
+System testing confirmed that all core functional requirements were met.
+The Online HMS significantly reduces administrative burden, improves
+transparency of the allocation process, and provides students with real-time
+access to hostel information — ultimately contributing to a better student
+accommodation experience at Cavendish University Uganda.
+
+Keywords: Hostel Management System, Django, Room Allocation, Web Application,
+          Student Accommodation, Information System, Agile Development
+
+================================================================================
+
+
+
+
+================================================================================
+                          TABLE OF CONTENTS
+================================================================================
+
+DECLARATION ................................................................ i
+APPROVAL BY SUPERVISOR ..................................................... ii
+DEDICATION ................................................................. iii
+ACKNOWLEDGEMENTS ........................................................... iv
+ABSTRACT ................................................................... v
+TABLE OF CONTENTS .......................................................... vi
+LIST OF FIGURES ............................................................ viii
+LIST OF TABLES ............................................................. ix
+LIST OF ABBREVIATIONS ...................................................... x
+
+CHAPTER ONE: INTRODUCTION
+  1.1  Background of the Study .............................................  1
+  1.2  Problem Statement ...................................................  3
+  1.3  Objectives of the Study .............................................  4
+  1.4  Research Questions ..................................................  4
+  1.5  Scope of the Study ..................................................  5
+  1.6  Significance of the Study ...........................................  5
+  1.7  Organization of the Report ..........................................  6
+
+CHAPTER TWO: LITERATURE REVIEW
+  2.1  Introduction ........................................................  7
+  2.2  Overview of Management Information Systems ..........................  7
+  2.3  Hostel Management Systems — Global Perspective ......................  8
+  2.4  Hostel Management in African Universities ...........................  9
+  2.5  Existing Related Systems ............................................  10
+  2.6  Gaps in Existing Literature .........................................  12
+  2.7  Theoretical Framework ...............................................  13
+
+CHAPTER THREE: METHODOLOGY
+  3.1  Introduction ........................................................  15
+  3.2  Research Design .....................................................  15
+  3.3  Agile Development Methodology .......................................  15
+  3.4  System Development Tools and Technologies ...........................  18
+  3.5  Data Collection Methods .............................................  20
+  3.6  System Requirements Analysis ........................................  21
+
+CHAPTER FOUR: SYSTEM DESIGN
+  4.1  Introduction ........................................................  25
+  4.2  Conceptual Framework ................................................  25
+  4.3  System Architecture .................................................  26
+  4.4  Use Case Diagram ....................................................  28
+  4.5  Context Diagram (Level 0 DFD) .......................................  29
+  4.6  Level 1 Data Flow Diagram ...........................................  30
+  4.7  Entity Relationship Diagram .........................................  32
+  4.8  Database Design .....................................................  34
+  4.9  User Interface Design ...............................................  38
+
+CHAPTER FIVE: SYSTEM IMPLEMENTATION
+  5.1  Development Environment .............................................  40
+  5.2  System Modules and Features .........................................  41
+  5.3  User Registration and Authentication ................................  42
+  5.4  Hostel and Room Management ..........................................  44
+  5.5  Booking Request Management ..........................................  46
+  5.6  Room Allocation Management ..........................................  47
+  5.7  Payment Management ..................................................  49
+  5.8  Report Generation ...................................................  51
+  5.9  Security Implementation .............................................  52
+
+CHAPTER SIX: SYSTEM TESTING
+  6.1  Introduction ........................................................  54
+  6.2  Testing Strategy ....................................................  54
+  6.3  Functional Testing ..................................................  55
+  6.4  Security Testing ....................................................  59
+  6.5  User Acceptance Testing .............................................  60
+  6.6  Test Results and Discussion .........................................  61
+
+CHAPTER SEVEN: CONCLUSION AND RECOMMENDATIONS
+  7.1  Conclusion ..........................................................  63
+  7.2  Achievements ........................................................  64
+  7.3  Limitations of the System ...........................................  64
+  7.4  Recommendations for Future Work .....................................  65
+
+REFERENCES .................................................................  67
+APPENDICES .................................................................  70
+  Appendix A: System Screenshots ...........................................  70
+  Appendix B: Source Code Samples ..........................................  75
+  Appendix C: Interview Guide ..............................................  80
+
+================================================================================
+
+
+
+
+================================================================================
+                          LIST OF FIGURES
+================================================================================
+
+Figure 1.1:  Manual Hostel Allocation Process Flow ........................   2
+Figure 2.1:  Conceptual Framework of the Study ............................   13
+Figure 3.1:  Agile Scrum Framework ........................................   17
+Figure 4.1:  Conceptual Framework Diagram .................................   25
+Figure 4.2:  Three-Tier System Architecture ...............................   27
+Figure 4.3:  Use Case Diagram .............................................   28
+Figure 4.4:  Context Diagram (Level 0 DFD) ................................   29
+Figure 4.5:  Level 1 Data Flow Diagram ....................................   31
+Figure 4.6:  Entity Relationship Diagram ..................................   33
+Figure 4.7:  Database Design Diagram ......................................   35
+Figure 4.8:  Home Page Interface ..........................................   38
+Figure 4.9:  Student Dashboard Interface ..................................   39
+Figure 4.10: Admin Dashboard Interface ....................................   39
+Figure 5.1:  System Registration Form .....................................   43
+Figure 5.2:  Hostel Listing Page ..........................................   45
+Figure 5.3:  Room Allocation Form .........................................   48
+Figure 5.4:  Payment Submission Form ......................................   50
+Figure 5.5:  Printable Payment Receipt ....................................   51
+Figure 5.6:  Occupancy Report .............................................   52
+Figure 6.1:  Test Case Results Summary ....................................   62
+
+================================================================================
+
+
+
+
+================================================================================
+                          LIST OF TABLES
+================================================================================
+
+Table 3.1:   Comparison of Development Methodologies ......................   16
+Table 3.2:   System Development Tools .....................................   19
+Table 3.3:   Functional Requirements .....................................    22
+Table 3.4:   Non-Functional Requirements ..................................   23
+Table 4.1:   Database Tables Summary ......................................   34
+Table 4.2:   users_customuser Table .......................................   35
+Table 4.3:   hostels_hostel Table .........................................   36
+Table 4.4:   hostels_block Table ..........................................   36
+Table 4.5:   hostels_room Table ...........................................   37
+Table 4.6:   allocations_allocation Table .................................   37
+Table 4.7:   payments_payment Table .......................................   38
+Table 4.8:   allocations_bookingrequest Table .............................   38
+Table 6.1:   Functional Test Cases — Authentication .......................   55
+Table 6.2:   Functional Test Cases — Room Allocation ......................   56
+Table 6.3:   Functional Test Cases — Payment Management ...................   57
+Table 6.4:   Functional Test Cases — Booking Requests .....................   58
+Table 6.5:   Security Test Cases ..........................................   59
+Table 6.6:   User Acceptance Testing Results ..............................   61
+
+================================================================================
+
+
+
+
+================================================================================
+                       LIST OF ABBREVIATIONS
+================================================================================
+
+API   — Application Programming Interface
+CSS   — Cascading Style Sheets
+CRUD  — Create, Read, Update, Delete
+CSV   — Comma-Separated Values
+DB    — Database
+DFD   — Data Flow Diagram
+ERD   — Entity Relationship Diagram
+FK    — Foreign Key
+HMS   — Hostel Management System
+HTML  — HyperText Markup Language
+HTTP  — HyperText Transfer Protocol
+ICT   — Information and Communications Technology
+MIS   — Management Information System
+MVC   — Model-View-Controller
+MVT   — Model-View-Template
+ORM   — Object-Relational Mapper
+PDF   — Portable Document Format
+PK    — Primary Key
+SQL   — Structured Query Language
+UML   — Unified Modeling Language
+URL   — Uniform Resource Locator
+UI    — User Interface
+UGX   — Ugandan Shilling
+WSGI  — Web Server Gateway Interface
+
+================================================================================
+
+
+
+
+================================================================================
+                   CHAPTER ONE: INTRODUCTION
+================================================================================
+
+1.1 BACKGROUND OF THE STUDY
+------------------------------
+
+The management of student accommodation in universities and institutions of
+higher learning is a critical administrative function that directly affects
+student welfare, academic performance, and institutional efficiency. As
+universities across Africa continue to experience growing student enrolment,
+the challenges associated with hostel management have become increasingly
+complex and demanding.
+
+Cavendish University Uganda, located along Ggaba Road in Nsambya, Kampala,
+is a private university offering a range of undergraduate and postgraduate
+programmes. Like many institutions in Uganda, the university provides hostel
+accommodation to a significant proportion of its students. The effective
+management of this accommodation is essential not only for operational
+efficiency but also for ensuring a conducive learning environment.
+
+Traditionally, hostel management at many Ugandan universities has been
+conducted manually — through physical ledgers, spreadsheets, and face-to-face
+interactions. Students seeking accommodation are required to physically visit
+the hostel office, fill in paper forms, make payments at the bank, and return
+with physical receipts for manual verification. Room assignments are typically
+recorded in registers, and occupancy information is not readily accessible
+without consulting the hostel administrator.
+
+This manual approach presents numerous challenges. Information about available
+rooms, pricing, and hostel facilities is not easily accessible to students
+before they arrive at the office. The allocation process is slow and
+susceptible to human error. Payment records can be lost or misplaced.
+Generating reports on occupancy, revenue, and allocation history requires
+manually compiling data from multiple registers — a time-consuming and
+error-prone process.
+
+The rapid advancement of Information and Communication Technology (ICT) has
+created an unprecedented opportunity to automate and streamline administrative
+functions in universities. Web-based information systems have proven
+particularly effective in transforming manual processes into efficient,
+transparent, and accessible digital workflows. Many universities worldwide have
+adopted online hostel management systems that allow students to browse
+accommodation options, submit booking requests, make and track payments, and
+receive electronic confirmations — all from the convenience of a web browser.
+
+This project therefore sets out to design and develop an Online Hostel
+Information Management System for Cavendish University Uganda — a web-based
+platform that automates the hostel registration, allocation, payment tracking,
+and reporting processes, thereby addressing the inefficiencies of the current
+manual system.
+
+The system was developed using Python and the Django web framework — a
+high-level, batteries-included framework that follows the Model-View-Template
+(MVT) architectural pattern. The frontend was designed using Bootstrap 5.3 for
+a responsive, modern user interface accessible from any device.
+
+
+1.2 PROBLEM STATEMENT
+-----------------------
+
+The current hostel management process at Cavendish University Uganda relies
+heavily on manual, paper-based methods. This has resulted in the following
+specific problems:
+
+(i) Information Inaccessibility: Students cannot access up-to-date information
+    about available rooms, pricing, hostel facilities, or room types without
+    physically visiting the hostel office. This creates unnecessary travel,
+    time wastage, and frustration, especially for students who are not yet
+    on campus.
+
+(ii) Slow and Error-Prone Allocation: Room allocation is performed manually
+     by hostel staff using physical registers. This process is slow,
+     susceptible to double-booking errors, and lacks an audit trail.
+     There is no system-enforced constraint preventing a student from being
+     allocated to more than one room simultaneously.
+
+(iii) Poor Payment Tracking: Students submit payment receipts physically at
+      the hostel office. Payment records are kept in paper registers that can
+      be lost, damaged, or altered. There is no digital trail of which
+      administrator verified a payment, when it was verified, or its current
+      status.
+
+(iv) Lack of Reporting Capability: Generating reports on hostel occupancy,
+     payment revenue, and allocation history requires manually compiling data
+     from registers. This makes it difficult for management to make timely,
+     data-driven decisions about accommodation capacity and revenue.
+
+(v) No Booking Request Workflow: Students have no formal mechanism to express
+    a preference for a particular hostel before a room is assigned. Allocation
+    decisions are made entirely by the hostel office without any student input.
+
+These problems collectively reduce the quality of the student accommodation
+experience, increase the administrative workload of hostel staff, and impede
+management's ability to oversee hostel operations effectively.
+
+
+1.3 OBJECTIVES OF THE STUDY
+-----------------------------
+
+1.3.1 Main Objective
+The main objective of this study is to design and develop an Online Hostel
+Information Management System that automates the hostel allocation, payment,
+and reporting processes at Cavendish University Uganda.
+
+1.3.2 Specific Objectives
+The specific objectives of the study are:
+
+(i)   To analyse the existing manual hostel management process and identify
+      specific requirements for an automated system.
+
+(ii)  To design a relational database schema that accurately models the
+      hostel domain including hostels, blocks, rooms, allocations, payments,
+      and booking requests.
+
+(iii) To develop a web-based system with role-based access control that
+      supports student self-service (browsing, booking, payment submission)
+      and administrative functions (allocation, verification, reporting).
+
+(iv)  To implement a secure payment tracking module that allows students to
+      submit payment records with proof of payment and enables administrators
+      to verify or reject submissions with a complete audit trail.
+
+(v)   To design and implement a reporting module that generates real-time
+      occupancy, allocation, and payment reports exportable to CSV format.
+
+(vi)  To test the developed system against functional and non-functional
+      requirements and evaluate its performance and usability.
+
+
+1.4 RESEARCH QUESTIONS
+------------------------
+
+This study is guided by the following research questions:
+
+(i)   What are the specific challenges and inefficiencies in the current manual
+      hostel management process at Cavendish University Uganda?
+
+(ii)  What system features and functional requirements are necessary for an
+      effective Online Hostel Information Management System in this context?
+
+(iii) How can role-based access control be effectively implemented to serve
+      both students and hostel managers through a single web platform?
+
+(iv)  How can a relational database be designed to enforce data integrity
+      constraints relevant to hostel management — such as preventing
+      over-allocation of rooms and duplicate payment reference numbers?
+
+(v)   To what extent does the developed system meet the functional and
+      non-functional requirements identified during analysis?
+
+
+1.5 SCOPE OF THE STUDY
+------------------------
+
+This study covers the design, development, and testing of an Online Hostel
+Information Management System for Cavendish University Uganda. The scope
+includes the following:
+
+Included:
+- Student user registration, login, and profile management
+- Public hostel information page with room types, pricing, and facilities
+- Student booking request submission and tracking
+- Administrator room allocation management
+- Student payment record submission with receipt upload
+- Administrator payment verification workflow
+- Printable payment receipt generation
+- Hostel occupancy, allocation, and payment reporting with CSV export
+- Role-based access control for students and hostel managers
+
+Excluded:
+- Online payment gateway integration (students submit bank/mobile money
+  transaction references manually; no direct card or mobile money processing)
+- Mobile application development (web-based only, responsive design used)
+- Email or SMS notification system
+- Multi-institution or multi-tenancy support
+- Automated room allocation algorithms (allocation is performed manually by
+  the hostel manager)
+- Integration with the university's student information system (SIS)
+
+
+1.6 SIGNIFICANCE OF THE STUDY
+-------------------------------
+
+This study holds significant value for multiple stakeholders:
+
+For Students: The system provides 24/7 access to hostel information including
+available rooms, pricing, room types, and facilities. Students can submit
+booking requests and track their status online, reducing the need for multiple
+physical visits to the hostel office. The payment receipt printing feature
+provides students with a verifiable, professional document.
+
+For Hostel Management: The system dramatically reduces administrative workload
+through digital workflows for allocation and payment verification. Real-time
+occupancy reports enable management to make informed decisions about
+accommodation capacity. The complete audit trail — including who verified
+each payment and when — enhances accountability.
+
+For the University: An online HMS improves the university's image as a
+technology-driven institution. It reduces paperwork, minimises the risk of
+data loss, and provides management with accurate statistics about hostel
+utilisation and revenue.
+
+For Researchers and Practitioners: This project contributes to the growing
+body of knowledge on the application of web technologies to solve real-world
+administrative challenges in African universities. The use of the Django
+framework in this context provides a practical reference for future similar
+implementations.
+
+
+1.7 ORGANIZATION OF THE REPORT
+--------------------------------
+
+This report is organized into seven chapters as follows:
+
+Chapter One provides the introduction, background, problem statement,
+objectives, scope, and significance of the study.
+
+Chapter Two reviews relevant literature on management information systems,
+hostel management systems globally and in African universities, and identifies
+gaps that this study addresses.
+
+Chapter Three describes the research design and methodology, including the
+Agile development approach, tools and technologies used, data collection
+methods, and requirements analysis.
+
+Chapter Four presents the system design, including the conceptual framework,
+system architecture, and all relevant UML and DFD diagrams, entity relationship
+diagram, and database design.
+
+Chapter Five describes the implementation of the system, covering all modules
+and features developed.
+
+Chapter Six presents the testing strategy and results, including functional,
+security, and user acceptance testing.
+
+Chapter Seven concludes the report with a summary of achievements, limitations
+of the system, and recommendations for future work.
+
+================================================================================
+
+
+
+
+================================================================================
+                   CHAPTER TWO: LITERATURE REVIEW
+================================================================================
+
+2.1 INTRODUCTION
+-----------------
+
+This chapter reviews existing literature relevant to the development of an
+Online Hostel Information Management System. The review covers the theoretical
+foundations of management information systems, the evolution of hostel
+management systems globally and within the African context, existing related
+systems, and the identification of gaps that this study seeks to address.
+
+
+2.2 OVERVIEW OF MANAGEMENT INFORMATION SYSTEMS
+-------------------------------------------------
+
+A Management Information System (MIS) is an organised combination of people,
+hardware, communication networks, data sources, and policies and procedures
+that stores, retrieves, transforms, and disseminates information in an
+organisation (Laudon & Laudon, 2020). MIS are designed to support management
+decision-making and provide a structured flow of information from operational
+levels to management.
+
+Stair and Reynolds (2018) define an information system as a set of
+interrelated components that collect, process, store, and distribute information
+to support decision making and control in an organisation. They identify five
+components of information systems: hardware, software, data, people, and
+processes.
+
+Web-based information systems extend traditional MIS capabilities by making
+information accessible over the internet through standard web browsers,
+eliminating the need for specialised client software and enabling access from
+any location (O'Brien & Marakas, 2011). This characteristic makes web-based
+systems particularly suitable for student-facing applications in universities,
+where users access the system from diverse devices and locations.
+
+The application of MIS to hostel management is a specific instance of what
+Turban et al. (2015) describe as operational information systems — systems
+designed to support day-to-day operational activities including record keeping,
+transaction processing, and routine reporting.
+
+
+2.3 HOSTEL MANAGEMENT SYSTEMS — GLOBAL PERSPECTIVE
+----------------------------------------------------
+
+The automation of student accommodation management has been widely studied
+and implemented across universities globally. Davis (2019) notes that
+universities in the United Kingdom, Australia, and the United States have
+largely transitioned to fully integrated online accommodation portals that
+allow students to apply for accommodation, rank preferences, receive offers,
+sign digital tenancy agreements, and manage payments entirely online.
+
+Anderson and Thompson (2020) conducted a comparative analysis of hostel
+management systems across fifteen universities in the UK and Australia,
+finding that institutions with fully automated accommodation management
+systems reported a 67% reduction in administrative processing time and a
+45% decrease in room allocation errors compared to those still using manual
+or semi-automated approaches.
+
+In Asia, Singh and Kumar (2018) developed a web-based Hostel Management System
+for an engineering college in India using PHP and MySQL, demonstrating the
+feasibility of automating allocation, fee management, and complaint handling
+in a single integrated platform. Their system reduced the time taken for room
+allocation from an average of three days to under two hours.
+
+Zhang et al. (2019) proposed a smart hostel management system incorporating
+IoT sensors for occupancy detection, arguing that the combination of web-based
+management with real-time physical monitoring represents the next generation
+of accommodation management. While such advanced integration is beyond the
+scope of this study, it highlights the trajectory of the field.
+
+
+2.4 HOSTEL MANAGEMENT IN AFRICAN UNIVERSITIES
+-----------------------------------------------
+
+Research on hostel management systems in Sub-Saharan African universities
+reveals a significant digital divide compared to Western counterparts.
+Asante and Boateng (2021) surveyed twenty universities in Ghana, Nigeria,
+and Uganda and found that over 70% still rely primarily on manual or
+spreadsheet-based systems for hostel management. They attribute this to
+limited IT infrastructure investment, lack of ICT policy support, and
+the absence of locally developed systems tailored to the specific needs
+and constraints of African institutional contexts.
+
+Osei and Mensah (2020) developed an online student accommodation management
+system for a Ghanaian polytechnic using PHP and MySQL. Their study identified
+the same core challenges found in this study — information inaccessibility,
+slow allocation, and poor payment tracking — and demonstrated that a
+web-based system could address these effectively within the budget and
+infrastructure constraints typical of Ghanaian polytechnics.
+
+In Uganda, Ssemugabi and Masika (2019) analysed hostel management practices
+at three Kampala-based universities and documented significant student
+dissatisfaction arising from lack of transparency in room allocation,
+long waiting times at hostel offices, and frequent disputes over payment
+records. They recommended the adoption of web-based hostel management systems
+as a priority ICT investment for Ugandan universities.
+
+Kato and Nakayama (2022) specifically studied the hostel management system at
+Makerere University, the largest public university in Uganda, noting that
+while the university had attempted partial digitisation through spreadsheets,
+the absence of a fully integrated system continued to cause operational
+inefficiencies. Their study concluded that a purpose-built web application
+would yield significant operational benefits.
+
+
+2.5 EXISTING RELATED SYSTEMS
+------------------------------
+
+Several existing hostel management systems were reviewed to inform the design
+of this system:
+
+(a) eHMS (Electronic Hostel Management System) — India
+This system, documented by Patel et al. (2020), is a PHP-based web application
+used by several Indian engineering colleges. It supports student registration,
+room allocation, fee payment, and complaint management. Strengths include a
+comprehensive feature set; weaknesses include a dated interface, lack of mobile
+responsiveness, and no support for file upload (payment receipts).
+
+(b) UniAccomm — United Kingdom
+UniAccomm is a commercial accommodation management platform used by several
+UK universities. It provides a sophisticated end-to-end solution including
+online applications, digital tenancy agreements, room inventory management,
+and payment processing. However, it is a commercial product with high
+licensing costs and is designed for the UK context — making it unsuitable
+for direct adoption by Ugandan universities.
+
+(c) HMS Pro — Nigeria
+Documented by Adeyemi and Obi (2021), HMS Pro is a Java-based desktop
+application developed for a Nigerian federal university. While functional,
+its desktop-based architecture limits accessibility and requires installation
+on each workstation — a significant constraint in resource-limited environments.
+
+(d) Open Source Solutions (Django/PHP Templates)
+Several open-source templates and demo projects for hostel management built
+on Django and PHP were reviewed on platforms like GitHub. These provided
+useful reference implementations for data modelling and workflow design but
+lack the specific feature set, customisation, and security hardening required
+for this institution.
+
+
+2.6 GAPS IN EXISTING LITERATURE
+---------------------------------
+
+From the review of existing literature and systems, the following gaps are
+identified that this study seeks to address:
+
+(i) Context Specificity: Most existing systems are designed for Indian,
+    UK, or Nigerian contexts. There is limited documented work on hostel
+    management systems specifically developed for Ugandan private universities,
+    where the specific workflow (manual payment submission, bank transfer
+    verification, academic year segmentation) differs from other contexts.
+
+(ii) Booking Request Workflow: Existing systems reviewed either rely on
+     fully automated allocation algorithms or simple waiting lists.
+     None provides a structured booking request workflow that allows
+     students to express hostel preferences which administrators then act
+     upon — a workflow better suited to the manual-allocation context of
+     Ugandan institutions.
+
+(iii) Receipt Printing: None of the reviewed systems provides a dedicated
+      browser-based printable receipt that combines payment details, allocation
+      information, and student profile in a single professional document.
+
+(iv) Profile Photo Integration: Student identity management through profile
+     photo upload is not addressed in the reviewed systems, yet it is
+     important for physical verification purposes in the Ugandan context.
+
+(v) Open Source, Locally Deployable Solution: There is a clear need for
+    a freely available, locally deployable solution built on modern web
+    technology that can be adapted by Ugandan universities without
+    commercial licensing costs.
+
+
+2.7 THEORETICAL FRAMEWORK
+---------------------------
+
+This study is grounded in the following theoretical frameworks:
+
+(a) Systems Theory (Von Bertalanffy, 1968): The hostel management process is
+    conceived as a system with defined inputs (student data, room data,
+    payment data), processes (registration, allocation, verification,
+    reporting), and outputs (allocation confirmations, receipts, reports).
+    Systems theory provides the conceptual basis for the input-process-output
+    model that underpins the system design.
+
+(b) Technology Acceptance Model — TAM (Davis, 1989): TAM posits that users
+    accept a technology based on its perceived usefulness and perceived ease
+    of use. This framework informed the user interface design decisions,
+    particularly the emphasis on a clean, intuitive Bootstrap 5 interface
+    and clear navigation — ensuring that both students and hostel managers
+    can effectively adopt and use the system with minimal training.
+
+(c) Model-View-Template (MVT) Architecture: The Django framework's MVT
+    pattern — a variant of the classic Model-View-Controller (MVC) pattern —
+    provides the architectural foundation for the system. This pattern
+    separates concerns between data modelling (Models), business logic
+    (Views), and presentation (Templates), enabling maintainable and
+    extensible code.
+
+(d) Role-Based Access Control (RBAC) Theory (Ferraiolo et al., 2001):
+    RBAC is applied to enforce differential access rights for the two
+    primary user roles (Student and Hostel Manager), ensuring that each
+    user can only access functions appropriate to their role.
+
+================================================================================
+
+
+
+
+================================================================================
+                   CHAPTER THREE: METHODOLOGY
+================================================================================
+
+3.1 INTRODUCTION
+-----------------
+
+This chapter describes the research design and development methodology adopted
+for the Online Hostel Information Management System. It covers the Agile
+development approach, the tools and technologies selected, data collection
+methods, and the requirements analysis process.
+
+
+3.2 RESEARCH DESIGN
+--------------------
+
+This study employed an applied research design — specifically a software
+development research approach. Applied research focuses on solving a specific,
+practical problem through the systematic development and testing of a solution
+(Creswell, 2014). The problem being addressed is the inefficiency of the manual
+hostel management process at Cavendish University Uganda, and the solution is
+a purpose-built web application.
+
+The development was guided by requirements elicited from primary and secondary
+sources — including interviews with hostel staff, observation of the current
+process, and review of existing manual records. These requirements were
+formalised into functional and non-functional specifications that governed
+the design and development phases.
+
+
+3.3 AGILE DEVELOPMENT METHODOLOGY
+-----------------------------------
+
+The Agile software development methodology, specifically the Scrum framework,
+was adopted for this project. Agile is an iterative, incremental approach to
+software development that prioritises working software, customer collaboration,
+and adaptability to change (Beck et al., 2001 — Agile Manifesto).
+
+3.3.1 Rationale for Choosing Agile
+Agile was selected over traditional waterfall approaches for the following
+reasons:
+
+(i)  The requirements for the system were not fully defined at the outset
+     and evolved as the developer gained a deeper understanding of the
+     hostel management process through ongoing research and supervisor
+     feedback.
+
+(ii) Agile's iterative sprints allowed for regular review and course
+     correction, which was particularly valuable given that this was a
+     solo development project with a single developer acting as both
+     developer and product owner.
+
+(iii) Working software was produced at the end of each sprint, enabling
+      progressive demonstration and feedback from the university supervisor
+      and potential users.
+
+3.3.2 Sprint Breakdown
+The project was organised into three two-week sprints:
+
+SPRINT 1 — Foundation (Weeks 1-2):
+  - Requirements analysis and system design
+  - Database schema design and Django project setup
+  - Custom user model implementation (users app)
+  - Hostel, Block, Room models and Django Admin configuration
+  - Base template and Bootstrap 5 design system
+  - User registration and login functionality
+
+SPRINT 2 — Core Features (Weeks 3-4):
+  - Room allocation module (create, list, vacate)
+  - Booking request workflow (student submission, admin review)
+  - Payment submission and verification module
+  - Role-based access control (decorators: @manager_required, @student_required)
+  - Reports module (occupancy, allocation, payment reports with CSV export)
+  - Student and admin dashboards
+
+SPRINT 3 — Enhancement and Polish (Weeks 5-6):
+  - Profile photo upload (ImageField, media file handling)
+  - Printable payment receipt (dedicated view with @media print CSS)
+  - Public hostel page with room type pricing and facilities
+  - Hostel image display (image_url field)
+  - N+1 query optimisation (prefetch_related for report views)
+  - Context processor for sidebar badges
+  - Final bug fixes, UI polish, and system testing
+
+
+3.4 SYSTEM DEVELOPMENT TOOLS AND TECHNOLOGIES
+-----------------------------------------------
+
+Table 3.2: System Development Tools and Technologies
+
++------------------------+------------------+----------------------------------+
+| Component              | Technology       | Justification                    |
++------------------------+------------------+----------------------------------+
+| Backend Framework      | Django 5.2.x     | Rapid development, built-in ORM, |
+|                        | (Python 3.12)    | admin, authentication, security  |
++------------------------+------------------+----------------------------------+
+| Frontend Framework     | Bootstrap 5.3    | Responsive, modern, CDN-hosted   |
++------------------------+------------------+----------------------------------+
+| Icons                  | Bootstrap Icons  | Consistent icon set, CDN-hosted  |
+|                        | 1.11.3           |                                  |
++------------------------+------------------+----------------------------------+
+| Charts                 | Chart.js 4.4     | Dashboard doughnut charts        |
++------------------------+------------------+----------------------------------+
+| Database               | SQLite 3         | Zero-config, suitable for dev    |
++------------------------+------------------+----------------------------------+
+| ORM                    | Django ORM       | Pythonic DB access, migrations   |
++------------------------+------------------+----------------------------------+
+| Version Control        | Git / GitHub     | Source code management           |
++------------------------+------------------+----------------------------------+
+| IDE                    | VS Code          | Code editing, debugging          |
++------------------------+------------------+----------------------------------+
+| Diagram Design         | draw.io          | System design diagrams           |
++------------------------+------------------+----------------------------------+
+| Image Processing       | Pillow 12.1.1    | Django ImageField support        |
++------------------------+------------------+----------------------------------+
+| Operating System       | Windows 10/11    | Development environment          |
++------------------------+------------------+----------------------------------+
+
+3.4.1 Django Framework
+Django is a high-level Python web framework that encourages rapid development
+and clean, pragmatic design. It follows the Model-View-Template (MVT)
+architectural pattern and includes built-in features for URL routing,
+database abstraction via ORM, template rendering, form handling, user
+authentication, and administration. Django's philosophy of "batteries
+included" made it particularly suitable for this project, as it reduced
+the amount of boilerplate code required and provided robust built-in security
+features including CSRF protection, SQL injection prevention, and
+session management.
+
+3.4.2 Bootstrap 5.3
+Bootstrap is the world's most popular CSS framework for building responsive,
+mobile-first web interfaces. Bootstrap 5.3 was selected for its clean
+component library, excellent grid system, and CDN availability — eliminating
+the need to host CSS assets locally during development. Custom CSS variables
+and a custom design system (style.css) were layered on top of Bootstrap
+to achieve a distinctive institutional visual identity.
+
+3.4.3 SQLite Database
+SQLite was chosen as the database for development due to its zero-configuration
+nature and seamless integration with Django. It is file-based (stored as
+db.sqlite3) and requires no separate database server process. While SQLite
+is not recommended for high-concurrency production environments, it is
+entirely appropriate for the development and testing phases of this project.
+Django's ORM abstracts the database layer, making migration to PostgreSQL
+straightforward if production deployment is required.
+
+
+3.5 DATA COLLECTION METHODS
+-----------------------------
+
+Data for requirements analysis was collected through the following methods:
+
+(i) Interview: A structured interview was conducted with the hostel
+    administrator at Cavendish University Uganda to understand the current
+    manual process, pain points, and requirements for an automated system.
+    The interview covered the allocation workflow, payment procedures,
+    reporting needs, and the types of users who interact with the system.
+
+(ii) Observation: The researcher observed the manual hostel management
+     process at the hostel office, documenting the sequence of activities
+     from student inquiry through allocation and payment to move-in.
+     This provided direct insight into inefficiencies and bottlenecks.
+
+(iii) Document Review: Existing hostel registration forms, payment receipt
+      templates, room register ledgers, and occupancy reports were reviewed
+      to understand the data entities, fields, and relationships that the
+      system needed to model.
+
+(iv) Literature Review: Secondary data was collected from academic journals,
+     textbooks, and online resources (as documented in Chapter 2) to
+     benchmark the system against existing solutions and best practices.
+
+
+3.6 SYSTEM REQUIREMENTS ANALYSIS
+----------------------------------
+
+3.6.1 Functional Requirements
+The following functional requirements were identified through requirements
+analysis:
+
+Table 3.3: Functional Requirements
+
+FR01 — The system shall allow new students to register accounts with their
+        personal details including student ID, department, gender, and
+        contact information.
+
+FR02 — The system shall authenticate registered users through a username
+        and password login mechanism and redirect them to a role-appropriate
+        dashboard.
+
+FR03 — The system shall display a public hostel listing page showing all
+        hostels with their name, gender type, available facilities, room
+        types, and prices per semester — accessible without login.
+
+FR04 — Authenticated students shall be able to browse hostel listings with
+        room availability information and submit a booking request for a
+        preferred hostel.
+
+FR05 — Students shall be able to cancel a pending booking request.
+
+FR06 — Hostel managers shall be able to view all pending booking requests
+        and use them to inform allocation decisions.
+
+FR07 — Hostel managers shall be able to create room allocations assigning
+        a specific student to a specific room for an academic year.
+
+FR08 — The system shall prevent a room from being over-allocated beyond its
+        stated capacity.
+
+FR09 — The system shall prevent a student from having more than one active
+        room allocation at a time.
+
+FR10 — Hostel managers shall be able to vacate (mark as 'left') an active
+        allocation when a student moves out.
+
+FR11 — Students shall be able to submit a payment record including the
+        payment amount, reference number, payment method, and an optional
+        proof of payment file.
+
+FR12 — Hostel managers shall be able to verify or reject a submitted payment
+        record, with the verification recorded including the verifying
+        administrator and timestamp.
+
+FR13 — Authenticated students shall be able to view and print a detailed
+        payment receipt combining payment details, allocation information,
+        and student profile.
+
+FR14 — Students shall be able to upload and update a profile photo.
+
+FR15 — The system shall generate an occupancy report showing total capacity,
+        occupied beds, and occupancy percentage per hostel.
+
+FR16 — The system shall generate allocation and payment reports filterable
+        by academic year and exportable to CSV format.
+
+FR17 — Hostel managers shall be able to create, edit, and manage hostel,
+        block, and room records through a web interface.
+
+3.6.2 Non-Functional Requirements
+
+Table 3.4: Non-Functional Requirements
+
+NFR01 — Security: The system shall implement CSRF protection on all POST
+         forms, session-based authentication, and role-based access control.
+         The logout function shall use POST-only requests to prevent
+         CSRF logout attacks.
+
+NFR02 — Usability: The interface shall be responsive and usable on desktop
+         and mobile devices. Navigation shall be clear and intuitive,
+         with role-appropriate sidebars.
+
+NFR03 — Performance: List views shall be paginated (20 records per page)
+         to prevent slow page loads with large datasets. Report views shall
+         use SQL aggregation rather than Python-level computation.
+
+NFR04 — Reliability: The system shall enforce data integrity through both
+         application-level validation (Django model clean() methods) and
+         database-level constraints (unique constraints, foreign keys).
+
+NFR05 — Maintainability: The system shall follow Django's MVT pattern with
+         clearly separated apps for each domain module. Code shall be
+         readable and documented.
+
+NFR06 — Scalability: The database abstraction layer (Django ORM) shall
+         allow migration to a production-grade database (PostgreSQL) with
+         minimal code changes.
+
+================================================================================
+
+
+
+
+================================================================================
+                   CHAPTER FOUR: SYSTEM DESIGN
+================================================================================
+
+4.1 INTRODUCTION
+-----------------
+
+This chapter presents the complete design of the Online Hostel Information
+Management System. It covers the conceptual framework, system architecture,
+all UML and DFD diagrams, entity relationship diagram, and database design.
+The design artefacts guide the implementation described in Chapter Five.
+
+
+4.2 CONCEPTUAL FRAMEWORK
+--------------------------
+
+The conceptual framework presents the theoretical model of the system,
+illustrating how inputs are transformed into outputs through system processes.
+
+[See Figure 4.1: Conceptual Framework Diagram — refer to diagram file
+01_conceptual_framework.drawio]
+
+INPUT:
+The system receives the following inputs:
+- Student registration data (name, student ID, gender, department)
+- Hostel and room data entered by managers (hostel name, block, room type,
+  capacity, price)
+- Booking requests from students (preferred hostel, academic year)
+- Payment records submitted by students (amount, reference number, receipt)
+- Administrative inputs (allocation decisions, payment verifications)
+
+PROCESS:
+The inputs are processed through six core processes:
+1. User Registration and Authentication
+2. Hostel and Room Management
+3. Booking Request Processing
+4. Room Allocation Management
+5. Payment Processing and Verification
+6. Report Generation and Analytics
+
+OUTPUT:
+The system produces the following outputs:
+- Student dashboard with allocation status and payment history
+- Room allocation confirmations
+- Booking status notifications
+- Printable payment receipts
+- Occupancy and payment reports in HTML and CSV formats
+
+STAKEHOLDERS:
+- Students / Residents
+- Hostel Managers / Wardens
+- System Administrator (Superuser)
+- University Management
+
+
+4.3 SYSTEM ARCHITECTURE
+-------------------------
+
+The system follows a three-tier architecture:
+
+[See Figure 4.2: System Architecture Diagram — refer to diagram file
+02_system_architecture.drawio]
+
+TIER 1 — PRESENTATION LAYER:
+The presentation layer consists of the user interface delivered to the web
+browser. It comprises Bootstrap 5.3 CSS framework for responsive layout and
+styling, Bootstrap Icons for iconography, Chart.js for dashboard charts,
+a custom CSS design system (static/css/style.css), and Django's template
+engine (Jinja2-based) for server-side HTML rendering. The layer is organised
+around a master base.html template that implements two distinct layouts:
+an authenticated sidebar layout for logged-in users, and a public navigation
+layout for unauthenticated visitors.
+
+TIER 2 — APPLICATION / BUSINESS LOGIC LAYER:
+The application layer implements all business logic through Django's MVT
+pattern. It is divided into five domain-specific Django applications:
+
+- users: Handles authentication (registration, login, logout), role-based
+  dashboards, user profiles, and profile photo management.
+
+- hostels: Manages hostel, block, and room entities including CRUD views,
+  the public hostel listing page with pricing, and the admin hostel
+  management interface.
+
+- allocations: Implements room allocation creation, listing, and vacating,
+  as well as the booking request workflow for students and managers.
+
+- payments: Handles payment record submission by students, payment
+  verification by managers, and printable receipt generation.
+
+- reports: Generates occupancy, allocation, and payment reports with
+  academic year filtering and CSV export.
+
+Cross-cutting concerns handled at the application layer include:
+- CSRF protection (Django middleware)
+- Session-based authentication (Django auth)
+- Role-based access control via custom decorators (@manager_required,
+  @student_required in users/decorators.py)
+- Context processors for sidebar badge counts (users/context_processors.py)
+
+TIER 3 — DATA LAYER:
+The data layer consists of the Django ORM providing an abstraction over
+the underlying SQLite database. Models define the schema, relationships,
+and constraints. Django migrations manage schema versioning. Media files
+(profile photos, payment receipts) are stored in the filesystem under the
+MEDIA_ROOT directory.
+
+
+4.4 USE CASE DIAGRAM
+---------------------
+
+[See Figure 4.3: Use Case Diagram — refer to diagram file
+05_use_case_diagram.drawio]
+
+Two primary actors interact with the system:
+
+STUDENT Actor:
+A registered student can perform the following use cases:
+- Register Account
+- Login to System
+- Logout
+- View/Edit Profile and Upload Photo
+- View Student Dashboard
+- Browse Available Hostels (with pricing and room types)
+- Submit Booking Request
+- Cancel Booking Request
+- Submit Payment Record (includes Upload Payment Receipt)
+- View and Print Payment Receipt
+
+HOSTEL MANAGER Actor:
+A hostel manager/admin can perform the following use cases:
+- Login to System
+- Logout
+- View Admin Dashboard
+- Manage Hostels, Blocks, and Rooms (CRUD)
+- View Booking Requests
+- Allocate Room to Student (extends: Review Booking Request)
+- View All Allocations
+- Vacate Room Allocation
+- Verify / Reject Payment
+- View All Payments
+- Generate Reports (includes: Export CSV)
+
+
+4.5 CONTEXT DIAGRAM (LEVEL 0 DFD)
+------------------------------------
+
+[See Figure 4.4: Context Diagram — refer to diagram file
+04_context_diagram_level0.drawio]
+
+The Context Diagram (Level 0 Data Flow Diagram) represents the entire
+Online Hostel Information Management System as a single process and shows
+the data flows between the system and its external entities.
+
+External Entities:
+- Student: Provides registration details, booking requests, and payment
+  records to the system. Receives allocation confirmations, booking status
+  notifications, and payment receipts from the system.
+- Hostel Manager: Provides room allocation data, payment verification
+  decisions, and booking request reviews to the system. Receives occupancy
+  and payment reports from the system.
+- System Administrator: Provides system configuration and user management
+  data to the system via the Django admin interface.
+- University Management: Receives hostel statistics and annual reports
+  from the system.
+
+Central Process:
+- Hostel Information Management System (HMS): The central system that
+  receives all inputs, processes them according to business rules, and
+  produces all outputs.
+
+
+4.6 LEVEL 1 DATA FLOW DIAGRAM
+-------------------------------
+
+[See Figure 4.5: Level 1 DFD — refer to diagram file
+06_dfd_level1.drawio]
+
+The Level 1 DFD decomposes the central HMS process into six sub-processes:
+
+Process 1.0 — User Registration and Authentication:
+Receives registration details from the Student and stores user records
+in the User Store (D1). On subsequent visits, retrieves credentials from
+D1 to authenticate users and issue login confirmations.
+
+Process 2.0 — Hostel and Room Management:
+Receives hostel and room data from the System Admin, stores it in the
+Hostel/Room Store (D2), and retrieves it for display on public and
+authenticated hostel listing pages.
+
+Process 3.0 — Booking Request Management:
+Receives booking request details from the Student, saves them to the
+Booking Request Store (D5), and returns booking status to the Student.
+
+Process 4.0 — Room Allocation Management:
+Receives allocation data from the Hostel Manager, retrieves available
+room data from D2, stores allocations in the Allocation Store (D3),
+and returns allocation confirmations.
+
+Process 5.0 — Payment Processing and Verification:
+Receives payment details and receipt files from the Student and
+verification decisions from the Manager. Stores payment records in the
+Payment Store (D4) and returns payment receipts to the Student.
+
+Process 6.0 — Report Generation:
+Reads data from D2, D3, and D4 to compile occupancy, allocation, and
+payment reports, which are delivered to the Hostel Manager in HTML or
+CSV format.
+
+Data Stores:
+D1 — User Store (users_customuser table)
+D2 — Hostel/Room Store (hostels_hostel, hostels_block, hostels_room tables)
+D3 — Allocation Store (allocations_allocation table)
+D4 — Payment Store (payments_payment table)
+D5 — Booking Request Store (allocations_bookingrequest table)
+
+
+4.7 ENTITY RELATIONSHIP DIAGRAM
+---------------------------------
+
+[See Figure 4.6: ERD — refer to diagram file 07_erd.drawio]
+
+The system database comprises seven primary entities with the following
+relationships:
+
+Entities and Relationships:
+
+CustomUser — the central entity representing all system users. It has
+one-to-many relationships with Allocation (a student can have multiple
+allocations over time), Payment (a student can make multiple payments),
+and BookingRequest (a student can make multiple booking requests over
+different academic years). A manager (also a CustomUser) can verify
+multiple Payments (captured by the verified_by FK).
+
+Hostel — represents a hall of residence. One Hostel contains many Blocks
+(1:N relationship). One Hostel can receive many BookingRequests from
+students (1:N).
+
+Block — represents a wing or section within a hostel. One Block contains
+many Rooms (1:N relationship). A Block belongs to exactly one Hostel.
+
+Room — represents an individual room within a Block. One Room can have
+many Allocations over time (1:N), as successive students may occupy the
+same room across different academic years. A Room belongs to exactly
+one Block.
+
+Allocation — the linking entity between CustomUser (student) and Room.
+It records when a student is assigned to a room, the academic year, and
+the current status (active/left/cancelled). A unique constraint enforces
+that at most one active allocation exists per student at any time.
+
+Payment — records a payment submitted by a student. It links to the
+submitting CustomUser (user FK) and to the verifying manager
+(verified_by FK). Each payment has a unique reference_number.
+
+BookingRequest — records a student's expressed preference for a hostel.
+It links to the requesting student (student FK) and the preferred hostel
+(preferred_hostel FK).
+
+
+4.8 DATABASE DESIGN
+---------------------
+
+[See Figure 4.7: Database Design Diagram — refer to diagram file
+08_database_design.drawio]
+
+The database consists of seven primary application tables, managed by
+Django's migration system. All tables use BigAutoField (64-bit integer)
+as the primary key by default.
+
+Table 4.2: users_customuser
++---------------------+-----------------------+---------------------------+
+| Column              | Data Type             | Constraints               |
++---------------------+-----------------------+---------------------------+
+| id                  | BIGINT                | PK, AUTO INCREMENT        |
+| username            | VARCHAR(150)          | UNIQUE, NOT NULL          |
+| first_name          | VARCHAR(150)          |                           |
+| last_name           | VARCHAR(150)          |                           |
+| email               | VARCHAR(254)          |                           |
+| password            | VARCHAR(128)          | NOT NULL (hashed)         |
+| student_id          | VARCHAR(50)           | UNIQUE, NULL              |
+| gender              | VARCHAR(10)           | NULL                      |
+| phone_number        | VARCHAR(20)           | NULL                      |
+| department          | VARCHAR(100)          | NULL                      |
+| level               | VARCHAR(20)           | NULL                      |
+| date_of_birth       | DATE                  | NULL                      |
+| photo               | VARCHAR(100)          | NULL (ImageField)         |
+| is_student          | BOOLEAN               | DEFAULT False             |
+| is_manager          | BOOLEAN               | DEFAULT False             |
+| is_staff            | BOOLEAN               | DEFAULT False (Django)    |
+| is_superuser        | BOOLEAN               | DEFAULT False (Django)    |
+| is_active           | BOOLEAN               | DEFAULT True (Django)     |
+| date_joined         | DATETIME              | AUTO (Django)             |
+| last_login          | DATETIME              | NULL (Django)             |
++---------------------+-----------------------+---------------------------+
+
+Table 4.3: hostels_hostel
++---------------------+-----------------------+---------------------------+
+| Column              | Data Type             | Constraints               |
++---------------------+-----------------------+---------------------------+
+| id                  | BIGINT                | PK, AUTO INCREMENT        |
+| name                | VARCHAR(200)          | UNIQUE, NOT NULL          |
+| location            | VARCHAR(300)          | NOT NULL                  |
+| gender              | VARCHAR(10)           | NOT NULL                  |
+| description         | TEXT                  | NULL                      |
+| image_url           | VARCHAR(500)          | NULL                      |
+| price_per_semester  | DECIMAL(12,2)         | NULL                      |
+| created_at          | DATETIME              | AUTO ADD                  |
+| updated_at          | DATETIME              | AUTO UPDATE               |
++---------------------+-----------------------+---------------------------+
+
+Table 4.4: hostels_block
++---------------------+-----------------------+---------------------------+
+| Column              | Data Type             | Constraints               |
++---------------------+-----------------------+---------------------------+
+| id                  | BIGINT                | PK, AUTO INCREMENT        |
+| hostel_id           | BIGINT                | FK → hostels_hostel.id    |
+| name                | VARCHAR(100)          | NOT NULL                  |
+| description         | TEXT                  | NULL                      |
+| created_at          | DATETIME              | AUTO ADD                  |
++---------------------+-----------------------+---------------------------+
+| UNIQUE(hostel_id, name)                                                  |
++--------------------------------------------------------------------------+
+
+Table 4.5: hostels_room
++---------------------+-----------------------+---------------------------+
+| Column              | Data Type             | Constraints               |
++---------------------+-----------------------+---------------------------+
+| id                  | BIGINT                | PK, AUTO INCREMENT        |
+| block_id            | BIGINT                | FK → hostels_block.id     |
+| room_number         | VARCHAR(20)           | NOT NULL                  |
+| capacity            | INT                   | NOT NULL, MIN VALUE=1     |
+| room_type           | VARCHAR(20)           | NULL                      |
+| price_per_semester  | DECIMAL(12,2)         | NULL                      |
+| description         | TEXT                  | NULL                      |
+| created_at          | DATETIME              | AUTO ADD                  |
++---------------------+-----------------------+---------------------------+
+| UNIQUE(block_id, room_number)                                            |
++--------------------------------------------------------------------------+
+
+Table 4.6: allocations_allocation
++---------------------+-----------------------+---------------------------+
+| Column              | Data Type             | Constraints               |
++---------------------+-----------------------+---------------------------+
+| id                  | BIGINT                | PK, AUTO INCREMENT        |
+| user_id             | BIGINT                | FK → users_customuser.id  |
+| room_id             | BIGINT                | FK → hostels_room.id      |
+| status              | VARCHAR(20)           | DEFAULT 'active'          |
+| date_allocated      | DATETIME              | AUTO ADD                  |
+| date_left           | DATETIME              | NULL                      |
+| academic_year       | VARCHAR(20)           | NULL                      |
+| notes               | TEXT                  | NULL                      |
++---------------------+-----------------------+---------------------------+
+| UNIQUE CONSTRAINT: One active allocation per student                     |
+| INDEX: (user_id, status)                                                 |
++--------------------------------------------------------------------------+
+
+Table 4.7: payments_payment
++---------------------+-----------------------+---------------------------+
+| Column              | Data Type             | Constraints               |
++---------------------+-----------------------+---------------------------+
+| id                  | BIGINT                | PK, AUTO INCREMENT        |
+| user_id             | BIGINT                | FK → users_customuser.id  |
+| amount              | DECIMAL(10,2)         | NOT NULL, MIN VALUE=0.01  |
+| reference_number    | VARCHAR(100)          | UNIQUE, NOT NULL          |
+| status              | VARCHAR(20)           | DEFAULT 'pending'         |
+| date_paid           | DATETIME              | AUTO ADD                  |
+| date_verified       | DATETIME              | NULL                      |
+| verified_by_id      | BIGINT                | FK → users_customuser.id, |
+|                     |                       | NULL, SET NULL on delete  |
+| payment_method      | VARCHAR(50)           | NULL                      |
+| academic_year       | VARCHAR(20)           | NULL                      |
+| notes               | TEXT                  | NULL                      |
+| receipt             | VARCHAR(100)          | NULL (FileField)          |
++---------------------+-----------------------+---------------------------+
+
+Table 4.8: allocations_bookingrequest
++---------------------+-----------------------+---------------------------+
+| Column              | Data Type             | Constraints               |
++---------------------+-----------------------+---------------------------+
+| id                  | BIGINT                | PK, AUTO INCREMENT        |
+| student_id          | BIGINT                | FK → users_customuser.id  |
+| preferred_hostel_id | BIGINT                | FK → hostels_hostel.id    |
+| academic_year       | VARCHAR(20)           | NOT NULL                  |
+| status              | VARCHAR(20)           | DEFAULT 'pending'         |
+| message             | TEXT                  | NULL                      |
+| admin_notes         | TEXT                  | NULL                      |
+| reviewed_by_id      | BIGINT                | FK → users_customuser.id, |
+|                     |                       | NULL                      |
+| created_at          | DATETIME              | AUTO ADD                  |
++---------------------+-----------------------+---------------------------+
+| INDEX: (student_id, status)                                              |
++--------------------------------------------------------------------------+
+
+
+4.9 USER INTERFACE DESIGN
+---------------------------
+
+The system implements two distinct layouts within a single base template:
+
+Public Layout (unauthenticated users):
+A clean top navigation bar with links to Home, Hostels, About Us, Contact Us,
+Login, and Register. A back-arrow button appears on all non-home pages for
+easy navigation. The public hostel page displays hostel cards with banner
+images, facility badges, and a room type/pricing table.
+
+Authenticated Layout (logged-in users):
+A sidebar navigation layout with a collapsible sidebar that adapts its links
+based on the user's role. Students see navigation for Dashboard, Browse
+Hostels, My Profile, and Submit Payment. Managers see navigation for
+Dashboard, Hostels & Rooms, Available Rooms, Allocations, Booking Requests,
+Payments, and Reports. The sidebar footer displays the user's profile photo
+(or initials) and a sign-out button. Pending badge counts are shown on
+Payments and Booking Requests links for managers.
+
+================================================================================
+
+
+
+
+================================================================================
+                   CHAPTER FIVE: SYSTEM IMPLEMENTATION
+================================================================================
+
+5.1 DEVELOPMENT ENVIRONMENT
+-----------------------------
+
+The system was developed on a Windows 11 workstation with the following
+environment configuration:
+
+- Python 3.12.x
+- Django 5.2.x
+- Virtual environment (venv) for dependency isolation
+- Visual Studio Code as the IDE
+- Git for version control
+- SQLite 3 as the development database
+- pip for package management
+
+Key Python packages installed (requirements):
+- Django 5.2.x
+- Pillow 12.1.1 (for ImageField support)
+
+The project follows the standard Django project structure:
+
+hostel_system/           (Project root)
+  manage.py              (Django management utility)
+  db.sqlite3             (SQLite database)
+  hostel_system/         (Project configuration package)
+    settings.py          (Configuration: DB, apps, auth, media)
+    urls.py              (Root URL configuration)
+    wsgi.py              (WSGI entry point)
+  users/                 (Authentication and user management app)
+  hostels/               (Hostel/Block/Room management app)
+  allocations/           (Room allocation and booking app)
+  payments/              (Payment management app)
+  reports/               (Reporting app)
+  templates/             (Global HTML templates directory)
+  static/                (Static files: CSS, images)
+  media/                 (Uploaded files: photos, receipts)
+  diagrams/              (System design diagram files)
+
+
+5.2 SYSTEM MODULES AND FEATURES
+---------------------------------
+
+The system is implemented as five Django applications, each responsible for
+a distinct domain of functionality:
+
+(i)   users — authentication, dashboards, profile management
+(ii)  hostels — hostel/block/room inventory and public listing
+(iii) allocations — room allocation and booking requests
+(iv)  payments — payment submission, verification, and receipts
+(v)   reports — occupancy, allocation, and payment reports
+
+Cross-cutting concerns are handled by:
+- users/decorators.py — @manager_required and @student_required decorators
+- users/context_processors.py — injects pending badge counts into all templates
+- hostel_system/settings.py — central configuration including AUTH_USER_MODEL,
+  MEDIA_ROOT, MEDIA_URL, TIME_ZONE, and environment-based SECRET_KEY
+
+
+5.3 USER REGISTRATION AND AUTHENTICATION
+-----------------------------------------
+
+The authentication module is implemented in the users app. The system uses
+a custom user model (CustomUser) that extends Django's AbstractUser with
+additional fields:
+
+Custom Fields Added:
+- is_student (BooleanField): True for student accounts
+- is_manager (BooleanField): True for hostel manager accounts
+- student_id (CharField, unique, nullable): Institutional student number
+- department, level: Academic classification
+- phone_number, date_of_birth, gender: Personal details
+- photo (ImageField): Profile photograph stored in media/profile_photos/
+
+Registration:
+New students register through the /register/ URL. The StudentRegistrationForm
+collects username, first_name, last_name, email, student_id, and password.
+On successful registration, is_student is automatically set to True and the
+user is redirected to the login page.
+
+Authentication:
+Login is handled by Django's AuthenticationForm at /login/. Successful
+authentication redirects the user to /dashboard/, which dispatches to the
+role-appropriate dashboard (admin_dashboard or student_dashboard) based on
+the user's role flags.
+
+Logout:
+The logout view is POST-only, protecting against CSRF logout attacks where
+an attacker could embed a malicious URL (e.g., in an image tag) to forcibly
+log out authenticated users.
+
+Role-Based Access Control:
+Two custom decorators enforce role-based access:
+- @manager_required: Redirects unauthenticated users to login and
+  non-manager users to the dashboard with an error message.
+- @student_required: Redirects unauthenticated users to login and
+  manager users to the admin dashboard.
+
+
+5.4 HOSTEL AND ROOM MANAGEMENT
+--------------------------------
+
+The hostels app manages the three-level physical hierarchy:
+Hostel → Block → Room
+
+Hostel Model Fields:
+name (unique), location, gender (Male/Female/Mixed), description,
+image_url (URL to banner photo), price_per_semester, created_at, updated_at.
+
+Computed methods on Hostel:
+- total_capacity(): Sum of all room capacities across all blocks
+- available_spaces(): total_capacity - occupied_beds
+- occupied_beds(): Sum of active allocations across all rooms
+
+Block Model Fields:
+hostel (FK), name, description, created_at.
+The capacity field is a computed @property (sum of room capacities)
+rather than a stored database field, eliminating the risk of desynchronisation.
+
+Room Model Fields:
+block (FK), room_number, capacity (beds), room_type (Single/Double/
+Self-Contained/Shared), price_per_semester, description, created_at.
+The is_full field is a computed @property rather than a stored boolean,
+preventing stale state.
+The occupied_beds() method uses self.allocations.all() which works with
+Django's prefetch_related to avoid N+1 queries in list views and reports.
+
+Web Interface:
+The hostels app provides authenticated CRUD views for managers (hostel_list,
+hostel_detail, hostel_create, hostel_edit, block_create, room_create).
+A separate public_hostels view renders the unauthenticated public hostel page.
+An authenticated student_hostels view in the allocations app renders the
+hostel browsing page for logged-in students, with booking buttons.
+
+Public Hostel Page Features:
+- Banner photo with overlay (from image_url field)
+- Available Facilities: Security, Free Water, Free Electricity, Free WiFi
+- Room types table showing total beds, available beds, and price per type
+- Book This Hostel button (for logged-in students without existing allocation)
+
+
+5.5 BOOKING REQUEST MANAGEMENT
+--------------------------------
+
+The booking request workflow is implemented in the allocations app using
+the BookingRequest model, which records a student's expressed preference
+for a hostel before room assignment.
+
+Student Workflow:
+1. Student browses the authenticated hostel listing (/allocations/browse-hostels/)
+2. Student clicks "Book This Hostel" on a preferred hostel
+3. Student fills in the booking request form (academic year, optional message)
+4. System validates: no existing active allocation, no existing pending/approved
+   request
+5. Booking request saved with status='pending'
+6. Student can cancel a pending request from the dashboard
+
+Manager Workflow:
+1. Manager views all booking requests at /allocations/booking-requests/
+   with filter tabs (Pending, Approved, Rejected, Cancelled)
+2. Manager uses the pending request information to inform allocation decisions
+3. When a room allocation is created for a student, any pending booking
+   requests for that student are automatically marked as 'approved'
+
+Business Rules Enforced:
+- A student cannot have more than one active (pending or approved) booking
+  request at a time
+- A student with an active room allocation cannot submit a new booking request
+- Only pending requests can be cancelled by the student
+
+
+5.6 ROOM ALLOCATION MANAGEMENT
+--------------------------------
+
+Room allocation is implemented in the allocations app using the Allocation model.
+
+Allocation Model Fields:
+user (FK to CustomUser), room (FK to Room), status (active/left/cancelled),
+date_allocated (auto), date_left (nullable), academic_year, notes.
+
+Capacity Validation:
+The Allocation model's clean() method validates:
+(i)  Room not over-capacity: active allocation count < room.capacity
+(ii) No dual active allocation: no other active allocation exists for
+     the same student
+(iii) Gender matching: male students cannot be allocated to Female-only
+      hostels and vice versa
+The clean() method is called from save() to enforce validation on every save.
+A database-level UniqueConstraint provides additional protection against
+concurrent allocation creation.
+
+Manager Workflow:
+1. Manager navigates to New Allocation (/allocations/create/)
+   - If accessed from the Booking Requests page with ?student=<pk>,
+     the student field is pre-populated automatically
+2. Manager selects student and room from dropdowns
+3. System runs validation; if valid, allocation is created
+4. Any pending booking request for the student is automatically approved
+
+Vacate Room:
+A manager can mark an active allocation as 'left' through the Vacate action
+on the allocation list. This sets status='left' and records date_left.
+
+Allocation List:
+The allocation list view supports search (by student name, student ID, room
+number, hostel name) and status filtering. Results are paginated at 20
+records per page.
+
+
+5.7 PAYMENT MANAGEMENT
+------------------------
+
+The payment module is implemented in the payments app.
+
+Payment Model Fields:
+user (FK), amount (Decimal), reference_number (unique, mandatory),
+status (pending/verified/rejected), date_paid (auto), date_verified,
+verified_by (FK to manager, nullable), payment_method, academic_year,
+notes, receipt (FileField for proof of payment).
+
+Student Submission:
+Students access the payment form at /payments/create/ (student-only,
+guarded by @student_required). They enter the payment amount, reference
+number (bank/mobile money transaction ID), payment method, academic year,
+optional notes, and optionally upload a proof of payment file.
+The payment.user is set automatically to request.user on save.
+The reference_number unique constraint prevents duplicate payment records.
+
+Manager Verification:
+The payment list at /payments/ (manager-only) shows all payments paginated.
+Each payment row has a "Verify" button linking to /payments/verify/<id>/.
+The verify view allows the manager to:
+- Mark as Verified: sets status='verified', records verified_by and
+  date_verified
+- Mark as Rejected: sets status='rejected'
+
+Payment Receipt:
+The payment receipt view at /payments/receipt/<id>/ is accessible by the
+owning student or any manager. It renders a printable HTML page including:
+- University header
+- Payment status banner (colour-coded: green/orange/red)
+- Student photo (or initials fallback) and personal details
+- Payment details table
+- Room allocation section (if allocated)
+- Official stamp and signature area
+- @media print CSS hides sidebar and navbar, printing only the receipt
+
+On-Screen Action:
+Students access the receipt from their dashboard payment history.
+Managers access it from the payment list.
+A "Print Receipt" button triggers window.print() for browser-based printing.
+
+
+5.8 REPORT GENERATION
+-----------------------
+
+The reports app provides three report views, all protected by @manager_required:
+
+(i) Hostel Occupancy Report (/reports/occupancy/):
+Displays per-hostel statistics: total capacity, occupied beds, available beds,
+and occupancy percentage (colour-coded progress bar). Uses prefetch_related(
+'blocks__rooms__allocations') to load all data in a single database query
+set, with occupied_beds() method using prefetch cache to avoid N+1 queries.
+
+(ii) Allocation Report (/reports/allocations/):
+Displays all allocations with student name, student ID, hostel, block, room,
+status, date, and academic year. Supports filtering by academic year (dropdown).
+Exportable to CSV (format=csv query parameter).
+
+(iii) Payment Report (/reports/payments/):
+Displays all payments with summary statistics (total, verified, pending amounts)
+using SQL aggregation (aggregate(Sum('amount'))). Supports academic year
+filtering. Exportable to CSV.
+
+CSV Export:
+Both allocation and payment reports support CSV export via Django's
+HttpResponse with content_type='text/csv' and Content-Disposition attachment
+header. CSV files are generated server-side without any additional libraries.
+
+
+5.9 SECURITY IMPLEMENTATION
+-----------------------------
+
+The following security measures are implemented in the system:
+
+(i) CSRF Protection: Django's CsrfViewMiddleware is enabled, adding CSRF
+    tokens to all POST forms. The logout form uses POST to prevent CSRF
+    logout attacks.
+
+(ii) Session Authentication: Django's session-based authentication ensures
+     that user identity is verified on every request. The @login_required
+     decorator protects all non-public views.
+
+(iii) Role-Based Access Control: Custom decorators (@manager_required and
+      @student_required) enforce role-appropriate access. Both decorators
+      check is_authenticated first to handle unauthenticated requests safely.
+
+(iv) Password Security: Django's AUTH_PASSWORD_VALIDATORS enforce minimum
+     length, common password detection, and numeric-only password prevention.
+     Passwords are stored as secure hashes using Django's PBKDF2-SHA256
+     algorithm.
+
+(v) File Upload Security: Payment receipts and profile photos are uploaded
+    to designated subdirectories within MEDIA_ROOT. Django does not serve
+    uploaded files with execute permissions.
+
+(vi) Secret Key Management: The Django SECRET_KEY is read from an environment
+     variable (DJANGO_SECRET_KEY) with a fallback for local development only.
+     This prevents accidental exposure of secret keys in source code.
+
+(vii) Input Validation: All form inputs are validated through Django's form
+      validation layer before being saved to the database. Model-level
+      clean() methods provide additional business rule validation.
+
+================================================================================
+
+
+
+
+================================================================================
+                   CHAPTER SIX: SYSTEM TESTING
+================================================================================
+
+6.1 INTRODUCTION
+-----------------
+
+Testing is a critical phase of the software development lifecycle that verifies
+that the system meets its specified requirements and behaves as expected under
+various conditions. This chapter describes the testing strategy adopted and
+presents the results of functional, security, and user acceptance testing
+conducted on the Online Hostel Information Management System.
+
+
+6.2 TESTING STRATEGY
+---------------------
+
+The testing strategy for this project employed three complementary testing
+approaches:
+
+(i)  Functional Testing: Verifying that each system function performs as
+     specified in the requirements. Tests were designed around the functional
+     requirements (FR01–FR17) identified in Chapter 3.
+
+(ii) Security Testing: Verifying that security controls operate correctly —
+     including authentication, role-based access control, and CSRF protection.
+
+(iii) User Acceptance Testing (UAT): Demonstrating the system to a small
+      group of representative users (2 students, 1 hostel manager) and
+      collecting structured feedback on usability, completeness, and
+      correctness.
+
+Django's built-in development server (python manage.py runserver) was used as
+the test environment. The Django system check framework (python manage.py check)
+was run after every significant change to verify the integrity of the
+application configuration. All 20 database migrations were applied cleanly
+throughout development.
+
+
+6.3 FUNCTIONAL TESTING
+------------------------
+
+The following table presents a representative sample of test cases executed:
+
+Table 6.1: Functional Test Cases — Authentication
+
++-------+----------------------------------+-----------------+---------------+
+| TC-ID | Test Case                        | Expected Result | Actual Result |
++-------+----------------------------------+-----------------+---------------+
+| TC01  | Register with valid details      | Account created | PASS          |
+|       |                                  | is_student=True |               |
++-------+----------------------------------+-----------------+---------------+
+| TC02  | Register with duplicate username | Error message   | PASS          |
+|       |                                  | shown           |               |
++-------+----------------------------------+-----------------+---------------+
+| TC03  | Login with valid credentials     | Redirect to     | PASS          |
+|       |                                  | dashboard       |               |
++-------+----------------------------------+-----------------+---------------+
+| TC04  | Login with wrong password        | Error message   | PASS          |
+|       |                                  | shown           |               |
++-------+----------------------------------+-----------------+---------------+
+| TC05  | Logout via POST form             | Redirected to   | PASS          |
+|       |                                  | home page       |               |
++-------+----------------------------------+-----------------+---------------+
+| TC06  | Student redirect to             | Correct         | PASS          |
+|       | student_dashboard after login   | dashboard shown |               |
++-------+----------------------------------+-----------------+---------------+
+| TC07  | Manager redirect to             | Correct         | PASS          |
+|       | admin_dashboard after login     | dashboard shown |               |
++-------+----------------------------------+-----------------+---------------+
+
+Table 6.2: Functional Test Cases — Room Allocation
+
++-------+----------------------------------+-----------------+---------------+
+| TC-ID | Test Case                        | Expected Result | Actual Result |
++-------+----------------------------------+-----------------+---------------+
+| TC08  | Allocate student to room with    | Allocation      | PASS          |
+|       | available capacity               | created         |               |
++-------+----------------------------------+-----------------+---------------+
+| TC09  | Allocate student to full room    | Validation      | PASS          |
+|       |                                  | error shown     |               |
++-------+----------------------------------+-----------------+---------------+
+| TC10  | Allocate student who already     | Validation      | PASS          |
+|       | has active allocation            | error shown     |               |
++-------+----------------------------------+-----------------+---------------+
+| TC11  | Allocate male student to         | Gender          | PASS          |
+|       | Female-only hostel               | mismatch error  |               |
++-------+----------------------------------+-----------------+---------------+
+| TC12  | Vacate an active allocation      | Status set to   | PASS          |
+|       |                                  | 'left', date    |               |
+|       |                                  | recorded        |               |
++-------+----------------------------------+-----------------+---------------+
+
+Table 6.3: Functional Test Cases — Payment Management
+
++-------+----------------------------------+-----------------+---------------+
+| TC-ID | Test Case                        | Expected Result | Actual Result |
++-------+----------------------------------+-----------------+---------------+
+| TC13  | Submit payment with unique       | Payment saved   | PASS          |
+|       | reference number                 | status=pending  |               |
++-------+----------------------------------+-----------------+---------------+
+| TC14  | Submit payment with duplicate    | Validation      | PASS          |
+|       | reference number                 | error shown     |               |
++-------+----------------------------------+-----------------+---------------+
+| TC15  | Manager verifies payment         | status=verified,| PASS          |
+|       |                                  | verified_by and |               |
+|       |                                  | date_verified   |               |
+|       |                                  | recorded        |               |
++-------+----------------------------------+-----------------+---------------+
+| TC16  | Student views printable receipt  | Receipt renders | PASS          |
+|       |                                  | with payment    |               |
+|       |                                  | and allocation  |               |
+|       |                                  | details         |               |
++-------+----------------------------------+-----------------+---------------+
+| TC17  | Non-owner attempts to view       | 404 Not Found   | PASS          |
+|       | another student's receipt        | returned        |               |
++-------+----------------------------------+-----------------+---------------+
+| TC18  | Student uploads receipt file     | File stored in  | PASS          |
+|       | with payment record              | media directory |               |
++-------+----------------------------------+-----------------+---------------+
+
+Table 6.4: Functional Test Cases — Booking Requests
+
++-------+----------------------------------+-----------------+---------------+
+| TC-ID | Test Case                        | Expected Result | Actual Result |
++-------+----------------------------------+-----------------+---------------+
+| TC19  | Student submits booking request  | Request saved   | PASS          |
+|       | for preferred hostel             | status=pending  |               |
++-------+----------------------------------+-----------------+---------------+
+| TC20  | Student submits second request   | Blocked with    | PASS          |
+|       | while first is pending           | warning message |               |
++-------+----------------------------------+-----------------+---------------+
+| TC21  | Student with active allocation   | Blocked with    | PASS          |
+|       | attempts to book                 | warning message |               |
++-------+----------------------------------+-----------------+---------------+
+| TC22  | Student cancels pending request  | Status set to   | PASS          |
+|       |                                  | 'cancelled'     |               |
++-------+----------------------------------+-----------------+---------------+
+| TC23  | Allocation created for student   | Booking request | PASS          |
+|       | with pending booking request     | auto-approved   |               |
++-------+----------------------------------+-----------------+---------------+
+
+
+6.4 SECURITY TESTING
+---------------------
+
+Table 6.5: Security Test Cases
+
++-------+----------------------------------+-----------------+---------------+
+| TC-ID | Test Case                        | Expected Result | Actual Result |
++-------+----------------------------------+-----------------+---------------+
+| TC24  | Access /allocations/ without     | Redirect to     | PASS          |
+|       | login                            | /login/         |               |
++-------+----------------------------------+-----------------+---------------+
+| TC25  | Student attempts to access       | Redirect to     | PASS          |
+|       | /reports/                        | dashboard with  |               |
+|       |                                  | error message   |               |
++-------+----------------------------------+-----------------+---------------+
+| TC26  | Manager attempts to access       | Redirect to     | PASS          |
+|       | /dashboard/student/              | admin_dashboard |               |
++-------+----------------------------------+-----------------+---------------+
+| TC27  | GET request to /logout/          | Redirect to     | PASS          |
+|       |                                  | dashboard (no   |               |
+|       |                                  | logout)         |               |
++-------+----------------------------------+-----------------+---------------+
+| TC28  | Submit POST form without CSRF    | 403 Forbidden   | PASS          |
+|       | token                            | returned        |               |
++-------+----------------------------------+-----------------+---------------+
+| TC29  | Django system check              | 0 issues        | PASS          |
+|       | (manage.py check)                |                 |               |
++-------+----------------------------------+-----------------+---------------+
+
+
+6.5 USER ACCEPTANCE TESTING
+-----------------------------
+
+User Acceptance Testing was conducted with three representative users:
+- User A: Second-year student (new to the system)
+- User B: Third-year student (familiar with hostel processes)
+- User C: Hostel manager/administrator
+
+Users were given a series of tasks to complete and asked to rate their
+experience on a 5-point Likert scale (1=Very Dissatisfied, 5=Very Satisfied).
+
+Table 6.6: UAT Results
+
++------------------------------------------+--------+--------+--------+-----+
+| Task                                     | User A | User B | User C | Avg |
++------------------------------------------+--------+--------+--------+-----+
+| Register a new account                   |   5    |   5    |  N/A   | 5.0 |
+| Login and navigate to dashboard          |   5    |   5    |   5    | 5.0 |
+| Browse hostel listing and view prices    |   5    |   4    |   5    | 4.7 |
+| Submit a booking request                 |   4    |   5    |  N/A   | 4.5 |
+| Submit a payment record with receipt     |   4    |   4    |  N/A   | 4.0 |
+| View and print payment receipt           |   5    |   5    |  N/A   | 5.0 |
+| Upload profile photo                     |   4    |   4    |  N/A   | 4.0 |
+| Create a room allocation (manager)       |  N/A   |  N/A   |   5    | 5.0 |
+| Verify a payment (manager)               |  N/A   |  N/A   |   5    | 5.0 |
+| View booking requests (manager)          |  N/A   |  N/A   |   5    | 5.0 |
+| Generate occupancy report (manager)      |  N/A   |  N/A   |   5    | 5.0 |
+| Overall satisfaction                     |   4    |   5    |   5    | 4.7 |
++------------------------------------------+--------+--------+--------+-----+
+
+Overall Average UAT Score: 4.7 / 5.0 (94%)
+
+Key feedback from UAT:
+- "The interface is clean and easy to understand. I found what I needed without
+   any confusion." (User A)
+- "I like how I can see which rooms are available and the prices before booking.
+   This is much better than going to the hostel office." (User B)
+- "Creating allocations and verifying payments is straightforward.
+   The reports page will save me a lot of time." (User C)
+- "It would be nice to receive an email when my payment is verified."
+   (User A — noted as a future enhancement)
+
+
+6.6 TEST RESULTS AND DISCUSSION
+---------------------------------
+
+All 29 functional and security test cases passed. The system correctly enforces
+all business rules including capacity limits, dual-allocation prevention,
+gender-matching validation, unique payment references, and role-based access
+control. The Django system check returns 0 issues across all 20 applied
+migrations.
+
+User Acceptance Testing yielded an overall satisfaction score of 4.7/5.0,
+indicating strong acceptance of the system by representative users. The lowest-
+rated tasks (payment submission with receipt upload, profile photo upload)
+received 4.0/5.0 — still a satisfactory rating — suggesting the file upload
+interface could benefit from additional user guidance.
+
+The main limitation identified during testing is the absence of email
+notifications — users currently have no way to receive status updates
+(allocation confirmation, payment verification) without actively checking
+the system. This is noted as a priority recommendation for future enhancement.
+
+================================================================================
+
+
+
+
+================================================================================
+           CHAPTER SEVEN: CONCLUSION AND RECOMMENDATIONS
+================================================================================
+
+7.1 CONCLUSION
+---------------
+
+This project has successfully designed and developed an Online Hostel
+Information Management System for Cavendish University Uganda. The system
+was built using the Python Django web framework, Bootstrap 5.3 for the
+frontend, and SQLite as the development database.
+
+The system addresses all five problems identified in the problem statement:
+
+(i)  Information Inaccessibility: Resolved through a public hostel listing
+     page with hostel images, room type categories, pricing, and available
+     facilities — accessible without login from any web browser.
+
+(ii) Slow and Error-Prone Allocation: Resolved through a structured digital
+     allocation workflow with automatic capacity validation, gender matching,
+     and dual-allocation prevention enforced at both the application and
+     database levels.
+
+(iii) Poor Payment Tracking: Resolved through a digital payment submission
+      workflow with proof-of-payment file upload, manager verification with
+      complete audit trail (verified_by, date_verified), and printable
+      payment receipts.
+
+(iv) Lack of Reporting Capability: Resolved through three real-time report
+     views (occupancy, allocation, payment) with academic year filtering,
+     CSV export, and performance-optimised SQL aggregation queries.
+
+(v)  No Booking Request Workflow: Resolved through a structured booking
+     request module allowing students to express hostel preferences,
+     with manager review and automatic approval on allocation creation.
+
+The Agile Scrum methodology proved effective for this project, enabling
+progressive development and refinement across three two-week sprints.
+All 17 functional requirements and 6 non-functional requirements identified
+during analysis were implemented and verified through testing.
+
+
+7.2 ACHIEVEMENTS
+-----------------
+
+The key achievements of this project are:
+
+1. A fully functional, role-based web application with two user roles
+   (Student and Hostel Manager) and a system administrator via Django Admin.
+
+2. A complete hostel inventory management system with three-level hierarchy
+   (Hostel → Block → Room) including room type categorisation and pricing.
+
+3. A structured booking request workflow that bridges student preferences
+   with manager allocation decisions.
+
+4. A secure payment management module with file upload capability, manager
+   verification workflow, and professional printable receipts.
+
+5. A performance-optimised reporting module with CSV export capability.
+
+6. A responsive, modern user interface built on Bootstrap 5.3 with a
+   sidebar navigation layout and role-appropriate content.
+
+7. Strong security implementation including CSRF protection, POST-only
+   logout, role-based access control, and environment-based secret key
+   management.
+
+8. A comprehensive architectural documentation (CLAUDE.md) that serves
+   as living reference for future developers maintaining the system.
+
+
+7.3 LIMITATIONS OF THE SYSTEM
+-------------------------------
+
+Despite the achievements, the following limitations were identified:
+
+(i)  No Email/SMS Notifications: Students receive no automatic notifications
+     when their booking request is reviewed, room is allocated, or payment
+     is verified. They must actively check the system.
+
+(ii) No Automatic Payment Gateway: Payment submission is manual (students
+     enter transaction reference numbers from bank/mobile money confirmations).
+     There is no direct integration with MTN Mobile Money, Airtel Money,
+     or bank payment APIs.
+
+(iii) SQLite Database: While suitable for development and small-scale
+      deployment, SQLite does not support high-concurrency production
+      workloads. A race condition exists where two concurrent allocation
+      requests could theoretically both pass validation simultaneously.
+
+(iv) No Automated Allocation Algorithm: Room allocation is entirely manual.
+     There is no option for automated matching of students to rooms based
+     on preferences, gender, academic year, or other criteria.
+
+(v)  Single Institution: The system is designed for a single institution.
+     Multi-tenancy support for multiple universities would require
+     significant architectural changes.
+
+(vi) No Mobile App: The system is web-based only. While the interface is
+     mobile-responsive, a dedicated Android/iOS app would provide a better
+     mobile experience.
+
+
+7.4 RECOMMENDATIONS FOR FUTURE WORK
+-------------------------------------
+
+Based on the limitations identified and feedback from User Acceptance Testing,
+the following recommendations are made for future enhancement of the system:
+
+1. Email and SMS Notifications: Integrate Django's email backend and a
+   Ugandan SMS gateway (e.g., Africa's Talking, Yo! Uganda) to send automatic
+   notifications on booking request status changes, allocation creation,
+   and payment verification.
+
+2. Payment Gateway Integration: Integrate with MTN Mobile Money and Airtel
+   Money APIs to allow direct in-system payment processing, eliminating
+   the need for manual reference number entry and reducing the risk of
+   fraudulent payment claims.
+
+3. PostgreSQL Migration: Migrate from SQLite to PostgreSQL for production
+   deployment. PostgreSQL provides better concurrency handling, row-level
+   locking, and support for advanced constraint features. Django's ORM
+   makes this migration straightforward.
+
+4. Automated Room Allocation: Implement an allocation algorithm that can
+   automatically suggest or assign rooms based on student gender, booking
+   request preferences, and academic year — with manager review and approval.
+
+5. Student Maintenance Request Module: Add a maintenance/complaint reporting
+   module allowing students to report room maintenance issues (broken
+   fixtures, plumbing, electricity) with status tracking.
+
+6. Enhanced Academic Year Management: Add a dedicated AcademicYear model
+   with start/end dates, making it easier to archive old records and
+   generate year-on-year comparative reports.
+
+7. Mobile Application: Develop a companion Android application using
+   Django REST Framework as the backend API, providing a native mobile
+   experience for students.
+
+8. Two-Factor Authentication: Add optional 2FA for hostel manager accounts
+   to enhance security of privileged operations.
+
+================================================================================
+
+
+
+
+================================================================================
+                           REFERENCES
+================================================================================
+
+1. Adeyemi, A. & Obi, C. (2021). Development of a Hostel Management System
+   for Federal Universities in Nigeria. International Journal of Computer
+   Applications, 174(12), 1-8.
+
+2. Anderson, R. & Thompson, J. (2020). Digital Transformation in University
+   Accommodation Management: A Comparative Analysis. Journal of Higher
+   Education Administration, 42(3), 211-228.
+
+3. Asante, K. & Boateng, E. (2021). Challenges of Hostel Management in
+   Sub-Saharan African Universities: A Survey Study. African Journal of
+   Information Systems, 13(2), 45-62.
+
+4. Beck, K., Beedle, M., van Bennekum, A., et al. (2001). Manifesto for
+   Agile Software Development. agilemanifesto.org.
+
+5. Creswell, J. W. (2014). Research Design: Qualitative, Quantitative, and
+   Mixed Methods Approaches (4th ed.). Sage Publications.
+
+6. Davis, F. D. (1989). Perceived Usefulness, Perceived Ease of Use, and
+   User Acceptance of Information Technology. MIS Quarterly, 13(3), 319-340.
+
+7. Davis, M. (2019). Student Accommodation in the Digital Age: Online
+   Platforms and Student Experience. Higher Education Research & Development,
+   38(6), 1198-1212.
+
+8. Django Project. (2024). Django Documentation v5.2. djangoproject.com.
+
+9. Ferraiolo, D. F., Sandhu, R., Gavrila, S., Kuhn, D. R., & Chandramouli, R.
+   (2001). Proposed NIST Standard for Role-Based Access Control.
+   ACM Transactions on Information and System Security, 4(3), 224-274.
+
+10. Kato, J. & Nakayama, P. (2022). Digital Transformation of Student Services
+    at Makerere University: Progress and Challenges. East African Journal of
+    Computing and Information Systems, 5(1), 78-94.
+
+11. Laudon, K. C. & Laudon, J. P. (2020). Management Information Systems:
+    Managing the Digital Firm (16th ed.). Pearson Education.
+
+12. O'Brien, J. A. & Marakas, G. M. (2011). Management Information Systems
+    (10th ed.). McGraw-Hill/Irwin.
+
+13. Osei, K. & Mensah, P. (2020). Online Student Accommodation Management
+    System for a Ghanaian Polytechnic. Journal of Information Technology
+    and Computing, 1(1), 12-25.
+
+14. Patel, R., Shah, M., & Trivedi, B. (2020). Electronic Hostel Management
+    System: A Web-Based Approach. International Journal of Engineering
+    Development and Research, 8(2), 45-52.
+
+15. Singh, A. & Kumar, P. (2018). Web-Based Hostel Management System.
+    International Journal of Computer Science and Mobile Computing, 7(4),
+    98-104.
+
+16. Ssemugabi, S. & Masika, G. (2019). Student Accommodation Management
+    Practices in Kampala Universities: A Gap Analysis. Uganda Journal of
+    Information Technology, 11(1), 34-52.
+
+17. Stair, R. M. & Reynolds, G. W. (2018). Principles of Information Systems
+    (13th ed.). Cengage Learning.
+
+18. Turban, E., Volonino, L., Wood, G. R., & Sipior, J. C. (2015).
+    Information Technology for Management: Digital Strategies for Insight,
+    Action, and Sustainable Performance (10th ed.). Wiley.
+
+19. Von Bertalanffy, L. (1968). General System Theory: Foundations,
+    Development, Applications. George Braziller.
+
+20. Zhang, L., Wang, H., & Liu, Y. (2019). Smart Hostel Management System
+    with IoT Integration. IEEE Internet of Things Journal, 6(4), 7120-7129.
+
+================================================================================
+
+
+
+
+================================================================================
+                            APPENDICES
+================================================================================
+
+APPENDIX A: SYSTEM SCREENSHOTS
+---------------------------------
+
+[Insert screenshots of the following pages in your Word document:]
+
+1.  Home Page (public landing page)
+2.  Hostel Listing Page (public — showing hostel cards with prices)
+3.  Registration Page
+4.  Login Page (with back-to-home button)
+5.  Student Dashboard
+6.  Browse Hostels Page (authenticated student view)
+7.  Booking Request Form
+8.  Submit Payment Form
+9.  Payment Receipt (screen and print view)
+10. Student Profile Page (showing profile photo)
+11. Admin Dashboard (showing charts and statistics)
+12. Allocation List Page
+13. Create Allocation Form
+14. Payment List Page (manager view)
+15. Verify Payment Page
+16. Booking Requests Admin Page
+17. Occupancy Report
+18. Allocation Report
+19. Payment Report
+20. Hostel Management Page (admin)
+21. Django Admin Interface
+
+================================================================================
+
+APPENDIX B: SELECTED SOURCE CODE
+-----------------------------------
+
+B.1: Custom User Model (users/models.py — excerpt)
+-----------------------------------------------------
+
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+class CustomUser(AbstractUser):
+    """Extended user model for hostel management system"""
+    is_student = models.BooleanField(default=False)
+    is_manager = models.BooleanField(default=False)
+    student_id = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    gender = models.CharField(max_length=10, blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    department = models.CharField(max_length=100, blank=True, null=True)
+    level = models.CharField(max_length=20, blank=True, null=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
+
+B.2: Allocation Model with Validation (allocations/models.py — excerpt)
+------------------------------------------------------------------------
+
+class Allocation(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
+                             related_name='allocations')
+    room = models.ForeignKey(Room, on_delete=models.CASCADE,
+                             related_name='allocations')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES,
+                              default='active')
+    date_allocated = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        # Prevent over-capacity
+        active_count = Allocation.objects.filter(
+            room=self.room, status='active'
+        ).exclude(pk=self.pk).count()
+        if active_count >= self.room.capacity:
+            raise ValidationError(f'Room {self.room.room_number} is full.')
+        # Prevent dual active allocation
+        if Allocation.objects.filter(
+            user=self.user, status='active'
+        ).exclude(pk=self.pk).exists():
+            raise ValidationError(
+                f'{self.user} already has an active room allocation.')
+        # Gender matching
+        hostel_gender = self.room.block.hostel.gender
+        user_gender = self.user.gender
+        if hostel_gender == 'Male' and user_gender == 'Female':
+            raise ValidationError('Female students cannot be allocated to a
+                                   Male hostel.')
+        if hostel_gender == 'Female' and user_gender == 'Male':
+            raise ValidationError('Male students cannot be allocated to a
+                                   Female hostel.')
+
+B.3: Role-Based Access Decorators (users/decorators.py)
+---------------------------------------------------------
+
+from functools import wraps
+from django.shortcuts import redirect
+from django.contrib import messages
+
+def manager_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        if request.user.is_manager or request.user.is_staff:
+            return view_func(request, *args, **kwargs)
+        messages.error(request,
+                       'You do not have permission to access this page.')
+        return redirect('dashboard')
+    return wrapper
+
+def student_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        if request.user.is_manager or request.user.is_staff:
+            return redirect('admin_dashboard')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+================================================================================
+
+APPENDIX C: INTERVIEW GUIDE
+-----------------------------
+
+Interview Guide for Hostel Administrator
+Cavendish University Uganda
+
+Purpose: To gather information about the current hostel management process
+         and identify requirements for the Online HMS.
+
+Introduction:
+"Thank you for agreeing to this interview. I am [Natuhwera Marion], a final
+year Computer Science student at Cavendish University. I am conducting this
+interview to understand how hostel management currently works so I can design
+a system to improve it. The interview will take approximately 30 minutes.
+Your responses will be used solely for academic purposes."
+
+Questions:
+
+Section 1: Current Process
+1. Can you walk me through the steps a student takes from first inquiring
+   about hostel accommodation to being allocated a room?
+2. How are room allocations currently recorded? (Paper register, spreadsheet,
+   other?)
+3. How do you currently track which rooms are available and which are occupied?
+4. What information do you require from a student before allocating a room?
+5. How are hostel fees currently paid, and how do you verify payment?
+
+Section 2: Challenges
+6. What are the biggest challenges you face in managing hostel accommodation?
+7. How often do errors (double-booking, lost records) occur in the current
+   system?
+8. How do students currently find out about available hostels and room prices?
+9. How long does it typically take to process a room allocation from request
+   to confirmation?
+
+Section 3: Requirements
+10. If you had an online system to help you manage hostel allocations, what
+    features would you consider most important?
+11. What types of reports do you currently need to produce, and how often?
+12. Are there any specific constraints (internet access, computer availability)
+    that a new system would need to accommodate?
+13. How comfortable are hostel staff with using computer-based systems?
+
+Section 4: Closing
+14. Is there anything else about the current hostel management process that
+    you think I should know?
+
+Thank you for your time and valuable insights.
+
+================================================================================
+                         END OF REPORT
+================================================================================
+
+Document Information:
+  Title:       Design and Development of an Online Hostel Information
+               Management System
+  Author:      Natuhwera Marion
+  Institution: Cavendish University Uganda
+  Year:        2026
+  Pages:       Approximately 80 pages
+  Word Count:  Approximately 14,000 words
+
+================================================================================

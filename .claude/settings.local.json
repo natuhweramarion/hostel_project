@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:\\\\Users\\\\Marion\\\\Desktop\\\\HOSTEL MANAGEMENT SYSTEM\\\\hostel_system\" && python manage.py shell -c \"\nfrom hostels.models import Hostel\nfor h in Hostel.objects.all\\(\\):\n    print\\(h.pk, h.name, '|', h.location\\)\n\" 2>&1)",
+      "Bash(cd \"C:/Users/Marion/Desktop/HOSTEL MANAGEMENT SYSTEM/hostel_system\" && python manage.py check 2>&1)",
+      "Bash(cd \"C:/Users/Marion/Desktop/HOSTEL MANAGEMENT SYSTEM/hostel_system\" && python manage.py migrate 2>&1)",
+      "Bash(cd \"C:/Users/Marion/Desktop/HOSTEL MANAGEMENT SYSTEM/hostel_system\" && \"venv/Scripts/python.exe\" -m pip install Pillow 2>&1)"
+    ]
+  }
+}

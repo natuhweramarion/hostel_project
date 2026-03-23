@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}Submit Payment — HMS{% endblock %}
+{% block breadcrumb %}Submit Payment{% endblock %}
+
+{% block content %}
+<div style="display:grid;grid-template-columns:1fr 360px;gap:24px;max-width:900px;">
+
+  <!-- Form Card -->
+  <div class="card animate-in">
+    <div class="card-header" style="background:var(--navy);color:#fff;border-bottom:none;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-send-fill" style="font-size:1rem;color:#fff;"></i>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:1rem;">Submit Payment</div>
+          <div style="font-size:.75rem;opacity:.6;">Enter your payment details below</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <!-- Amount & Method -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label class="form-label" for="{{ form.amount.id_for_label }}">
+              <i class="bi bi-currency-dollar" style="margin-right:4px;color:var(--success);"></i>Amount (UGX) *
+            </label>
+            {{ form.amount }}
+            {% if form.amount.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.amount.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label class="form-label" for="{{ form.payment_method.id_for_label }}">
+              <i class="bi bi-credit-card-fill" style="margin-right:4px;color:var(--primary);"></i>Payment Method
+            </label>
+            {{ form.payment_method }}
+            {% if form.payment_method.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.payment_method.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <!-- Reference & Academic Year -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label class="form-label" for="{{ form.reference_number.id_for_label }}">
+              <i class="bi bi-hash" style="margin-right:4px;color:var(--primary);"></i>Reference Number *
+            </label>
+            {{ form.reference_number }}
+            {% if form.reference_number.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.reference_number.errors }}</div>{% endif %}
+            <div style="font-size:.75rem;color:var(--text-3);margin-top:4px;">Your bank/mobile money transaction ID</div>
+          </div>
+          <div>
+            <label class="form-label" for="{{ form.academic_year.id_for_label }}">
+              <i class="bi bi-calendar3" style="margin-right:4px;color:var(--primary);"></i>Academic Year
+            </label>
+            {{ form.academic_year }}
+            {% if form.academic_year.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.academic_year.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div style="margin-bottom:16px;">
+          <label class="form-label" for="{{ form.notes.id_for_label }}">
+            <i class="bi bi-chat-left-text" style="margin-right:4px;color:var(--primary);"></i>Additional Notes
+          </label>
+          {{ form.notes }}
+          {% if form.notes.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.notes.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Receipt Upload -->
+        <div style="margin-bottom:24px;">
+          <label class="form-label" for="{{ form.receipt.id_for_label }}">
+            <i class="bi bi-paperclip" style="margin-right:4px;color:var(--primary);"></i>Proof of Payment (Optional)
+          </label>
+          {{ form.receipt }}
+          {% if form.receipt.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.receipt.errors }}</div>{% endif %}
+          <div style="font-size:.75rem;color:var(--text-3);margin-top:4px;">Upload a screenshot or PDF of your bank/mobile money receipt</div>
+        </div>
+
+        <div style="display:flex;gap:10px;">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-send-fill"></i> Submit Payment
+          </button>
+          <a href="{% url 'student_dashboard' %}" class="btn btn-outline">
+            <i class="bi bi-x-circle"></i> Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Info Panel -->
+  <div style="display:flex;flex-direction:column;gap:16px;">
+    <!-- How it works -->
+    <div class="card animate-in" style="animation-delay:100ms;">
+      <div class="card-header">
+        <span style="font-weight:700;font-size:.85rem;"><i class="bi bi-info-circle-fill" style="color:var(--primary);margin-right:6px;"></i>How It Works</span>
+      </div>
+      <div class="card-body" style="padding:16px;">
+        <ol style="margin:0;padding-left:18px;font-size:.82rem;color:var(--text-2);line-height:1.8;">
+          <li>Make payment via bank or mobile money</li>
+          <li>Note down your reference/transaction number</li>
+          <li>Fill in this form with the exact details</li>
+          <li>Admin verifies and updates your status</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Status guide -->
+    <div class="card animate-in" style="animation-delay:180ms;">
+      <div class="card-header">
+        <span style="font-weight:700;font-size:.85rem;"><i class="bi bi-check2-all" style="color:var(--success);margin-right:6px;"></i>Payment Statuses</span>
+      </div>
+      <div class="card-body" style="padding:16px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="badge-status badge-pending">Pending</span>
+          <span style="font-size:.8rem;color:var(--text-2);">Awaiting admin review</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="badge-status badge-active">Verified</span>
+          <span style="font-size:.8rem;color:var(--text-2);">Payment confirmed</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="badge-status badge-cancelled">Rejected</span>
+          <span style="font-size:.8rem;color:var(--text-2);">Rejected — contact office</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Warning -->
+    <div style="background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.35);border-radius:10px;padding:14px;font-size:.8rem;color:var(--text-2);">
+      <i class="bi bi-exclamation-triangle-fill" style="color:var(--warning);margin-right:6px;"></i>
+      Ensure your reference number is accurate. Incorrect details may delay verification.
+    </div>
+  </div>
+</div>
+
+<style>
+@media(max-width:720px){
+  div[style*="grid-template-columns:1fr 360px"]{grid-template-columns:1fr!important;}
+}
+</style>
+{% endblock %}

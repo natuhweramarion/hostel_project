@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Reports — HMS{% endblock %}
+{% block breadcrumb %}Reports{% endblock %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div>
+    <h2>Reports Dashboard</h2>
+    <p>Generate and export system reports for allocations, payments, and occupancy.</p>
+  </div>
+</div>
+
+<!-- Report cards grid -->
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-bottom:32px;">
+
+  <!-- Allocation Report -->
+  <div class="card animate-in" style="animation-delay:0ms;">
+    <div style="padding:28px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;">
+      <div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#1a6fe3,#0d4fad);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(26,111,227,.3);">
+        <i class="bi bi-people-fill" style="font-size:1.6rem;color:#fff;"></i>
+      </div>
+      <div>
+        <div style="font-weight:800;font-size:1rem;margin-bottom:6px;">Allocation Report</div>
+        <div style="font-size:.82rem;color:var(--text-3);line-height:1.5;">Complete record of all student room allocations with hostel, block, and room details.</div>
+      </div>
+      <div style="display:flex;gap:8px;width:100%;">
+        <a href="{% url 'allocation_report' %}" class="btn btn-primary" style="flex:1;">
+          <i class="bi bi-eye-fill"></i> View Report
+        </a>
+        <a href="{% url 'allocation_report' %}?format=csv" class="btn btn-outline" style="padding:8px 12px;" title="Export CSV">
+          <i class="bi bi-download"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Report -->
+  <div class="card animate-in" style="animation-delay:80ms;">
+    <div style="padding:28px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;">
+      <div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(16,185,129,.3);">
+        <i class="bi bi-wallet2" style="font-size:1.6rem;color:#fff;"></i>
+      </div>
+      <div>
+        <div style="font-weight:800;font-size:1rem;margin-bottom:6px;">Payment Report</div>
+        <div style="font-size:.82rem;color:var(--text-3);line-height:1.5;">Full payment ledger with verification status, amounts, and totals by category.</div>
+      </div>
+      <div style="display:flex;gap:8px;width:100%;">
+        <a href="{% url 'payment_report' %}" class="btn btn-primary" style="flex:1;">
+          <i class="bi bi-eye-fill"></i> View Report
+        </a>
+        <a href="{% url 'payment_report' %}?format=csv" class="btn btn-outline" style="padding:8px 12px;" title="Export CSV">
+          <i class="bi bi-download"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hostel Occupancy Report -->
+  <div class="card animate-in" style="animation-delay:160ms;">
+    <div style="padding:28px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;">
+      <div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(139,92,246,.3);">
+        <i class="bi bi-building-fill-check" style="font-size:1.6rem;color:#fff;"></i>
+      </div>
+      <div>
+        <div style="font-weight:800;font-size:1rem;margin-bottom:6px;">Hostel Occupancy</div>
+        <div style="font-size:.82rem;color:var(--text-3);line-height:1.5;">Per-hostel occupancy rates, capacity usage, and available bed statistics.</div>
+      </div>
+      <div style="display:flex;gap:8px;width:100%;">
+        <a href="{% url 'hostel_occupancy_report' %}" class="btn btn-primary" style="flex:1;">
+          <i class="bi bi-eye-fill"></i> View Report
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Info section -->
+<div class="card animate-in" style="animation-delay:240ms;">
+  <div class="card-header">
+    <span style="font-weight:700;font-size:.85rem;"><i class="bi bi-lightbulb-fill" style="color:var(--warning);margin-right:6px;"></i>Report Guide</span>
+  </div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;">
+      <div style="display:flex;gap:12px;">
+        <div style="width:34px;height:34px;border-radius:8px;background:rgba(26,111,227,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-people-fill" style="color:var(--primary);font-size:.9rem;"></i>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:.84rem;margin-bottom:2px;">Allocation Report</div>
+          <div style="font-size:.78rem;color:var(--text-3);line-height:1.5;">Shows all allocations by student. Exportable as CSV for Excel analysis. Includes historical records.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <div style="width:34px;height:34px;border-radius:8px;background:rgba(16,185,129,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-wallet2" style="color:var(--success);font-size:.9rem;"></i>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:.84rem;margin-bottom:2px;">Payment Report</div>
+          <div style="font-size:.78rem;color:var(--text-3);line-height:1.5;">Complete revenue ledger. Shows verified, pending, and rejected amounts with total summaries.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <div style="width:34px;height:34px;border-radius:8px;background:rgba(139,92,246,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-building-fill-check" style="color:var(--purple);font-size:.9rem;"></i>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:.84rem;margin-bottom:2px;">Hostel Occupancy</div>
+          <div style="font-size:.78rem;color:var(--text-3);line-height:1.5;">Visualises bed usage per hostel with progress bars and occupancy percentage for capacity planning.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

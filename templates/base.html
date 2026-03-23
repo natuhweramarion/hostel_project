@@ -1,0 +1,437 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Hostel Information Management System{% endblock %}</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom Design System -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% if user.is_authenticated %}
+<!-- ========================================================
+     AUTHENTICATED LAYOUT — Sidebar + Main Wrapper
+     ======================================================== -->
+<div class="app-layout">
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Brand -->
+    <div class="sb-brand" style="flex-direction:column;align-items:center;text-align:center;padding:24px 16px 20px;gap:10px;">
+      <img src="{% static 'images/logo.png' %}" alt="HMS Logo"
+           style="width:100%;max-width:160px;height:80px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.35));">
+      <div class="sb-brand-text">
+        <span class="sb-brand-name" style="font-size:1rem;">HMS Portal</span>
+        <span class="sb-brand-sub">Hostel Management</span>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sb-nav">
+
+      {% if user.is_manager or user.is_staff %}
+      <!-- ===== ADMIN NAVIGATION ===== -->
+      <div class="sb-section-title">Overview</div>
+
+      <a href="{% url 'admin_dashboard' %}"
+         class="sb-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+        <i class="bi bi-grid-1x2-fill sb-icon"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="sb-divider"></div>
+      <div class="sb-section-title">Facilities</div>
+
+      <a href="{% url 'hostel_list' %}"
+         class="sb-link {% if 'hostel' in request.resolver_match.url_name %}active{% endif %}">
+        <i class="bi bi-buildings sb-icon"></i>
+        <span>Hostels &amp; Rooms</span>
+      </a>
+
+      <a href="{% url 'available_rooms' %}"
+         class="sb-link {% if request.resolver_match.url_name == 'available_rooms' %}active{% endif %}">
+        <i class="bi bi-door-open sb-icon"></i>
+        <span>Available Rooms</span>
+      </a>
+
+      <div class="sb-divider"></div>
+      <div class="sb-section-title">Operations</div>
+
+      <a href="{% url 'allocation_list' %}"
+         class="sb-link {% if request.resolver_match.url_name == 'allocation_list' %}active{% endif %}">
+        <i class="bi bi-house-check-fill sb-icon"></i>
+        <span>Allocations</span>
+      </a>
+
+      <a href="{% url 'create_allocation' %}"
+         class="sb-link {% if request.resolver_match.url_name == 'create_allocation' %}active{% endif %}">
+        <i class="bi bi-person-plus-fill sb-icon"></i>
+        <span>New Allocation</span>
+      </a>
+
+      <a href="{% url 'payment_list' %}"
+         class="sb-link {% if request.resolver_match.url_name == 'payment_list' %}active{% endif %}">
+        <i class="bi bi-cash-coin sb-icon"></i>
+        <span>Payments
+          {% if pending_payments_count and pending_payments_count > 0 %}
+            <span class="sb-badge">{{ pending_payments_count }}</span>
+          {% endif %}
+        </span>
+      </a>
+
+      <a href="{% url 'booking_requests_admin' %}"
+         class="sb-link {% if request.resolver_match.url_name == 'booking_requests_admin' %}active{% endif %}">
+        <i class="bi bi-calendar-check-fill sb-icon"></i>
+        <span>Booking Requests
+          {% if pending_booking_requests_count and pending_booking_requests_count > 0 %}
+            <span class="sb-badge">{{ pending_booking_requests_count }}</span>
+          {% endif %}
+        </span>
+      </a>
+
+      <div class="sb-divider"></div>
+      <div class="sb-section-title">Analytics</div>
+
+      <a href="{% url 'reports_dashboard' %}"
+         class="sb-link {% if 'report' in request.resolver_match.url_name %}active{% endif %}">
+        <i class="bi bi-bar-chart-fill sb-icon"></i>
+        <span>Reports</span>
+      </a>
+
+      <a href="/admin/" class="sb-link">
+        <i class="bi bi-shield-lock-fill sb-icon"></i>
+        <span>Admin Panel</span>
+      </a>
+
+      {% else %}
+      <!-- ===== STUDENT NAVIGATION ===== -->
+      <div class="sb-section-title">My Space</div>
+
+      <a href="{% url 'student_dashboard' %}"
+         class="sb-link {% if request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}">
+        <i class="bi bi-grid-1x2-fill sb-icon"></i>
+        <span>My Dashboard</span>
+      </a>
+
+      <a href="{% url 'student_hostels' %}"
+         class="sb-link {% if request.resolver_match.url_name == 'student_hostels' or request.resolver_match.url_name == 'create_booking_request' %}active{% endif %}">
+        <i class="bi bi-buildings sb-icon"></i>
+        <span>Browse Hostels</span>
+      </a>
+
+      <a href="{% url 'profile' %}"
+         class="sb-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+        <i class="bi bi-person-badge-fill sb-icon"></i>
+        <span>My Profile</span>
+      </a>
+
+      <div class="sb-divider"></div>
+      <div class="sb-section-title">Payments</div>
+
+      <a href="{% url 'create_payment' %}"
+         class="sb-link {% if request.resolver_match.url_name == 'create_payment' %}active{% endif %}">
+        <i class="bi bi-send-fill sb-icon"></i>
+        <span>Submit Payment</span>
+      </a>
+
+      {% endif %}
+    </nav>
+
+    <!-- Footer: User + Logout -->
+    <div class="sb-footer">
+      <div class="sb-user" style="cursor:default;">
+        {% if user.photo %}
+        <img src="{{ user.photo.url }}" alt="photo"
+             style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+        {% else %}
+        <div class="sb-avatar">{{ user.get_full_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</div>
+        {% endif %}
+        <div style="overflow:hidden;">
+          <div class="sb-user-name">{{ user.get_full_name|default:user.username }}</div>
+          <div class="sb-user-role">
+            {% if user.is_manager or user.is_staff %}Manager{% else %}Student{% endif %}
+          </div>
+        </div>
+      </div>
+      <form method="post" action="{% url 'logout' %}" style="margin-top:8px;">
+        {% csrf_token %}
+        <button type="submit" class="sb-link w-100" style="background:none;border:none;cursor:pointer;text-align:left;">
+          <i class="bi bi-box-arrow-right sb-icon" style="color:#e03535;"></i>
+          <span style="color:#e03535;">Sign Out</span>
+        </button>
+      </form>
+    </div>
+  </aside>
+  <!-- END SIDEBAR -->
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="topbar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="bi bi-list" style="font-size:1.3rem;"></i>
+      </button>
+
+      <div>
+        {% block page_title %}<span class="topbar-title">{% block breadcrumb %}Dashboard{% endblock %}</span>{% endblock %}
+      </div>
+
+      <div class="topbar-spacer"></div>
+
+      <div class="topbar-actions">
+        {% if user.is_manager or user.is_staff %}
+        <a href="{% url 'create_allocation' %}" class="topbar-btn" title="New Allocation">
+          <i class="bi bi-person-plus-fill"></i>
+        </a>
+        {% endif %}
+
+        <div class="dropdown">
+          <div class="topbar-user" data-bs-toggle="dropdown" aria-expanded="false" style="cursor:pointer;">
+            {% if user.photo %}
+            <img src="{{ user.photo.url }}" alt="photo"
+                 style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+            {% else %}
+            <div class="topbar-avatar">{{ user.get_full_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</div>
+            {% endif %}
+            <div class="d-none d-md-block">
+              <div class="topbar-username">{{ user.get_full_name|default:user.username }}</div>
+              <div class="topbar-role">
+                {% if user.is_manager or user.is_staff %}Hostel Manager{% else %}Student{% endif %}
+              </div>
+            </div>
+            <i class="bi bi-chevron-down d-none d-md-block" style="font-size:.7rem;color:var(--text-3);"></i>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow" style="border:1px solid var(--border);border-radius:var(--radius-lg);min-width:180px;">
+            {% if not user.is_manager and not user.is_staff %}
+            <li><a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'profile' %}">
+              <i class="bi bi-person-badge"></i> My Profile
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            {% endif %}
+            <li>
+              <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger">
+                  <i class="bi bi-box-arrow-right"></i> Sign Out
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <!-- END TOPBAR -->
+
+    <!-- PAGE CONTENT -->
+    <main class="content-area">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} animate-in" role="alert">
+            <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% elif message.tags == 'error' or message.tags == 'danger' %}bi-x-circle-fill{% elif message.tags == 'warning' %}bi-exclamation-triangle-fill{% else %}bi-info-circle-fill{% endif %}"></i>
+            <div>{{ message }}</div>
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer inside app -->
+    <footer style="background:linear-gradient(135deg,#0d1f3c 0%,#1a3a6b 100%);color:#fff;border-top:3px solid #f0a500;">
+      <div class="container-fluid px-4 py-3">
+        <div class="row align-items-center gy-2 text-center text-md-start">
+          <div class="col-md-4">
+            <div class="d-flex align-items-center gap-2 justify-content-center justify-content-md-start">
+              <i class="bi bi-buildings-fill" style="color:#f0a500;font-size:1.1rem;"></i>
+              <span class="fw-bold" style="font-size:.88rem;">HMS Portal</span>
+              <span class="badge rounded-pill" style="background:rgba(240,165,0,.2);color:#f0a500;font-size:.65rem;border:1px solid rgba(240,165,0,.35);">v1.0</span>
+            </div>
+            <div class="mt-1" style="font-size:.74rem;color:rgba(255,255,255,.5);">Online Hostel Information Management System</div>
+          </div>
+          <div class="col-md-4 text-center">
+            <div class="d-flex align-items-center justify-content-center gap-2" style="font-size:.78rem;color:rgba(255,255,255,.7);">
+              <i class="bi bi-mortarboard-fill" style="color:#f0a500;"></i>
+              <span>Cavendish University Uganda</span>
+            </div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);">Department of Science &amp; IT</div>
+          </div>
+          <div class="col-md-4 text-md-end text-center">
+            <div class="d-flex flex-wrap justify-content-center justify-content-md-end gap-3">
+              <span style="font-size:.76rem;color:rgba(255,255,255,.65);">
+                <i class="bi bi-envelope-fill me-1" style="color:#f0a500;"></i>info@cavendish.ac.ug
+              </span>
+              <span style="font-size:.76rem;color:rgba(255,255,255,.65);">
+                <i class="bi bi-telephone-fill me-1" style="color:#f0a500;"></i>+256 773973980
+              </span>
+            </div>
+          </div>
+        </div>
+        <hr style="border-color:rgba(255,255,255,.1);margin:10px 0 8px;">
+        <p class="text-center mb-0" style="font-size:.72rem;color:rgba(255,255,255,.4);">
+          &copy; 2026 <strong style="color:rgba(255,255,255,.7);">Natuhwera Marion</strong> &nbsp;|&nbsp; All Rights Reserved &nbsp;|&nbsp; Final Year Project
+        </p>
+      </div>
+    </footer>
+
+  </div>
+  <!-- END MAIN WRAPPER -->
+
+</div>
+<!-- END APP LAYOUT -->
+
+{% else %}
+<!-- ========================================================
+     PUBLIC LAYOUT — Home, Login, Register
+     ======================================================== -->
+<div class="public-layout">
+
+  {% block public_nav %}
+  <nav class="pub-nav">
+    <a href="{% url 'home' %}" class="pub-nav-brand">
+      <img src="{% static 'images/logo.png' %}" alt="HMS Logo"
+           style="height:42px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.18));">
+      <span>HMS Portal</span>
+    </a>
+    <div class="pub-nav-links">
+      {% if request.resolver_match.url_name != 'home' %}
+      <a href="{% url 'home' %}" class="pub-nav-link" title="Back to Home"
+         style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;background:rgba(26,111,227,.1);border:1px solid rgba(26,111,227,.25);color:var(--primary);font-weight:600;font-size:.85rem;text-decoration:none;">
+        <i class="bi bi-arrow-left-circle-fill" style="font-size:1rem;"></i>
+        <span>Home</span>
+      </a>
+      {% else %}
+      <a href="{% url 'home' %}" class="pub-nav-link"><i class="bi bi-house"></i> <span>Home</span></a>
+      {% endif %}
+      <a href="{% url 'public_hostels' %}" class="pub-nav-link"><i class="bi bi-buildings"></i> <span>Hostels</span></a>
+      <a href="{% url 'about' %}" class="pub-nav-link"><i class="bi bi-info-circle"></i> <span>About Us</span></a>
+      <a href="{% url 'contact' %}" class="pub-nav-link"><i class="bi bi-envelope"></i> <span>Contact Us</span></a>
+      <a href="{% url 'login' %}" class="btn btn-outline btn-sm"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+      <a href="{% url 'register' %}" class="btn btn-primary btn-sm"><i class="bi bi-person-plus"></i> Register</a>
+    </div>
+  </nav>
+  {% endblock %}
+
+  {% if messages %}
+    <div style="max-width:600px;margin:16px auto;padding:0 20px;">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+          <i class="bi bi-info-circle-fill"></i>
+          <div>{{ message }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% block public_content %}{% endblock %}
+
+  <footer style="background:linear-gradient(135deg,#0d1f3c 0%,#1a3a6b 100%);color:#fff;border-top:4px solid #f0a500;margin-top:auto;">
+    <div class="container py-4">
+      <div class="row gy-4 text-center text-lg-start">
+
+        <!-- Brand -->
+        <div class="col-lg-4">
+          <div class="d-flex align-items-center gap-2 justify-content-center justify-content-lg-start mb-2">
+            <i class="bi bi-buildings-fill fs-4" style="color:#f0a500;"></i>
+            <span class="fw-bold fs-6">HMS Portal</span>
+            <span class="badge rounded-pill" style="background:rgba(240,165,0,.2);color:#f0a500;font-size:.65rem;border:1px solid rgba(240,165,0,.35);">v1.0</span>
+          </div>
+          <p style="font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.7;margin:0;">
+            Online Hostel Information Management System — digital platform for student accommodation at Cavendish University Uganda.
+          </p>
+        </div>
+
+        <!-- Institution -->
+        <div class="col-lg-4 text-center">
+          <h6 class="fw-bold text-uppercase mb-3" style="font-size:.72rem;letter-spacing:.1em;color:#f0a500;">
+            <i class="bi bi-mortarboard-fill me-1"></i> Institution
+          </h6>
+          <p class="mb-1 fw-semibold" style="font-size:.88rem;">Cavendish University Uganda</p>
+          <p class="mb-2" style="font-size:.78rem;color:rgba(255,255,255,.5);">Department of Science &amp; Information Technology</p>
+          <span class="badge" style="background:rgba(26,111,227,.25);color:rgba(255,255,255,.75);font-size:.7rem;border:1px solid rgba(26,111,227,.4);">
+            Final Year Project — 2026
+          </span>
+        </div>
+
+        <!-- Contact -->
+        <div class="col-lg-4 text-center text-lg-end">
+          <h6 class="fw-bold text-uppercase mb-3" style="font-size:.72rem;letter-spacing:.1em;color:#f0a500;">
+            <i class="bi bi-headset me-1"></i> Contact Us
+          </h6>
+          <div class="d-flex flex-column gap-2 align-items-center align-items-lg-end">
+            <div class="d-flex align-items-center gap-2" style="font-size:.84rem;color:rgba(255,255,255,.75);">
+              <span class="d-inline-flex align-items-center justify-content-center rounded-2" style="width:30px;height:30px;background:rgba(240,165,0,.15);border:1px solid rgba(240,165,0,.3);">
+                <i class="bi bi-envelope-fill" style="color:#f0a500;font-size:.75rem;"></i>
+              </span>
+              info@cavendish.ac.ug
+            </div>
+            <div class="d-flex align-items-center gap-2" style="font-size:.84rem;color:rgba(255,255,255,.75);">
+              <span class="d-inline-flex align-items-center justify-content-center rounded-2" style="width:30px;height:30px;background:rgba(240,165,0,.15);border:1px solid rgba(240,165,0,.3);">
+                <i class="bi bi-telephone-fill" style="color:#f0a500;font-size:.75rem;"></i>
+              </span>
+              +256 773973980
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr style="border-color:rgba(255,255,255,.12);margin:24px 0 16px;">
+
+      <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
+        <p class="mb-0" style="font-size:.76rem;color:rgba(255,255,255,.4);">
+          &copy; 2026 <strong style="color:rgba(255,255,255,.75);">Natuhwera Marion</strong> &mdash; All Rights Reserved
+        </p>
+      </div>
+    </div>
+  </footer>
+
+</div>
+{% endif %}
+<!-- END PUBLIC LAYOUT -->
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  }
+  // Auto-dismiss alerts after 5s
+  document.querySelectorAll('.alert').forEach(function(el) {
+    setTimeout(function() {
+      el.style.transition = 'opacity .5s';
+      el.style.opacity = '0';
+      setTimeout(function() { el.remove(); }, 500);
+    }, 5000);
+  });
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

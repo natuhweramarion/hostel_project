@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Add Room — Block {{ block.name }} — HMS{% endblock %}
+{% block breadcrumb %}<a href="{% url 'hostel_list' %}" style="color:inherit;opacity:.6;text-decoration:none;">Hostels</a> / <a href="{% url 'hostel_detail' hostel.pk %}" style="color:inherit;opacity:.6;text-decoration:none;">{{ hostel.name }}</a> / Block {{ block.name }} / Add Room{% endblock %}
+
+{% block content %}
+<div style="max-width:560px;">
+  <div class="card animate-in">
+    <div class="card-header" style="background:var(--navy);color:#fff;border-bottom:none;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-door-closed-fill" style="font-size:1.1rem;color:#fff;"></i>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:1rem;">Add Room to Block {{ block.name }}</div>
+          <div style="font-size:.75rem;opacity:.6;">{{ hostel.name }} &mdash; {{ hostel.location }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label class="form-label" for="{{ form.room_number.id_for_label }}">
+              <i class="bi bi-door-closed" style="margin-right:4px;color:var(--primary);"></i>Room Number *
+            </label>
+            {{ form.room_number }}
+            {% if form.room_number.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.room_number.errors }}</div>{% endif %}
+            <div style="font-size:.75rem;color:var(--text-3);margin-top:4px;">e.g. 101, A-01, G1</div>
+          </div>
+          <div>
+            <label class="form-label" for="{{ form.room_type.id_for_label }}">
+              <i class="bi bi-tag-fill" style="margin-right:4px;color:var(--primary);"></i>Room Type
+            </label>
+            {{ form.room_type }}
+            {% if form.room_type.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.room_type.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label class="form-label" for="{{ form.capacity.id_for_label }}">
+              <i class="bi bi-person-fill" style="margin-right:4px;color:var(--primary);"></i>Bed Capacity *
+            </label>
+            {{ form.capacity }}
+            {% if form.capacity.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.capacity.errors }}</div>{% endif %}
+            <div style="font-size:.75rem;color:var(--text-3);margin-top:4px;">Number of beds in this room</div>
+          </div>
+          <div>
+            <label class="form-label" for="{{ form.price_per_semester.id_for_label }}">
+              <i class="bi bi-cash-coin" style="margin-right:4px;color:var(--primary);"></i>Price per Semester (UGX)
+            </label>
+            {{ form.price_per_semester }}
+            {% if form.price_per_semester.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.price_per_semester.errors }}</div>{% endif %}
+            <div style="font-size:.75rem;color:var(--text-3);margin-top:4px;">Leave blank if same as hostel fee</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:24px;">
+          <label class="form-label" for="{{ form.description.id_for_label }}">
+            <i class="bi bi-card-text" style="margin-right:4px;color:var(--primary);"></i>Description
+          </label>
+          {{ form.description }}
+          {% if form.description.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.description.errors }}</div>{% endif %}
+        </div>
+
+        <div style="display:flex;gap:10px;">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-plus-circle-fill"></i> Add Room
+          </button>
+          <a href="{% url 'hostel_detail' hostel.pk %}" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bed preview -->
+  <div style="margin-top:16px;padding:16px;background:var(--bg-2);border-radius:10px;">
+    <div style="font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:12px;">
+      <i class="bi bi-info-circle" style="margin-right:4px;"></i> Room Guidelines
+    </div>
+    <ul style="margin:0;padding-left:18px;font-size:.82rem;color:var(--text-2);line-height:1.7;">
+      <li>Single rooms: capacity = 1</li>
+      <li>Double rooms: capacity = 2</li>
+      <li>Shared rooms: capacity = 3 or more</li>
+      <li>The system tracks occupancy automatically as students are allocated</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

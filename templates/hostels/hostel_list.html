@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Hostels — HMS{% endblock %}
+{% block breadcrumb %}Hostels{% endblock %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div>
+    <h2>Hostel Management</h2>
+    <p>Manage all hostels, blocks, and rooms in the system.</p>
+  </div>
+  <a href="{% url 'hostel_create' %}" class="btn btn-primary">
+    <i class="bi bi-plus-circle-fill"></i> Add Hostel
+  </a>
+</div>
+
+{% if hostels %}
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;">
+  {% for hostel in hostels %}
+  <div class="card animate-in" style="animation-delay:{{ forloop.counter0 }}00ms;">
+    <div class="card-header" style="background:var(--navy);color:#fff;border-bottom:none;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-weight:700;font-size:1rem;">{{ hostel.name }}</div>
+        <div style="font-size:.75rem;opacity:.65;margin-top:2px;">
+          <i class="bi bi-geo-alt-fill"></i> {{ hostel.location }}
+        </div>
+      </div>
+      <span class="badge-status {% if hostel.gender == 'Male' %}badge-male{% elif hostel.gender == 'Female' %}badge-female{% else %}badge-mixed{% endif %}">
+        <i class="bi bi-{% if hostel.gender == 'Male' %}gender-male{% elif hostel.gender == 'Female' %}gender-female{% else %}gender-ambiguous{% endif %}"></i>
+        {{ hostel.gender }}
+      </span>
+    </div>
+    <div class="card-body">
+      {% if hostel.description %}
+      <p style="font-size:.84rem;color:var(--text-2);margin-bottom:16px;">{{ hostel.description }}</p>
+      {% endif %}
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
+        <div style="text-align:center;background:var(--bg-2);border-radius:8px;padding:10px 6px;">
+          <div style="font-size:1.3rem;font-weight:800;color:var(--primary);">{{ hostel.blocks.count }}</div>
+          <div style="font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;">Blocks</div>
+        </div>
+        <div style="text-align:center;background:var(--bg-2);border-radius:8px;padding:10px 6px;">
+          {% with total=hostel.total_capacity %}
+          <div style="font-size:1.3rem;font-weight:800;color:var(--teal);">{{ total }}</div>
+          <div style="font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;">Capacity</div>
+          {% endwith %}
+        </div>
+        <div style="text-align:center;background:var(--bg-2);border-radius:8px;padding:10px 6px;">
+          {% with avail=hostel.available_spaces %}
+          <div style="font-size:1.3rem;font-weight:800;color:{% if avail > 0 %}var(--success){% else %}var(--danger){% endif %};">{{ avail }}</div>
+          <div style="font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;">Available</div>
+          {% endwith %}
+        </div>
+      </div>
+
+      <!-- Occupancy bar -->
+      {% with total=hostel.total_capacity avail=hostel.available_spaces %}
+      {% if total > 0 %}
+      {% widthratio avail total 100 as pct_avail %}
+      <div style="margin-bottom:14px;">
+        <div style="font-size:.7rem;color:var(--text-3);margin-bottom:4px;display:flex;justify-content:space-between;">
+          <span>Occupancy</span>
+          <span>{{ total }} beds</span>
+        </div>
+        <div style="background:var(--bg-3);border-radius:99px;height:6px;overflow:hidden;">
+          <div style="height:100%;border-radius:99px;background:var(--primary);width:calc(100% - {{ pct_avail }}%);transition:width .6s;"></div>
+        </div>
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      <div style="display:flex;gap:8px;">
+        <a href="{% url 'hostel_detail' hostel.pk %}" class="btn btn-primary" style="flex:1;font-size:.82rem;">
+          <i class="bi bi-eye-fill"></i> View Details
+        </a>
+        <a href="{% url 'hostel_edit' hostel.pk %}" class="btn btn-outline" style="font-size:.82rem;padding:7px 12px;">
+          <i class="bi bi-pencil-fill"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-state animate-in">
+  <i class="bi bi-buildings empty-state-icon"></i>
+  <h4>No Hostels Yet</h4>
+  <p>Start by adding your first hostel to the system.</p>
+  <a href="{% url 'hostel_create' %}" class="btn btn-primary mt-2">
+    <i class="bi bi-plus-circle-fill"></i> Add First Hostel
+  </a>
+</div>
+{% endif %}
+{% endblock %}

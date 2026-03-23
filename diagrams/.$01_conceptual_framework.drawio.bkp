@@ -1,0 +1,128 @@
+<mxfile host="app.diagrams.net" version="21.0.2">
+  <diagram id="conceptual" name="Conceptual Framework">
+    <mxGraphModel width="1400" height="960" dx="0" dy="0" grid="1" gridSize="10" guides="1" pageWidth="1400" pageHeight="960">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- TITLE -->
+        <mxCell id="2" value="CONCEPTUAL FRAMEWORK — Online Hostel Information Management System" style="text;html=1;strokeColor=#0d1f3c;fillColor=#0d1f3c;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontColor=#ffffff;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1360" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- COLUMN HEADERS -->
+        <mxCell id="3" value="INPUT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a3a6b;fontColor=#ffffff;strokeColor=#0d1f3c;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="100" width="230" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value="SYSTEM PROCESSES" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a3a6b;fontColor=#ffffff;strokeColor=#0d1f3c;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="555" y="100" width="290" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="OUTPUT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a3a6b;fontColor=#ffffff;strokeColor=#0d1f3c;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="100" width="230" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- INPUT BOXES -->
+        <mxCell id="10" value="Student Registration Data&#xa;(Name, Student ID, Gender, Department)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="175" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="Hostel &amp; Room Data&#xa;(Hostel Name, Block, Room Type, Capacity)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="265" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="Booking Requests&#xa;(Preferred Hostel, Academic Year, Message)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="355" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="Payment Records&#xa;(Amount, Reference No., Payment Method)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="445" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="Admin Inputs&#xa;(Allocations, Payment Verification, Reports)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="535" width="230" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- PROCESS CIRCLES -->
+        <mxCell id="20" value="1. User Registration &amp;&#xa;Authentication" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="545" y="170" width="310" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="2. Hostel &amp; Room&#xa;Management" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="545" y="260" width="310" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="3. Booking Request&#xa;Processing" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="545" y="350" width="310" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="4. Room Allocation&#xa;Management" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="545" y="440" width="310" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="24" value="5. Payment Processing&#xa;&amp; Verification" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="545" y="530" width="310" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="25" value="6. Report Generation&#xa;&amp; Analytics" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="545" y="620" width="310" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- OUTPUT BOXES -->
+        <mxCell id="30" value="Student Dashboard&#xa;&amp; Profile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="175" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="31" value="Room Allocation&#xa;Confirmation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="265" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="32" value="Booking Status&#xa;Notification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="355" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="33" value="Printable Payment&#xa;Receipt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="445" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="34" value="Occupancy &amp; Payment&#xa;Reports (CSV)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="535" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="35" value="Booking Requests&#xa;Admin Report" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="625" width="230" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ARROWS: INPUT → PROCESS -->
+        <mxCell id="40" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="10" target="20" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="41" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="11" target="21" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="42" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="12" target="22" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="43" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="13" target="24" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="44" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="14" target="23" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ARROWS: PROCESS → OUTPUT -->
+        <mxCell id="50" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="20" target="30" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="51" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="23" target="31" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="52" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="22" target="32" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="53" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="24" target="33" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="54" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="25" target="34" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="55" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="22" target="35" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- STAKEHOLDERS -->
+        <mxCell id="60" value="STAKEHOLDERS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a3a6b;fontColor=#ffffff;strokeColor=#0d1f3c;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="740" width="340" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="61" value="Student / Resident" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="170" y="800" width="70" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="62" value="Student" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="155" y="885" width="100" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="63" value="Hostel Manager" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="480" y="800" width="70" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="64" value="Hostel Manager" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="885" width="110" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="65" value="System Admin" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="780" y="800" width="70" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="66" value="System Admin" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="885" width="110" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="67" value="University" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="800" width="70" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="68" value="University" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="885" width="110" height="20" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

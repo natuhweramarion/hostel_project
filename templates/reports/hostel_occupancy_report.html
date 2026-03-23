@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Hostel Occupancy Report — HMS{% endblock %}
+{% block breadcrumb %}<a href="{% url 'reports_dashboard' %}" style="color:inherit;opacity:.6;text-decoration:none;">Reports</a> / Occupancy{% endblock %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div>
+    <h2>Hostel Occupancy Report</h2>
+    <p>Bed usage and availability statistics per hostel.</p>
+  </div>
+  <a href="{% url 'reports_dashboard' %}" class="btn btn-outline">
+    <i class="bi bi-arrow-left"></i> Reports
+  </a>
+</div>
+
+{% if hostel_data %}
+
+<!-- Overall summary -->
+{% with total_cap=0 total_occ=0 %}
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:28px;">
+  {% for data in hostel_data %}
+  {% endfor %}
+  <!-- Note: computed in view, just show per-hostel below -->
+</div>
+{% endwith %}
+
+<!-- Per-hostel cards -->
+<div style="display:flex;flex-direction:column;gap:20px;">
+  {% for data in hostel_data %}
+  <div class="card animate-in" style="animation-delay:{{ forloop.counter0 }}0ms;">
+    <!-- Header -->
+    <div style="background:var(--navy);padding:20px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-radius:12px 12px 0 0;">
+      <div>
+        <div style="color:#fff;font-weight:800;font-size:1.05rem;">{{ data.hostel.name }}</div>
+        <div style="color:rgba(255,255,255,.55);font-size:.78rem;margin-top:2px;">
+          <i class="bi bi-geo-alt-fill"></i> {{ data.hostel.location }}
+        </div>
+      </div>
+      <span class="badge-status {% if data.hostel.gender == 'Male' %}badge-male{% elif data.hostel.gender == 'Female' %}badge-female{% else %}badge-mixed{% endif %}">
+        <i class="bi bi-{% if data.hostel.gender == 'Male' %}gender-male{% elif data.hostel.gender == 'Female' %}gender-female{% else %}gender-ambiguous{% endif %}"></i>
+        {{ data.hostel.gender }}
+      </span>
+    </div>
+
+    <div class="card-body">
+      <!-- Stat pills -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+        <div style="background:var(--bg-2);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:1.4rem;font-weight:800;color:var(--primary);">{{ data.total_capacity }}</div>
+          <div style="font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;">Total Beds</div>
+        </div>
+        <div style="background:rgba(239,68,68,.08);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:1.4rem;font-weight:800;color:var(--danger);">{{ data.occupied }}</div>
+          <div style="font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;">Occupied</div>
+        </div>
+        <div style="background:rgba(16,185,129,.08);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:1.4rem;font-weight:800;color:var(--success);">{{ data.available }}</div>
+          <div style="font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;">Available</div>
+        </div>
+        <div style="background:rgba(240,165,0,.08);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:1.4rem;font-weight:800;color:var(--warning);">{{ data.occupancy_rate|floatformat:1 }}%</div>
+          <div style="font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;">Occupancy</div>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:.78rem;font-weight:600;color:var(--text-2);">Bed Occupancy</span>
+        <span style="font-size:.78rem;color:var(--text-3);">{{ data.occupied }}/{{ data.total_capacity }}</span>
+      </div>
+      <div style="height:14px;background:var(--bg-3);border-radius:99px;overflow:hidden;position:relative;">
+        <div style="
+          height:100%;
+          border-radius:99px;
+          width:{{ data.occupancy_rate }}%;
+          background:{% if data.occupancy_rate >= 90 %}var(--danger){% elif data.occupancy_rate >= 70 %}var(--warning){% else %}var(--success){% endif %};
+          transition:width .8s ease;
+          display:flex;align-items:center;justify-content:flex-end;padding-right:6px;
+        ">
+          {% if data.occupancy_rate > 15 %}
+          <span style="font-size:.62rem;font-weight:700;color:#fff;">{{ data.occupancy_rate|floatformat:0 }}%</span>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if data.occupancy_rate >= 90 %}
+      <div style="margin-top:12px;font-size:.78rem;color:var(--danger);font-weight:600;">
+        <i class="bi bi-exclamation-triangle-fill"></i> Near capacity — very few beds remaining.
+      </div>
+      {% elif data.occupancy_rate == 0 %}
+      <div style="margin-top:12px;font-size:.78rem;color:var(--text-3);">
+        <i class="bi bi-info-circle"></i> No students currently allocated to this hostel.
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-state animate-in">
+  <i class="bi bi-building empty-state-icon"></i>
+  <h4>No Hostel Data</h4>
+  <p>No hostels have been configured in the system yet.</p>
+  <a href="{% url 'hostel_list' %}" class="btn btn-primary mt-2">
+    <i class="bi bi-plus-circle-fill"></i> Manage Hostels
+  </a>
+</div>
+{% endif %}
+{% endblock %}

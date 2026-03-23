@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us — HMS Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+  .about-hero {
+    background: linear-gradient(135deg, #0d1f3c 0%, #1a3a6b 60%, #1a6fe3 100%);
+    color: #fff;
+    padding: 72px 0 56px;
+    text-align: center;
+  }
+  .about-hero h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: .6rem; }
+  .about-hero p  { font-size: 1.05rem; color: rgba(255,255,255,.75); max-width: 580px; margin: 0 auto; }
+
+  .about-section { padding: 60px 0; }
+  .about-section:nth-child(even) { background: #f8fafc; }
+
+  .feature-icon {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #1a3a6b, #1a6fe3);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; color: #fff;
+    margin-bottom: 18px;
+  }
+  .team-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .team-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,.1); }
+  .team-avatar {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, #1a3a6b, #1a6fe3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; font-weight: 700; color: #fff;
+    margin: 0 auto 16px;
+  }
+  .value-card {
+    background: #fff;
+    border-left: 4px solid #f0a500;
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  }
+</style>
+{% endblock %}
+
+{% block public_content %}
+
+<!-- Hero -->
+<section class="about-hero">
+  <div class="container">
+    <div class="mb-3">
+      <span style="background:rgba(240,165,0,.2);border:1px solid rgba(240,165,0,.4);color:#f0a500;
+                   padding:5px 16px;border-radius:50px;font-size:.8rem;font-weight:600;letter-spacing:.06em;">
+        ABOUT US
+      </span>
+    </div>
+    <h1><i class="bi bi-info-circle-fill me-2" style="color:#f0a500;"></i>Who We Are</h1>
+    <p>The HMS Portal is Cavendish University Uganda's official student accommodation management system — built to simplify hostel allocation, payments, and administration.</p>
+  </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="about-section">
+  <div class="container">
+    <div class="row gy-5 align-items-center">
+      <div class="col-lg-6">
+        <span class="badge mb-3 px-3 py-2" style="background:#e0edff;color:#1a3a6b;font-size:.78rem;">OUR PURPOSE</span>
+        <h2 style="font-size:1.9rem;font-weight:800;color:#0f172a;margin-bottom:1rem;">Simplifying Student Accommodation</h2>
+        <p style="color:#475569;line-height:1.8;margin-bottom:1.2rem;">
+          The Hostel Management System (HMS) was developed as part of a final-year project at Cavendish University Uganda to address the manual, paper-based processes that previously governed student accommodation.
+        </p>
+        <p style="color:#475569;line-height:1.8;">
+          Our platform allows students to view room availability, submit accommodation payments, and track their allocation status — all from a single online portal accessible anywhere on campus.
+        </p>
+      </div>
+      <div class="col-lg-6">
+        <div class="row gy-3">
+          <div class="col-sm-6">
+            <div class="value-card">
+              <h6 class="fw-bold mb-1" style="color:#0f172a;">Our Mission</h6>
+              <p class="mb-0" style="font-size:.85rem;color:#475569;">
+                To provide a seamless, transparent, and efficient digital platform for managing student hostel accommodation.
+              </p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="value-card">
+              <h6 class="fw-bold mb-1" style="color:#0f172a;">Our Vision</h6>
+              <p class="mb-0" style="font-size:.85rem;color:#475569;">
+                A fully paperless hostel administration that empowers both students and management.
+              </p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="value-card">
+              <h6 class="fw-bold mb-1" style="color:#0f172a;">Transparency</h6>
+              <p class="mb-0" style="font-size:.85rem;color:#475569;">
+                Real-time room availability and payment status visible to every student.
+              </p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="value-card">
+              <h6 class="fw-bold mb-1" style="color:#0f172a;">Accountability</h6>
+              <p class="mb-0" style="font-size:.85rem;color:#475569;">
+                Every allocation and payment is recorded, tracked, and auditable.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Key Features -->
+<section class="about-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 style="font-size:1.9rem;font-weight:800;color:#0f172a;">What the System Offers</h2>
+      <p style="color:#64748b;max-width:520px;margin:.5rem auto 0;">
+        A complete digital workflow for everyone involved in student accommodation.
+      </p>
+    </div>
+    <div class="row gy-4">
+      <div class="col-md-4">
+        <div class="feature-icon"><i class="bi bi-houses-fill"></i></div>
+        <h5 class="fw-bold mb-2">Hostel & Room Inventory</h5>
+        <p style="color:#64748b;font-size:.9rem;line-height:1.7;">
+          Manage hostels, blocks, and individual rooms with real-time occupancy tracking and capacity enforcement.
+        </p>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-icon"><i class="bi bi-person-check-fill"></i></div>
+        <h5 class="fw-bold mb-2">Smart Allocation</h5>
+        <p style="color:#64748b;font-size:.9rem;line-height:1.7;">
+          Administrators assign rooms to students with automatic capacity validation and gender-matching checks.
+        </p>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-icon"><i class="bi bi-cash-coin"></i></div>
+        <h5 class="fw-bold mb-2">Payment Tracking</h5>
+        <p style="color:#64748b;font-size:.9rem;line-height:1.7;">
+          Students submit payment records with reference numbers. Managers verify and approve with a full audit trail.
+        </p>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-icon"><i class="bi bi-bar-chart-fill"></i></div>
+        <h5 class="fw-bold mb-2">Reports & Analytics</h5>
+        <p style="color:#64748b;font-size:.9rem;line-height:1.7;">
+          Generate allocation, payment, and occupancy reports. Export to CSV for external analysis.
+        </p>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-icon"><i class="bi bi-shield-lock-fill"></i></div>
+        <h5 class="fw-bold mb-2">Role-Based Access</h5>
+        <p style="color:#64748b;font-size:.9rem;line-height:1.7;">
+          Separate secure portals for students and hostel managers, each with the tools they need.
+        </p>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-icon"><i class="bi bi-phone-fill"></i></div>
+        <h5 class="fw-bold mb-2">Mobile Friendly</h5>
+        <p style="color:#64748b;font-size:.9rem;line-height:1.7;">
+          Fully responsive design — access your hostel information from any device on or off campus.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Developer / Team -->
+<section class="about-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 style="font-size:1.9rem;font-weight:800;color:#0f172a;">The Developer</h2>
+      <p style="color:#64748b;max-width:480px;margin:.5rem auto 0;">
+        This system was designed and built as a final-year project.
+      </p>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-sm-8 col-md-5 col-lg-4">
+        <div class="team-card">
+          <div class="team-avatar">NM</div>
+          <h5 class="fw-bold mb-1" style="color:#0f172a;">Natuhwera Marion</h5>
+          <p style="color:#1a6fe3;font-size:.85rem;font-weight:600;margin-bottom:8px;">
+            Final Year Student
+          </p>
+          <p style="color:#64748b;font-size:.83rem;margin-bottom:16px;">
+            Department of Science &amp; Information Technology<br>Cavendish University Uganda
+          </p>
+          <span class="badge" style="background:#e0edff;color:#1a3a6b;padding:6px 14px;font-size:.78rem;">
+            <i class="bi bi-mortarboard-fill me-1"></i>Class of 2026
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div style="background:linear-gradient(135deg,#0d1f3c,#1a3a6b);color:#fff;padding:56px 0;text-align:center;">
+  <div class="container">
+    <h2 style="font-size:1.8rem;font-weight:800;margin-bottom:.75rem;">Ready to Apply?</h2>
+    <p style="color:rgba(255,255,255,.7);max-width:480px;margin:0 auto 28px;">
+      Create your account and apply for accommodation in minutes.
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{% url 'public_hostels' %}" class="btn btn-warning btn-lg px-4 fw-semibold">
+        <i class="bi bi-buildings me-2"></i>Browse Hostels
+      </a>
+      <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg px-4">
+        <i class="bi bi-envelope me-2"></i>Get in Touch
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

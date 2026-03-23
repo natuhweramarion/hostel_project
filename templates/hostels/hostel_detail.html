@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block title %}{{ hostel.name }} — HMS{% endblock %}
+{% block breadcrumb %}<a href="{% url 'hostel_list' %}" style="color:inherit;opacity:.6;text-decoration:none;">Hostels</a> / {{ hostel.name }}{% endblock %}
+
+{% block content %}
+<!-- Hostel Header -->
+<div class="card animate-in" style="margin-bottom:24px;overflow:hidden;">
+  <div style="background:var(--navy);padding:28px 28px 22px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">
+    <div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+        <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-buildings-fill" style="font-size:1.4rem;color:#fff;"></i>
+        </div>
+        <div>
+          <h2 style="color:#fff;margin:0;font-size:1.5rem;font-weight:800;">{{ hostel.name }}</h2>
+          <div style="color:rgba(255,255,255,.6);font-size:.83rem;margin-top:2px;">
+            <i class="bi bi-geo-alt-fill"></i> {{ hostel.location }}
+          </div>
+        </div>
+      </div>
+      {% if hostel.description %}
+      <p style="color:rgba(255,255,255,.65);font-size:.85rem;max-width:540px;margin:0;">{{ hostel.description }}</p>
+      {% endif %}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span class="badge-status {% if hostel.gender == 'Male' %}badge-male{% elif hostel.gender == 'Female' %}badge-female{% else %}badge-mixed{% endif %}">
+        <i class="bi bi-{% if hostel.gender == 'Male' %}gender-male{% elif hostel.gender == 'Female' %}gender-female{% else %}gender-ambiguous{% endif %}"></i>
+        {{ hostel.gender }}
+      </span>
+      <a href="{% url 'hostel_edit' hostel.pk %}" class="btn btn-primary" style="font-size:.82rem;padding:6px 14px;">
+        <i class="bi bi-pencil-fill"></i> Edit Hostel
+      </a>
+      <a href="{% url 'block_create' hostel.pk %}" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:.82rem;padding:6px 14px;">
+        <i class="bi bi-plus-circle-fill"></i> Add Block
+      </a>
+    </div>
+  </div>
+
+  <!-- Summary stats bar -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);">
+    <div style="padding:16px;text-align:center;border-right:1px solid var(--border);">
+      <div style="font-size:1.6rem;font-weight:800;color:var(--primary);">{{ blocks.count }}</div>
+      <div style="font-size:.72rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;">Blocks</div>
+    </div>
+    <div style="padding:16px;text-align:center;border-right:1px solid var(--border);">
+      <div style="font-size:1.6rem;font-weight:800;color:var(--teal);">{{ hostel.total_capacity }}</div>
+      <div style="font-size:.72rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;">Total Beds</div>
+    </div>
+    <div style="padding:16px;text-align:center;border-right:1px solid var(--border);">
+      <div style="font-size:1.6rem;font-weight:800;color:{% if hostel.available_spaces > 0 %}var(--success){% else %}var(--danger){% endif %};">{{ hostel.available_spaces }}</div>
+      <div style="font-size:.72rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;">Available</div>
+    </div>
+    <div style="padding:16px;text-align:center;">
+      <div style="font-size:1.6rem;font-weight:800;color:var(--warning);">{{ hostel.occupied_beds }}</div>
+      <div style="font-size:.72rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;">Occupied</div>
+    </div>
+  </div>
+</div>
+
+<!-- Blocks & Rooms -->
+{% if blocks %}
+  {% for block in blocks %}
+  <div class="card animate-in" style="margin-bottom:20px;animation-delay:{{ forloop.counter0 }}00ms;">
+    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:34px;height:34px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-grid-3x2-gap-fill" style="color:#fff;font-size:.9rem;"></i>
+        </div>
+        <div>
+          <div style="font-weight:700;">Block {{ block.name }}</div>
+          {% if block.description %}
+          <div style="font-size:.76rem;color:var(--text-3);">{{ block.description }}</div>
+          {% endif %}
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:.78rem;color:var(--text-3);">{{ block.rooms.count }} room(s)</span>
+        <a href="{% url 'room_create' hostel.pk block.pk %}" class="btn btn-primary" style="font-size:.78rem;padding:5px 12px;">
+          <i class="bi bi-plus-circle-fill"></i> Add Room
+        </a>
+      </div>
+    </div>
+    <div class="card-body" style="padding:0;">
+      {% if block.rooms.all %}
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Room No.</th>
+              <th>Type</th>
+              <th>Capacity</th>
+              <th>Occupied</th>
+              <th>Available</th>
+              <th>Price/Semester</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for room in block.rooms.all %}
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <i class="bi bi-door-closed-fill" style="color:var(--primary);font-size:1rem;"></i>
+                  <span style="font-weight:700;font-size:.9rem;">{{ room.room_number }}</span>
+                </div>
+              </td>
+              <td>
+                {% if room.room_type %}
+                  <span style="font-size:.8rem;padding:3px 8px;border-radius:6px;background:var(--primary-light);color:var(--primary);font-weight:600;">
+                    {{ room.room_type }}
+                  </span>
+                {% else %}
+                  <span style="color:var(--text-3);font-size:.8rem;">—</span>
+                {% endif %}
+              </td>
+              <td>{{ room.capacity }} beds</td>
+              <td>{{ room.occupied_beds }}</td>
+              <td>
+                <span style="font-weight:700;color:{% if room.available_beds > 0 %}var(--success){% else %}var(--danger){% endif %};">
+                  {{ room.available_beds }}
+                </span>
+              </td>
+              <td>
+                {% if room.price_per_semester %}
+                  <span style="font-weight:700;color:var(--navy);">UGX {{ room.price_per_semester|floatformat:0 }}</span>
+                {% else %}
+                  <span style="color:var(--text-3);font-size:.8rem;">See hostel fee</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if room.is_full %}
+                  <span class="badge-status badge-cancelled"><i class="bi bi-x-circle-fill"></i> Full</span>
+                {% else %}
+                  <span class="badge-status badge-active"><i class="bi bi-check-circle-fill"></i> Available</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div style="padding:28px;text-align:center;color:var(--text-3);">
+        <i class="bi bi-door-open" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+        No rooms added to this block yet.
+        <a href="{% url 'room_create' hostel.pk block.pk %}" style="display:block;margin-top:8px;font-size:.84rem;">Add the first room →</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+{% else %}
+<div class="empty-state animate-in">
+  <i class="bi bi-grid-3x2-gap empty-state-icon"></i>
+  <h4>No Blocks Yet</h4>
+  <p>Add blocks to this hostel to start managing rooms.</p>
+  <a href="{% url 'block_create' hostel.pk %}" class="btn btn-primary mt-2">
+    <i class="bi bi-plus-circle-fill"></i> Add First Block
+  </a>
+</div>
+{% endif %}
+
+<div style="margin-top:8px;">
+  <a href="{% url 'hostel_list' %}" style="color:var(--text-3);font-size:.84rem;text-decoration:none;">
+    <i class="bi bi-arrow-left"></i> Back to Hostels
+  </a>
+</div>
+{% endblock %}

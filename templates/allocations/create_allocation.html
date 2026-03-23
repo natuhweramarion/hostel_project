@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}New Allocation — HMS{% endblock %}
+{% block breadcrumb %}New Allocation{% endblock %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div>
+    <h2>Create Room Allocation</h2>
+    <p>Assign a student to an available room. Capacity and gender rules are enforced automatically.</p>
+  </div>
+  <a href="{% url 'allocation_list' %}" class="btn btn-outline">
+    <i class="bi bi-arrow-left"></i> Back to List
+  </a>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;">
+
+  <div class="form-section animate-in animate-in-d1">
+    <div class="form-section-header">
+      <div class="form-section-icon"><i class="bi bi-person-plus-fill"></i></div>
+      <span class="form-section-title">Allocation Details</span>
+    </div>
+    <div class="form-section-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div style="grid-column:1/-1;">
+            <label class="form-label">Student <span style="color:var(--danger);">*</span></label>
+            {{ form.user }}
+            {% for e in form.user.errors %}<p class="form-error">{{ e }}</p>{% endfor %}
+            <p class="form-hint">Only students without an active allocation are eligible.</p>
+          </div>
+          <div style="grid-column:1/-1;">
+            <label class="form-label">Room <span style="color:var(--danger);">*</span></label>
+            {{ form.room }}
+            {% for e in form.room.errors %}<p class="form-error">{{ e }}</p>{% endfor %}
+            <p class="form-hint">Only rooms with available beds are listed.</p>
+          </div>
+          <div>
+            <label class="form-label">Academic Year</label>
+            {{ form.academic_year }}
+            {% for e in form.academic_year.errors %}<p class="form-error">{{ e }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="form-label">Status</label>
+            {{ form.status }}
+            {% for e in form.status.errors %}<p class="form-error">{{ e }}</p>{% endfor %}
+          </div>
+          <div style="grid-column:1/-1;">
+            <label class="form-label">Notes</label>
+            {{ form.notes }}
+          </div>
+        </div>
+        <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:10px;">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle-fill"></i> Create Allocation
+          </button>
+          <a href="{% url 'allocation_list' %}" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right: summary panel -->
+  <div class="animate-in animate-in-d2">
+    <div class="card mb-3">
+      <div class="card-header">
+        <span class="card-header-title">
+          <div class="card-header-icon" style="background:var(--teal-light);color:var(--teal);"><i class="bi bi-door-open-fill"></i></div>
+          Room Availability
+        </span>
+      </div>
+      <div class="card-body">
+        {% if available_rooms %}
+        <div style="font-size:.875rem;color:var(--text-1);margin-bottom:10px;">
+          <strong>{{ available_rooms.count }}</strong> room{{ available_rooms.count|pluralize }} with open beds.
+        </div>
+        <a href="{% url 'available_rooms' %}" class="btn btn-outline-primary btn-sm w-100">
+          <i class="bi bi-grid-3x3-gap-fill"></i> Browse All Available Rooms
+        </a>
+        {% else %}
+        <div class="alert alert-warning mb-0">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <div>No available rooms at this time.</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--warning);">
+      <div class="card-body" style="padding:16px;">
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <i class="bi bi-info-circle-fill" style="color:var(--warning);font-size:1rem;flex-shrink:0;"></i>
+          <strong style="font-size:.84rem;">Validation Rules</strong>
+        </div>
+        <ul style="font-size:.8rem;color:var(--text-2);padding-left:16px;margin:0;line-height:1.9;">
+          <li>Room must have available bed capacity</li>
+          <li>Student gender must match hostel gender policy</li>
+          <li>Student can only have one active allocation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,258 @@
+<mxfile host="app.diagrams.net" version="24.7.17">
+  <diagram id="dbdesign" name="Database Design">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" pageWidth="1650" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- TITLE -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <mxCell id="title" value="DATABASE DESIGN — Online Hostel Information Management System"
+          style="text;html=1;fillColor=#0d1f3c;strokeColor=#0d1f3c;fontColor=#ffffff;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;rounded=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="20" y="15" width="1610" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- TABLE: users_customuser  (x=20, y=80) -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <mxCell id="t1" value="users_customuser"
+          style="swimlane;startSize=32;fillColor=#0d1f3c;fontColor=#ffffff;strokeColor=#0d1f3c;fontSize=12;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="20" y="80" width="300" height="585" as="geometry"/>
+        </mxCell>
+        <!-- col header -->
+        <mxCell id="t1ch" value="Column | Type | Constraint"
+          style="text;html=1;align=left;fontSize=9;fontStyle=1;fillColor=#1a3a6b;fontColor=#ffffff;strokeColor=none;"
+          vertex="1" parent="t1"><mxGeometry x="0" y="32" width="300" height="22" as="geometry"/></mxCell>
+        <!-- rows -->
+        <mxCell id="t1r01" value="🔑  id | BIGINT | PK AUTO"
+          style="text;html=1;align=left;fontSize=9;fillColor=#fff8e1;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="54" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r02" value="    username | VARCHAR(150) | UNIQUE NOT NULL"
+          style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="78" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r03" value="    first_name | VARCHAR(150) |"
+          style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="102" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r04" value="    last_name | VARCHAR(150) |"
+          style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="126" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r05" value="    email | VARCHAR(254) |"
+          style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="150" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r06" value="    password | VARCHAR(128) | NOT NULL (hashed)"
+          style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="174" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r07" value="    student_id | VARCHAR(50) | UNIQUE NULL"
+          style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="198" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r08" value="    gender | VARCHAR(10) | NULL"
+          style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="222" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r09" value="    phone_number | VARCHAR(20) | NULL"
+          style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="246" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r10" value="    department | VARCHAR(100) | NULL"
+          style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="270" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r11" value="    level | VARCHAR(20) | NULL"
+          style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="294" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r12" value="    date_of_birth | DATE | NULL"
+          style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="318" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r13" value="    photo | VARCHAR(100) | NULL  (ImageField)"
+          style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="342" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r14" value="    is_student | BOOLEAN | DEFAULT False"
+          style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="366" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r15" value="    is_manager | BOOLEAN | DEFAULT False"
+          style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="390" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r16" value="    is_staff | BOOLEAN | DEFAULT False"
+          style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="414" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r17" value="    is_superuser | BOOLEAN | DEFAULT False"
+          style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="438" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r18" value="    is_active | BOOLEAN | DEFAULT True"
+          style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="462" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r19" value="    date_joined | DATETIME | AUTO"
+          style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="486" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t1r20" value="    last_login | DATETIME | NULL"
+          style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t1"><mxGeometry x="0" y="510" width="300" height="24" as="geometry"/></mxCell>
+        <!-- constraint bar -->
+        <mxCell id="t1c1" value="AUTH_USER_MODEL = 'users.CustomUser'"
+          style="text;html=1;align=center;fontSize=8;fontStyle=2;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="t1"><mxGeometry x="0" y="554" width="300" height="22" as="geometry"/></mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- TABLE: hostels_hostel  (x=380, y=80) -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <mxCell id="t2" value="hostels_hostel"
+          style="swimlane;startSize=32;fillColor=#1b5e20;fontColor=#ffffff;strokeColor=#1b5e20;fontSize=12;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="380" y="80" width="285" height="320" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2ch" value="Column | Type | Constraint"
+          style="text;html=1;align=left;fontSize=9;fontStyle=1;fillColor=#2e7d32;fontColor=#ffffff;strokeColor=none;" vertex="1" parent="t2"><mxGeometry x="0" y="32" width="285" height="22" as="geometry"/></mxCell>
+        <mxCell id="t2r1" value="🔑  id | BIGINT | PK AUTO" style="text;html=1;align=left;fontSize=9;fillColor=#fff8e1;strokeColor=#e0e0e0;" vertex="1" parent="t2"><mxGeometry x="0" y="54" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t2r2" value="    name | VARCHAR(200) | UNIQUE NOT NULL" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t2"><mxGeometry x="0" y="78" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t2r3" value="    location | VARCHAR(300) | NOT NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t2"><mxGeometry x="0" y="102" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t2r4" value="    gender | VARCHAR(10) | NOT NULL" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t2"><mxGeometry x="0" y="126" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t2r5" value="    description | TEXT | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t2"><mxGeometry x="0" y="150" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t2r6" value="    image_url | VARCHAR(500) | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t2"><mxGeometry x="0" y="174" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t2r7" value="    price_per_semester | DECIMAL(12,2) | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t2"><mxGeometry x="0" y="198" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t2r8" value="    created_at | DATETIME | AUTO ADD" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t2"><mxGeometry x="0" y="222" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t2r9" value="    updated_at | DATETIME | AUTO UPDATE" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t2"><mxGeometry x="0" y="246" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t2c1" value="Choices: gender ∈ {Male, Female, Mixed}" style="text;html=1;align=center;fontSize=8;fontStyle=2;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="t2"><mxGeometry x="0" y="290" width="285" height="22" as="geometry"/></mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- TABLE: hostels_block  (x=725, y=80) -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <mxCell id="t3" value="hostels_block"
+          style="swimlane;startSize=32;fillColor=#1b5e20;fontColor=#ffffff;strokeColor=#1b5e20;fontSize=12;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="725" y="80" width="270" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="t3ch" value="Column | Type | Constraint"
+          style="text;html=1;align=left;fontSize=9;fontStyle=1;fillColor=#2e7d32;fontColor=#ffffff;strokeColor=none;" vertex="1" parent="t3"><mxGeometry x="0" y="32" width="270" height="22" as="geometry"/></mxCell>
+        <mxCell id="t3r1" value="🔑  id | BIGINT | PK AUTO" style="text;html=1;align=left;fontSize=9;fillColor=#fff8e1;strokeColor=#e0e0e0;" vertex="1" parent="t3"><mxGeometry x="0" y="54" width="270" height="24" as="geometry"/></mxCell>
+        <mxCell id="t3r2" value="🔗  hostel_id | BIGINT | FK → hostels_hostel" style="text;html=1;align=left;fontSize=9;fillColor=#e3f2fd;strokeColor=#e0e0e0;" vertex="1" parent="t3"><mxGeometry x="0" y="78" width="270" height="24" as="geometry"/></mxCell>
+        <mxCell id="t3r3" value="    name | VARCHAR(100) | NOT NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t3"><mxGeometry x="0" y="102" width="270" height="24" as="geometry"/></mxCell>
+        <mxCell id="t3r4" value="    description | TEXT | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t3"><mxGeometry x="0" y="126" width="270" height="24" as="geometry"/></mxCell>
+        <mxCell id="t3r5" value="    created_at | DATETIME | AUTO ADD" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t3"><mxGeometry x="0" y="150" width="270" height="24" as="geometry"/></mxCell>
+        <mxCell id="t3c1" value="UNIQUE (hostel_id, name)" style="text;html=1;align=center;fontSize=8;fontStyle=2;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="t3"><mxGeometry x="0" y="192" width="270" height="22" as="geometry"/></mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- TABLE: hostels_room  (x=1055, y=80) -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <mxCell id="t4" value="hostels_room"
+          style="swimlane;startSize=32;fillColor=#1b5e20;fontColor=#ffffff;strokeColor=#1b5e20;fontSize=12;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="1055" y="80" width="285" height="295" as="geometry"/>
+        </mxCell>
+        <mxCell id="t4ch" value="Column | Type | Constraint"
+          style="text;html=1;align=left;fontSize=9;fontStyle=1;fillColor=#2e7d32;fontColor=#ffffff;strokeColor=none;" vertex="1" parent="t4"><mxGeometry x="0" y="32" width="285" height="22" as="geometry"/></mxCell>
+        <mxCell id="t4r1" value="🔑  id | BIGINT | PK AUTO" style="text;html=1;align=left;fontSize=9;fillColor=#fff8e1;strokeColor=#e0e0e0;" vertex="1" parent="t4"><mxGeometry x="0" y="54" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t4r2" value="🔗  block_id | BIGINT | FK → hostels_block" style="text;html=1;align=left;fontSize=9;fillColor=#e3f2fd;strokeColor=#e0e0e0;" vertex="1" parent="t4"><mxGeometry x="0" y="78" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t4r3" value="    room_number | VARCHAR(20) | NOT NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t4"><mxGeometry x="0" y="102" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t4r4" value="    capacity | INT | NOT NULL  MIN=1" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t4"><mxGeometry x="0" y="126" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t4r5" value="    room_type | VARCHAR(20) | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t4"><mxGeometry x="0" y="150" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t4r6" value="    price_per_semester | DECIMAL(12,2) | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t4"><mxGeometry x="0" y="174" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t4r7" value="    description | TEXT | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t4"><mxGeometry x="0" y="198" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t4r8" value="    created_at | DATETIME | AUTO ADD" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t4"><mxGeometry x="0" y="222" width="285" height="24" as="geometry"/></mxCell>
+        <mxCell id="t4c1" value="UNIQUE (block_id, room_number)  |  room_type ∈ {Single, Double, Self-Contained, Shared}" style="text;html=1;align=center;fontSize=8;fontStyle=2;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="t4"><mxGeometry x="0" y="263" width="285" height="22" as="geometry"/></mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- TABLE: allocations_allocation  (x=20, y=710) -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <mxCell id="t5" value="allocations_allocation"
+          style="swimlane;startSize=32;fillColor=#e65100;fontColor=#ffffff;strokeColor=#e65100;fontSize=12;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="20" y="720" width="300" height="310" as="geometry"/>
+        </mxCell>
+        <mxCell id="t5ch" value="Column | Type | Constraint"
+          style="text;html=1;align=left;fontSize=9;fontStyle=1;fillColor=#bf360c;fontColor=#ffffff;strokeColor=none;" vertex="1" parent="t5"><mxGeometry x="0" y="32" width="300" height="22" as="geometry"/></mxCell>
+        <mxCell id="t5r1" value="🔑  id | BIGINT | PK AUTO" style="text;html=1;align=left;fontSize=9;fillColor=#fff8e1;strokeColor=#e0e0e0;" vertex="1" parent="t5"><mxGeometry x="0" y="54" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t5r2" value="🔗  user_id | BIGINT | FK → users_customuser" style="text;html=1;align=left;fontSize=9;fillColor=#e3f2fd;strokeColor=#e0e0e0;" vertex="1" parent="t5"><mxGeometry x="0" y="78" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t5r3" value="🔗  room_id | BIGINT | FK → hostels_room" style="text;html=1;align=left;fontSize=9;fillColor=#e3f2fd;strokeColor=#e0e0e0;" vertex="1" parent="t5"><mxGeometry x="0" y="102" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t5r4" value="    status | VARCHAR(20) | DEFAULT 'active'" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t5"><mxGeometry x="0" y="126" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t5r5" value="    date_allocated | DATETIME | AUTO ADD" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t5"><mxGeometry x="0" y="150" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t5r6" value="    date_left | DATETIME | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t5"><mxGeometry x="0" y="174" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t5r7" value="    academic_year | VARCHAR(20) | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t5"><mxGeometry x="0" y="198" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t5r8" value="    notes | TEXT | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t5"><mxGeometry x="0" y="222" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t5c1" value="UNIQUE (user_id) WHERE status='active'  |  status ∈ {active, left, cancelled}" style="text;html=1;align=center;fontSize=8;fontStyle=2;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="t5"><mxGeometry x="0" y="270" width="300" height="32" as="geometry"/></mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- TABLE: payments_payment  (x=380, y=460) -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <mxCell id="t6" value="payments_payment"
+          style="swimlane;startSize=32;fillColor=#880e4f;fontColor=#ffffff;strokeColor=#880e4f;fontSize=12;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="380" y="460" width="300" height="390" as="geometry"/>
+        </mxCell>
+        <mxCell id="t6ch" value="Column | Type | Constraint"
+          style="text;html=1;align=left;fontSize=9;fontStyle=1;fillColor=#6a1042;fontColor=#ffffff;strokeColor=none;" vertex="1" parent="t6"><mxGeometry x="0" y="32" width="300" height="22" as="geometry"/></mxCell>
+        <mxCell id="t6r1" value="🔑  id | BIGINT | PK AUTO" style="text;html=1;align=left;fontSize=9;fillColor=#fff8e1;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="54" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r2" value="🔗  user_id | BIGINT | FK → users_customuser" style="text;html=1;align=left;fontSize=9;fillColor=#e3f2fd;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="78" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r3" value="    amount | DECIMAL(10,2) | NOT NULL  MIN=0.01" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="102" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r4" value="⊕  reference_number | VARCHAR(100) | UNIQUE" style="text;html=1;align=left;fontSize=9;fillColor=#fce4ec;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="126" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r5" value="    status | VARCHAR(20) | DEFAULT 'pending'" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="150" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r6" value="    date_paid | DATETIME | AUTO ADD" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="174" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r7" value="    date_verified | DATETIME | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="198" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r8" value="🔗  verified_by_id | BIGINT | FK NULL SET NULL" style="text;html=1;align=left;fontSize=9;fillColor=#e3f2fd;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="222" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r9" value="    payment_method | VARCHAR(50) | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="246" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r10" value="    academic_year | VARCHAR(20) | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="270" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r11" value="    notes | TEXT | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="294" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6r12" value="    receipt | VARCHAR(100) | NULL  (FileField)" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t6"><mxGeometry x="0" y="318" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t6c1" value="status ∈ {pending, verified, rejected}" style="text;html=1;align=center;fontSize=8;fontStyle=2;fillColor=#fce4ec;strokeColor=#c2185b;" vertex="1" parent="t6"><mxGeometry x="0" y="358" width="300" height="22" as="geometry"/></mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- TABLE: allocations_bookingrequest  (x=740, y=360) -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <mxCell id="t7" value="allocations_bookingrequest"
+          style="swimlane;startSize=32;fillColor=#1565c0;fontColor=#ffffff;strokeColor=#1565c0;fontSize=12;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="740" y="360" width="300" height="355" as="geometry"/>
+        </mxCell>
+        <mxCell id="t7ch" value="Column | Type | Constraint"
+          style="text;html=1;align=left;fontSize=9;fontStyle=1;fillColor=#0d47a1;fontColor=#ffffff;strokeColor=none;" vertex="1" parent="t7"><mxGeometry x="0" y="32" width="300" height="22" as="geometry"/></mxCell>
+        <mxCell id="t7r1" value="🔑  id | BIGINT | PK AUTO" style="text;html=1;align=left;fontSize=9;fillColor=#fff8e1;strokeColor=#e0e0e0;" vertex="1" parent="t7"><mxGeometry x="0" y="54" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t7r2" value="🔗  student_id | BIGINT | FK → users_customuser" style="text;html=1;align=left;fontSize=9;fillColor=#e3f2fd;strokeColor=#e0e0e0;" vertex="1" parent="t7"><mxGeometry x="0" y="78" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t7r3" value="🔗  preferred_hostel_id | BIGINT | FK → hostels_hostel" style="text;html=1;align=left;fontSize=9;fillColor=#e3f2fd;strokeColor=#e0e0e0;" vertex="1" parent="t7"><mxGeometry x="0" y="102" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t7r4" value="    academic_year | VARCHAR(20) | NOT NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t7"><mxGeometry x="0" y="126" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t7r5" value="    status | VARCHAR(20) | DEFAULT 'pending'" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t7"><mxGeometry x="0" y="150" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t7r6" value="    message | TEXT | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t7"><mxGeometry x="0" y="174" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t7r7" value="    admin_notes | TEXT | NULL" style="text;html=1;align=left;fontSize=9;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="t7"><mxGeometry x="0" y="198" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t7r8" value="🔗  reviewed_by_id | BIGINT | FK NULL SET NULL" style="text;html=1;align=left;fontSize=9;fillColor=#e3f2fd;strokeColor=#e0e0e0;" vertex="1" parent="t7"><mxGeometry x="0" y="222" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t7r9" value="    created_at | DATETIME | AUTO ADD" style="text;html=1;align=left;fontSize=9;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="t7"><mxGeometry x="0" y="246" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="t7c1" value="status ∈ {pending, approved, rejected, cancelled}" style="text;html=1;align=center;fontSize=8;fontStyle=2;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="t7"><mxGeometry x="0" y="315" width="300" height="22" as="geometry"/></mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- LEGEND  (x=1100, y=550) -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <mxCell id="leg" value="LEGEND"
+          style="swimlane;startSize=28;fillColor=#0d1f3c;fontColor=#ffffff;strokeColor=#0d1f3c;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="1100" y="460" width="250" height="175" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg1" value="🔑  Primary Key (PK)" style="text;html=1;align=left;fontSize=10;fillColor=#fff8e1;strokeColor=#e0e0e0;" vertex="1" parent="leg"><mxGeometry x="0" y="32" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="leg2" value="🔗  Foreign Key (FK)" style="text;html=1;align=left;fontSize=10;fillColor=#e3f2fd;strokeColor=#e0e0e0;" vertex="1" parent="leg"><mxGeometry x="0" y="60" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="leg3" value="⊕  Unique Constraint" style="text;html=1;align=left;fontSize=10;fillColor=#fce4ec;strokeColor=#e0e0e0;" vertex="1" parent="leg"><mxGeometry x="0" y="88" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="leg4" value="    Regular Column" style="text;html=1;align=left;fontSize=10;fillColor=#f8f9fa;strokeColor=#e0e0e0;" vertex="1" parent="leg"><mxGeometry x="0" y="116" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="leg5" value="italic bar = Constraints / Choices" style="text;html=1;align=center;fontSize=9;fontStyle=2;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="leg"><mxGeometry x="0" y="148" width="250" height="22" as="geometry"/></mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- RELATIONSHIP LINES -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+
+        <!-- Hostel 1 ──────────── N Block -->
+        <mxCell id="fk_h_bl" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1b5e20;strokeWidth=2;fontSize=10;fontStyle=1;endArrow=ERmany;startArrow=ERone;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="t2" target="t3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Block 1 ──────────── N Room -->
+        <mxCell id="fk_bl_r" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1b5e20;strokeWidth=2;fontSize=10;fontStyle=1;endArrow=ERmany;startArrow=ERone;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="t3" target="t4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- CustomUser 1 ──── N Allocation (user_id) -->
+        <mxCell id="fk_u_al" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#e65100;strokeWidth=2;fontSize=10;fontStyle=1;endArrow=ERmany;startArrow=ERone;exitX=0.5;exitY=1;entryX=0.1;entryY=0;" edge="1" source="t1" target="t5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Room 1 ──────────── N Allocation (room_id) -->
+        <mxCell id="fk_r_al" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#e65100;strokeWidth=2;fontSize=10;fontStyle=1;endArrow=ERmany;startArrow=ERone;exitX=0;exitY=0.7;entryX=0.9;entryY=0;" edge="1" source="t4" target="t5" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="870"/>
+              <mxPoint x="370" y="870"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- CustomUser 1 ──── N Payment (user_id) -->
+        <mxCell id="fk_u_pm" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#880e4f;strokeWidth=2;fontSize=10;fontStyle=1;endArrow=ERmany;startArrow=ERone;exitX=1;exitY=0.7;entryX=0;entryY=0.2;" edge="1" source="t1" target="t6" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- CustomUser 1 ──── N BookingRequest (student_id) -->
+        <mxCell id="fk_u_br" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1565c0;strokeWidth=2;fontSize=10;fontStyle=1;endArrow=ERmany;startArrow=ERone;exitX=1;exitY=0.5;entryX=0;entryY=0.2;" edge="1" source="t1" target="t7" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Hostel 1 ──────────── N BookingRequest (preferred_hostel_id) -->
+        <mxCell id="fk_h_br" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1565c0;strokeWidth=2;fontSize=10;fontStyle=1;endArrow=ERmany;startArrow=ERone;exitX=0.5;exitY=1;entryX=0;entryY=0.4;" edge="1" source="t2" target="t7" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

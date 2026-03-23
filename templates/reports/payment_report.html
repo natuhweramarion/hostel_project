@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block title %}Payment Report — HMS{% endblock %}
+{% block breadcrumb %}<a href="{% url 'reports_dashboard' %}" style="color:inherit;opacity:.6;text-decoration:none;">Reports</a> / Payments{% endblock %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div>
+    <h2>Payment Report</h2>
+    <p>Full payment ledger with verification status and revenue totals.</p>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a href="?format=csv{% if selected_year %}&year={{ selected_year }}{% endif %}" class="btn btn-primary">
+      <i class="bi bi-file-earmark-spreadsheet-fill"></i> Export CSV
+    </a>
+    <a href="{% url 'reports_dashboard' %}" class="btn btn-outline">
+      <i class="bi bi-arrow-left"></i> Reports
+    </a>
+  </div>
+</div>
+
+<!-- Academic Year Filter -->
+{% if academic_years %}
+<form method="get" style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+  <label style="font-size:.84rem;font-weight:600;color:var(--text-2);">
+    <i class="bi bi-funnel-fill" style="color:var(--primary);"></i> Filter by Academic Year:
+  </label>
+  <select name="year" class="form-control" style="width:auto;min-width:160px;" onchange="this.form.submit()">
+    <option value="">All Years</option>
+    {% for year in academic_years %}
+    <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+    {% endfor %}
+  </select>
+  {% if selected_year %}
+  <a href="{% url 'payment_report' %}" class="btn btn-outline" style="font-size:.82rem;">Clear</a>
+  {% endif %}
+</form>
+{% endif %}
+
+<!-- Summary Cards -->
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
+  <div class="stat-card animate-in" style="--card-accent:var(--primary);">
+    <div class="stat-icon" style="background:rgba(26,111,227,.1);">
+      <i class="bi bi-cash-stack" style="color:var(--primary);"></i>
+    </div>
+    <div class="stat-value">UGX {{ total_amount|default:"0"|floatformat:0 }}</div>
+    <div class="stat-label">Total Submitted</div>
+  </div>
+  <div class="stat-card animate-in" style="--card-accent:var(--success);animation-delay:60ms;">
+    <div class="stat-icon" style="background:rgba(16,185,129,.1);">
+      <i class="bi bi-check-circle-fill" style="color:var(--success);"></i>
+    </div>
+    <div class="stat-value">UGX {{ verified_amount|default:"0"|floatformat:0 }}</div>
+    <div class="stat-label">Verified Revenue</div>
+  </div>
+  <div class="stat-card animate-in" style="--card-accent:var(--warning);animation-delay:120ms;">
+    <div class="stat-icon" style="background:rgba(240,165,0,.1);">
+      <i class="bi bi-clock-fill" style="color:var(--warning);"></i>
+    </div>
+    <div class="stat-value">UGX {{ pending_amount|default:"0"|floatformat:0 }}</div>
+    <div class="stat-label">Pending</div>
+  </div>
+  {% if payments %}
+  <div class="stat-card animate-in" style="--card-accent:var(--teal);animation-delay:180ms;">
+    <div class="stat-icon" style="background:rgba(20,184,166,.1);">
+      <i class="bi bi-receipt" style="color:var(--teal);"></i>
+    </div>
+    <div class="stat-value">{{ payments.count }}</div>
+    <div class="stat-label">Total Transactions</div>
+  </div>
+  {% endif %}
+</div>
+
+{% if payments %}
+<div class="card animate-in" style="animation-delay:200ms;">
+  <div class="card-body" style="padding:0;overflow-x:auto;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Student</th>
+          <th>Student ID</th>
+          <th>Amount</th>
+          <th>Reference</th>
+          <th>Method</th>
+          <th>Status</th>
+          <th>Date Paid</th>
+          <th>Verified By</th>
+          <th>Acad. Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for payment in payments %}
+        <tr>
+          <td style="color:var(--text-3);font-size:.78rem;">{{ forloop.counter }}</td>
+          <td>
+            <div style="font-weight:700;font-size:.85rem;">{{ payment.user.get_full_name }}</div>
+            <div style="font-size:.74rem;color:var(--text-3);">{{ payment.user.email }}</div>
+          </td>
+          <td><code style="background:var(--bg-2);padding:2px 6px;border-radius:4px;font-size:.8rem;">{{ payment.user.student_id|default:payment.user.username }}</code></td>
+          <td style="font-weight:700;color:var(--success);font-size:.88rem;">UGX {{ payment.amount|floatformat:0 }}</td>
+          <td><code style="background:var(--bg-2);padding:2px 6px;border-radius:4px;font-size:.78rem;">{{ payment.reference_number }}</code></td>
+          <td style="font-size:.82rem;">{{ payment.payment_method|default:"—" }}</td>
+          <td>
+            {% if payment.status == 'verified' %}
+              <span class="badge-status badge-active"><i class="bi bi-check-circle-fill"></i> Verified</span>
+            {% elif payment.status == 'pending' %}
+              <span class="badge-status badge-pending"><i class="bi bi-clock-fill"></i> Pending</span>
+            {% else %}
+              <span class="badge-status badge-cancelled"><i class="bi bi-x-circle-fill"></i> Rejected</span>
+            {% endif %}
+          </td>
+          <td style="font-size:.8rem;color:var(--text-2);">{{ payment.date_paid|date:"d M Y" }}</td>
+          <td style="font-size:.8rem;color:var(--text-2);">{{ payment.verified_by.username|default:"—" }}</td>
+          <td style="font-size:.8rem;color:var(--text-2);">{{ payment.academic_year|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% else %}
+<div class="empty-state animate-in">
+  <i class="bi bi-wallet2 empty-state-icon"></i>
+  <h4>No Payment Records</h4>
+  <p>No payments have been submitted yet.</p>
+</div>
+{% endif %}
+{% endblock %}

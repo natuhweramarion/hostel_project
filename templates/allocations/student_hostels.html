@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% block title %}Browse Hostels — HMS{% endblock %}
+{% block breadcrumb %}Browse Hostels{% endblock %}
+
+{% block extra_css %}
+<style>
+  .hostel-card {
+    border: none; border-radius: 18px; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+    transition: transform .22s, box-shadow .22s;
+    height: 100%;
+  }
+  .hostel-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.13); }
+
+  .hostel-banner {
+    height: 200px; position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-end; padding: 0 0 16px;
+  }
+  .hostel-banner.male   { background: linear-gradient(135deg, #1a3a6b, #1a6fe3); }
+  .hostel-banner.female { background: linear-gradient(135deg, #6b1a4a, #e31a8f); }
+  .hostel-banner.mixed  { background: linear-gradient(135deg, #1a5c2a, #22c55e); }
+  .hostel-banner img { position:absolute;inset:0;width:100%;height:100%;object-fit:cover; }
+  .hostel-banner .banner-overlay { position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.15),rgba(0,0,0,.60)); }
+  .hostel-banner .banner-title { position:relative;z-index:2;font-size:1.2rem;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.5);text-align:center;padding:0 16px; }
+  .hostel-banner .gender-badge { position:relative;z-index:2;margin-top:7px;padding:3px 12px;border-radius:50px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:.76rem;font-weight:600; }
+
+  .fac-badge {
+    display:inline-flex;align-items:center;gap:4px;padding:3px 9px;
+    border-radius:20px;font-size:.74rem;font-weight:600;
+    background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;
+  }
+  .stat-pill { flex:1;min-width:70px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:9px 10px;text-align:center; }
+  .stat-pill .pv { font-size:1.25rem;font-weight:700;color:#0f172a;line-height:1; }
+  .stat-pill .pl { font-size:.68rem;color:#64748b;margin-top:2px;text-transform:uppercase;letter-spacing:.05em; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page header -->
+<div style="margin-bottom:24px;" class="animate-in">
+  <h3 style="font-size:1.35rem;font-weight:800;color:var(--navy);margin:0 0 4px;">Browse Hostels</h3>
+  <p style="color:var(--text-2);font-size:.88rem;margin:0;">
+    Explore available accommodation and submit a booking request.
+  </p>
+</div>
+
+<!-- Active request / allocation alert -->
+{% if active_allocation %}
+<div class="alert alert-success animate-in" style="margin-bottom:20px;">
+  <i class="bi bi-house-check-fill"></i>
+  <div>You are already allocated to <strong>Room {{ active_allocation.room.room_number }}</strong> in
+    <strong>{{ active_allocation.room.block.hostel.name }}</strong>. No further booking is needed.</div>
+</div>
+{% elif active_request %}
+<div class="alert alert-warning animate-in" style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+  <div>
+    <i class="bi bi-hourglass-split"></i>
+    You have a <strong>{{ active_request.get_status_display }}</strong> booking request for
+    <strong>{{ active_request.preferred_hostel.name }}</strong>
+    ({{ active_request.academic_year }}).
+    The hostel office will review it soon.
+  </div>
+  {% if active_request.status == 'pending' %}
+  <form method="post" action="{% url 'cancel_booking_request' active_request.pk %}" style="margin:0;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-sm"
+            style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;"
+            onclick="return confirm('Cancel this booking request?')">
+      <i class="bi bi-x-circle"></i> Cancel Request
+    </button>
+  </form>
+  {% endif %}
+</div>
+{% endif %}
+
+<!-- Hostel grid -->
+{% if hostel_data %}
+<div class="row gy-4">
+  {% for item in hostel_data %}
+  {% with h=item.hostel %}
+  <div class="col-md-6 col-xl-4 d-flex animate-in" style="animation-delay:{{ forloop.counter0 }}00ms;">
+    <div class="hostel-card card w-100">
+
+      <!-- Banner -->
+      <div class="hostel-banner {% if h.gender == 'Male' %}male{% elif h.gender == 'Female' %}female{% else %}mixed{% endif %}">
+        {% if h.image_url %}<img src="{{ h.image_url }}" alt="{{ h.name }}"><div class="banner-overlay"></div>{% endif %}
+        <div class="banner-title">{{ h.name }}</div>
+        <span class="gender-badge">
+          {% if h.gender == 'Male' %}<i class="bi bi-gender-male me-1"></i>Male Only
+          {% elif h.gender == 'Female' %}<i class="bi bi-gender-female me-1"></i>Female Only
+          {% else %}<i class="bi bi-gender-ambiguous me-1"></i>Mixed{% endif %}
+        </span>
+      </div>
+
+      <div class="card-body d-flex flex-column" style="padding:20px;">
+        <!-- Location -->
+        <div style="font-size:.8rem;color:#64748b;margin-bottom:10px;">
+          <i class="bi bi-geo-alt-fill me-1" style="color:#f0a500;"></i>{{ h.location }}
+        </div>
+
+        <!-- Facilities -->
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;">
+          <span class="fac-badge"><i class="bi bi-shield-check-fill"></i> Security</span>
+          <span class="fac-badge"><i class="bi bi-droplet-fill"></i> Free Water</span>
+          <span class="fac-badge"><i class="bi bi-lightning-charge-fill"></i> Free Electricity</span>
+          <span class="fac-badge"><i class="bi bi-wifi"></i> Free WiFi</span>
+        </div>
+
+        <!-- Stats -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+          <div class="stat-pill">
+            <div class="pv">{{ item.total_capacity }}</div>
+            <div class="pl">Total Beds</div>
+          </div>
+          <div class="stat-pill">
+            <div class="pv" style="color:{% if item.available_spaces > 0 %}#16a34a{% else %}#dc2626{% endif %};">{{ item.available_spaces }}</div>
+            <div class="pl">Available</div>
+          </div>
+          <div class="stat-pill">
+            <div class="pv" style="color:#64748b;">{{ item.occupied }}</div>
+            <div class="pl">Occupied</div>
+          </div>
+        </div>
+
+        <!-- Room types & prices -->
+        {% if item.room_types %}
+        <div style="margin-bottom:14px;">
+          <div style="font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:7px;">
+            <i class="bi bi-door-closed-fill me-1" style="color:#f0a500;"></i>Room Types &amp; Prices
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:.81rem;">
+            <thead>
+              <tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0;">
+                <th style="padding:5px 8px;text-align:left;font-weight:600;color:#475569;">Type</th>
+                <th style="padding:5px 8px;text-align:center;font-weight:600;color:#475569;">Beds</th>
+                <th style="padding:5px 8px;text-align:center;font-weight:600;color:#16a34a;">Free</th>
+                <th style="padding:5px 8px;text-align:right;font-weight:600;color:#475569;">Price/Sem</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for rt in item.room_types %}
+              <tr style="border-bottom:1px solid #f1f5f9;">
+                <td style="padding:6px 8px;">
+                  <span style="background:#eff6ff;color:#1e40af;padding:2px 7px;border-radius:4px;font-weight:600;font-size:.76rem;">{{ rt.label }}</span>
+                </td>
+                <td style="padding:6px 8px;text-align:center;color:#334155;">{{ rt.total_beds }}</td>
+                <td style="padding:6px 8px;text-align:center;font-weight:700;color:{% if rt.available_beds > 0 %}#16a34a{% else %}#dc2626{% endif %};">{{ rt.available_beds }}</td>
+                <td style="padding:6px 8px;text-align:right;font-weight:700;color:#1e40af;">
+                  {% if rt.price %}UGX {{ rt.price|floatformat:0 }}{% else %}<span style="color:#94a3b8;font-weight:400;">—</span>{% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+
+        <!-- General hostel fee -->
+        {% if h.price_per_semester %}
+        <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:9px;padding:9px 13px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <span style="font-size:.77rem;color:#475569;"><i class="bi bi-tag-fill me-1"></i>General Fee/Semester</span>
+          <span style="font-size:1rem;font-weight:700;color:#1e40af;">UGX {{ h.price_per_semester|floatformat:0 }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Action button -->
+        <div class="mt-auto">
+          {% if active_allocation %}
+            <button class="btn w-100" style="background:#f1f5f9;color:#94a3b8;" disabled>
+              <i class="bi bi-house-check-fill me-1"></i>Already Allocated
+            </button>
+          {% elif item.is_requested %}
+            <button class="btn w-100" style="background:#fef9c3;color:#92400e;border:1px solid #fde68a;" disabled>
+              <i class="bi bi-hourglass-split me-1"></i>Request Submitted
+            </button>
+          {% elif active_request %}
+            <button class="btn w-100" style="background:#f1f5f9;color:#94a3b8;" disabled title="Cancel your existing request first">
+              <i class="bi bi-lock me-1"></i>Cancel Current Request First
+            </button>
+          {% elif item.available_spaces > 0 %}
+            <a href="{% url 'create_booking_request' h.pk %}" class="btn btn-primary w-100 fw-semibold">
+              <i class="bi bi-calendar-check-fill me-1"></i>Book This Hostel
+            </a>
+          {% else %}
+            <button class="btn btn-secondary w-100" disabled>
+              <i class="bi bi-x-circle me-1"></i>No Spaces Available
+            </button>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+  {% endwith %}
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state animate-in">
+  <i class="bi bi-buildings empty-state-icon"></i>
+  <h4>No Hostels Listed</h4>
+  <p>No hostel information available yet. Check back soon.</p>
+</div>
+{% endif %}
+
+{% endblock %}

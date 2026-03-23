@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard — HMS{% endblock %}
+{% block breadcrumb %}Dashboard{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Occupancy Chart
+  new Chart(document.getElementById('occupancyChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Occupied Beds', 'Available Beds'],
+      datasets: [{
+        data: [{{ chart_occupied }}, {{ chart_available }}],
+        backgroundColor: ['#1a6fe3', '#e2e8f0'],
+        borderWidth: 0,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      cutout: '72%',
+      plugins: { legend: { display: false }, tooltip: { callbacks: {
+        label: ctx => ` ${ctx.label}: ${ctx.parsed}`
+      }}}
+    }
+  });
+
+  // Payment Status Chart
+  new Chart(document.getElementById('paymentChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Verified', 'Pending', 'Rejected'],
+      datasets: [{
+        data: [{{ chart_pay_verified }}, {{ chart_pay_pending }}, {{ chart_pay_rejected }}],
+        backgroundColor: ['#1a9e54', '#e69300', '#e03535'],
+        borderWidth: 0,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      cutout: '72%',
+      plugins: { legend: { display: false } }
+    }
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- STAT CARDS -->
+<div class="stats-grid animate-in">
+  <div class="stat-card blue animate-in animate-in-d1">
+    <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+    <div class="stat-value">{{ total_students }}</div>
+    <div class="stat-label">Registered Students</div>
+  </div>
+  <div class="stat-card teal animate-in animate-in-d2">
+    <div class="stat-icon"><i class="bi bi-buildings-fill"></i></div>
+    <div class="stat-value">{{ total_hostels }}</div>
+    <div class="stat-label">Hostels</div>
+  </div>
+  <div class="stat-card purple animate-in animate-in-d3">
+    <div class="stat-icon"><i class="bi bi-door-closed-fill"></i></div>
+    <div class="stat-value">{{ total_rooms }}</div>
+    <div class="stat-label">Rooms</div>
+  </div>
+  <div class="stat-card green animate-in animate-in-d4">
+    <div class="stat-icon"><i class="bi bi-house-check-fill"></i></div>
+    <div class="stat-value">{{ active_allocations }}</div>
+    <div class="stat-label">Active Allocations</div>
+  </div>
+  <div class="stat-card amber animate-in animate-in-d5">
+    <div class="stat-icon"><i class="bi bi-clock-history"></i></div>
+    <div class="stat-value">{{ pending_payments }}</div>
+    <div class="stat-label">Pending Payments</div>
+  </div>
+  <div class="stat-card blue animate-in" style="animation-delay:.3s">
+    <div class="stat-icon"><i class="bi bi-door-open-fill"></i></div>
+    <div class="stat-value">{{ available_beds }}</div>
+    <div class="stat-label">Available Beds</div>
+  </div>
+</div>
+
+{% if pending_payments > 0 %}
+<div class="alert alert-warning animate-in">
+  <i class="bi bi-exclamation-triangle-fill"></i>
+  <div>
+    <strong>{{ pending_payments }} payment{{ pending_payments|pluralize }} awaiting verification.</strong>
+    <a href="{% url 'payment_list' %}" style="color:var(--warning);font-weight:700;margin-left:6px;">Review now &rarr;</a>
+  </div>
+</div>
+{% endif %}
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;" class="animate-in animate-in-d1">
+
+  <!-- Occupancy Chart -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-header-title">
+        <div class="card-header-icon" style="background:var(--primary-light);color:var(--primary);"><i class="bi bi-pie-chart-fill"></i></div>
+        Bed Occupancy
+      </span>
+    </div>
+    <div class="card-body" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+      <div class="chart-container" style="width:160px;height:160px;flex-shrink:0;">
+        <canvas id="occupancyChart"></canvas>
+      </div>
+      <div style="flex:1;">
+        <div class="chart-legend" style="flex-direction:column;align-items:flex-start;margin:0;">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#1a6fe3;"></div>
+            Occupied: <strong>{{ chart_occupied }}</strong>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#e2e8f0;border:1px solid #ccc;"></div>
+            Available: <strong>{{ chart_available }}</strong>
+          </div>
+        </div>
+        {% if chart_occupied or chart_available %}
+        {% widthratio chart_occupied chart_occupied|add:chart_available 100 as occ_pct %}
+        <div style="margin-top:16px;">
+          <div style="font-size:.75rem;color:var(--text-2);margin-bottom:4px;">Occupancy Rate</div>
+          <div class="occupancy-bar">
+            <div class="occupancy-fill {% if occ_pct >= 80 %}occ-high{% elif occ_pct >= 50 %}occ-mid{% else %}occ-low{% endif %}"
+                 style="width:{% widthratio chart_occupied chart_occupied|add:chart_available 100 %}%"></div>
+          </div>
+          <div style="font-size:.78rem;color:var(--text-2);margin-top:4px;">
+            {% widthratio chart_occupied chart_occupied|add:chart_available 100 %}% occupied
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Status Chart -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-header-title">
+        <div class="card-header-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-cash-coin"></i></div>
+        Payment Status
+      </span>
+      <a href="{% url 'payment_report' %}" class="btn btn-ghost btn-sm">View Report</a>
+    </div>
+    <div class="card-body" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+      <div class="chart-container" style="width:160px;height:160px;flex-shrink:0;">
+        <canvas id="paymentChart"></canvas>
+      </div>
+      <div style="flex:1;">
+        <div class="chart-legend" style="flex-direction:column;align-items:flex-start;margin:0;gap:10px;">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#1a9e54;"></div>
+            Verified: <strong>{{ chart_pay_verified }}</strong>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#e69300;"></div>
+            Pending: <strong>{{ chart_pay_pending }}</strong>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#e03535;"></div>
+            Rejected: <strong>{{ chart_pay_rejected }}</strong>
+          </div>
+        </div>
+        {% if total_revenue %}
+        <div style="margin-top:14px;padding:10px 14px;background:var(--success-light);border-radius:var(--radius);border-left:3px solid var(--success);">
+          <div style="font-size:.72rem;color:var(--success);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Verified Revenue</div>
+          <div style="font-size:1.25rem;font-weight:800;color:var(--success);">UGX {{ total_revenue|floatformat:0 }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Quick Actions -->
+<div class="card mb-4 animate-in animate-in-d2">
+  <div class="card-header">
+    <span class="card-header-title">
+      <div class="card-header-icon" style="background:var(--warning-light);color:var(--warning);"><i class="bi bi-lightning-charge-fill"></i></div>
+      Quick Actions
+    </span>
+  </div>
+  <div class="card-body" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;">
+    <a href="{% url 'create_allocation' %}" class="quick-action">
+      <div class="quick-action-icon" style="background:var(--primary-light);color:var(--primary);"><i class="bi bi-person-plus-fill"></i></div>
+      <div>
+        <div class="quick-action-text">New Allocation</div>
+        <div class="quick-action-desc">Assign student to room</div>
+      </div>
+    </a>
+    <a href="{% url 'hostel_list' %}" class="quick-action">
+      <div class="quick-action-icon" style="background:var(--teal-light);color:var(--teal);"><i class="bi bi-buildings-fill"></i></div>
+      <div>
+        <div class="quick-action-text">Manage Hostels</div>
+        <div class="quick-action-desc">Rooms &amp; blocks</div>
+      </div>
+    </a>
+    <a href="{% url 'payment_list' %}" class="quick-action">
+      <div class="quick-action-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-cash-coin"></i></div>
+      <div>
+        <div class="quick-action-text">Verify Payments</div>
+        <div class="quick-action-desc">{{ pending_payments }} pending</div>
+      </div>
+    </a>
+    <a href="{% url 'available_rooms' %}" class="quick-action">
+      <div class="quick-action-icon" style="background:var(--info-light);color:var(--info);"><i class="bi bi-door-open-fill"></i></div>
+      <div>
+        <div class="quick-action-text">Available Rooms</div>
+        <div class="quick-action-desc">{{ available_beds }} beds free</div>
+      </div>
+    </a>
+    <a href="{% url 'reports_dashboard' %}" class="quick-action">
+      <div class="quick-action-icon" style="background:var(--purple-light);color:var(--purple);"><i class="bi bi-bar-chart-fill"></i></div>
+      <div>
+        <div class="quick-action-text">Reports</div>
+        <div class="quick-action-desc">Analytics &amp; exports</div>
+      </div>
+    </a>
+    <a href="/admin/" class="quick-action">
+      <div class="quick-action-icon" style="background:#fee2e2;color:#dc2626;"><i class="bi bi-shield-lock-fill"></i></div>
+      <div>
+        <div class="quick-action-text">Admin Panel</div>
+        <div class="quick-action-desc">Full Django admin</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- Recent Activity -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;" class="animate-in animate-in-d3">
+
+  <!-- Recent Allocations -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-header-title">
+        <div class="card-header-icon" style="background:var(--primary-light);color:var(--primary);"><i class="bi bi-house-check-fill"></i></div>
+        Recent Allocations
+      </span>
+      <a href="{% url 'allocation_list' %}" class="btn btn-ghost btn-sm">View All</a>
+    </div>
+    <div style="overflow:hidden;">
+      {% if recent_allocations %}
+      <ul class="timeline" style="padding:0 20px;">
+        {% for a in recent_allocations %}
+        <li class="timeline-item">
+          <div class="timeline-dot" style="background:var(--primary-light);color:var(--primary);">
+            <i class="bi bi-house-door-fill"></i>
+          </div>
+          <div class="timeline-body">
+            <div class="timeline-title">{{ a.user.get_full_name|default:a.user.username }}</div>
+            <div class="timeline-meta">
+              {{ a.room.block.hostel.name }} &mdash; Room {{ a.room.room_number }} &bull;
+              <span class="badge-status {% if a.status == 'active' %}badge-active{% elif a.status == 'left' %}badge-left{% else %}badge-cancelled{% endif %}">{{ a.get_status_display }}</span>
+            </div>
+            <div class="timeline-meta">{{ a.date_allocated|date:"M d, Y" }}</div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div class="empty-state">
+        <i class="bi bi-house-door empty-state-icon"></i>
+        <p>No allocations yet.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Recent Payments -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-header-title">
+        <div class="card-header-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-cash-coin"></i></div>
+        Recent Payments
+      </span>
+      <a href="{% url 'payment_list' %}" class="btn btn-ghost btn-sm">View All</a>
+    </div>
+    <div style="overflow:hidden;">
+      {% if recent_payments %}
+      <ul class="timeline" style="padding:0 20px;">
+        {% for p in recent_payments %}
+        <li class="timeline-item">
+          <div class="timeline-dot" style="background:{% if p.status == 'verified' %}var(--success-light){% elif p.status == 'pending' %}var(--warning-light){% else %}var(--danger-light){% endif %};
+                       color:{% if p.status == 'verified' %}var(--success){% elif p.status == 'pending' %}var(--warning){% else %}var(--danger){% endif %};">
+            <i class="bi bi-{% if p.status == 'verified' %}check-circle-fill{% elif p.status == 'pending' %}clock-fill{% else %}x-circle-fill{% endif %}"></i>
+          </div>
+          <div class="timeline-body">
+            <div class="timeline-title">{{ p.user.get_full_name|default:p.user.username }}</div>
+            <div class="timeline-meta">
+              UGX {{ p.amount }} &bull;
+              <span class="badge-status badge-{{ p.status }}">{{ p.get_status_display }}</span>
+            </div>
+            <div class="timeline-meta">{{ p.date_paid|date:"M d, Y" }}</div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div class="empty-state">
+        <i class="bi bi-cash empty-state-icon"></i>
+        <p>No payments yet.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Available Rooms — HMS{% endblock %}
+{% block breadcrumb %}Available Rooms{% endblock %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div>
+    <h2>Available Rooms</h2>
+    <p>All rooms with open bed spaces across all hostels and blocks.</p>
+  </div>
+  <a href="{% url 'create_allocation' %}" class="btn btn-primary">
+    <i class="bi bi-person-plus-fill"></i> New Allocation
+  </a>
+</div>
+
+{% if hostels %}
+  {% for hostel in hostels %}
+  <div class="card mb-4 animate-in" style="animation-delay:{{ forloop.counter0 }}00ms">
+    <div class="card-header" style="background:var(--navy);color:#fff;border-bottom:none;">
+      <div>
+        <div style="font-weight:700;font-size:1rem;">{{ hostel.name }}</div>
+        <div style="font-size:.78rem;opacity:.65;margin-top:2px;"><i class="bi bi-geo-alt-fill"></i> {{ hostel.location }}</div>
+      </div>
+      <span class="badge-status {% if hostel.gender == 'Male' %}badge-male{% elif hostel.gender == 'Female' %}badge-female{% else %}badge-mixed{% endif %}">
+        <i class="bi bi-{% if hostel.gender == 'Male' %}gender-male{% elif hostel.gender == 'Female' %}gender-female{% else %}gender-ambiguous{% endif %}"></i>
+        {{ hostel.gender }}
+      </span>
+    </div>
+    <div class="card-body">
+      {% for block in hostel.blocks.all %}
+      <div style="margin-bottom:20px;">
+        <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+          <i class="bi bi-grid-3x2-gap-fill"></i> Block: {{ block.name }}
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Room</th>
+                <th>Capacity</th>
+                <th>Occupied</th>
+                <th>Available</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for room in block.rooms.all %}
+              <tr>
+                <td style="font-weight:700;">
+                  <i class="bi bi-door-closed-fill" style="color:var(--primary);margin-right:4px;"></i>
+                  {{ room.room_number }}
+                </td>
+                <td>{{ room.capacity }}</td>
+                <td>{{ room.occupied_beds }}</td>
+                <td style="font-weight:600;color:{% if room.available_beds > 0 %}var(--success){% else %}var(--danger){% endif %}">
+                  {{ room.available_beds }}
+                </td>
+                <td>
+                  {% if room.is_full %}
+                    <span class="badge-status badge-cancelled"><i class="bi bi-x-circle-fill"></i> Full</span>
+                  {% else %}
+                    <span class="badge-status badge-active"><i class="bi bi-check-circle-fill"></i> Available</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="5" style="text-align:center;color:var(--text-3);font-size:.84rem;">No rooms in this block.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% empty %}
+      <p style="color:var(--text-3);font-size:.84rem;"><i class="bi bi-info-circle"></i> No blocks configured for this hostel.</p>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="empty-state">
+    <i class="bi bi-buildings empty-state-icon"></i>
+    <h4>No Hostels Found</h4>
+    <p>Create hostels before allocating students.</p>
+    <a href="{% url 'hostel_list' %}" class="btn btn-primary mt-2"><i class="bi bi-plus-circle-fill"></i> Manage Hostels</a>
+  </div>
+{% endif %}
+{% endblock %}

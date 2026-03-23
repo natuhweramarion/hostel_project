@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Sign In — Hostel Management System{% endblock %}
+{% block public_nav %}{% endblock %}
+
+{% block public_content %}
+<div class="auth-page">
+  <!-- Branding panel -->
+  <div class="auth-branding">
+    <img src="{% static 'images/Admin.png' %}" alt="Admin"
+         style="width:180px;height:180px;object-fit:contain;margin-bottom:20px;filter:drop-shadow(0 8px 32px rgba(0,0,0,.45));">
+    <h2>HMS Portal</h2>
+    <p>Hostel Information Management System — your digital solution for student accommodation.</p>
+    <div style="margin-top:40px;border-top:1px solid rgba(255,255,255,.1);padding-top:28px;">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;align-items:center;gap:12px;font-size:.84rem;opacity:.7;">
+          <i class="bi bi-house-check-fill" style="color:var(--gold);font-size:1rem;"></i>
+          Smart room allocation with capacity validation
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:.84rem;opacity:.7;">
+          <i class="bi bi-cash-coin" style="color:var(--gold);font-size:1rem;"></i>
+          Track and verify hostel fee payments
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:.84rem;opacity:.7;">
+          <i class="bi bi-bar-chart-fill" style="color:var(--gold);font-size:1rem;"></i>
+          Real-time reports and analytics
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form panel -->
+  <div class="auth-form-area">
+    <div class="auth-form-card animate-in">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+        <div style="width:38px;height:38px;background:var(--primary-light);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:1.1rem;">
+          <i class="bi bi-box-arrow-in-right"></i>
+        </div>
+        <h3 style="margin:0;">Welcome back</h3>
+      </div>
+      <p class="subtitle">Sign in to access your hostel portal.</p>
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          <i class="bi bi-x-circle-fill"></i>
+          <div>{{ form.non_field_errors }}</div>
+        </div>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>
+          <div style="position:relative;">
+            <i class="bi bi-person" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-3);"></i>
+            <input name="username" type="text" id="{{ form.username.id_for_label }}"
+                   class="form-control" style="padding-left:36px;"
+                   placeholder="Enter your username" autocomplete="username" autofocus>
+          </div>
+          {% for error in form.username.errors %}
+            <p class="form-error">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+          <div style="position:relative;">
+            <i class="bi bi-lock" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-3);"></i>
+            <input name="password" type="password" id="{{ form.password.id_for_label }}"
+                   class="form-control" style="padding-left:36px;"
+                   placeholder="Enter your password" autocomplete="current-password">
+          </div>
+          {% for error in form.password.errors %}
+            <p class="form-error">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 btn-lg">
+          <i class="bi bi-box-arrow-in-right"></i> Sign In
+        </button>
+      </form>
+
+      <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+        <p style="font-size:.875rem;color:var(--text-2);margin:0 0 14px;">
+          Don't have an account?
+          <a href="{% url 'register' %}" style="color:var(--primary);font-weight:600;">Register here</a>
+        </p>
+        <a href="{% url 'home' %}"
+           style="display:inline-flex;align-items:center;gap:7px;padding:8px 20px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border);color:var(--text-2);font-size:.85rem;font-weight:600;text-decoration:none;transition:background .18s;">
+          <i class="bi bi-arrow-left-circle-fill" style="color:var(--primary);font-size:1rem;"></i>
+          Back to Home
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

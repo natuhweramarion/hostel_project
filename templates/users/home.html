@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block title %}Welcome — Hostel Information Management System{% endblock %}
+
+{% block public_content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge" style="font-size:1.05rem;padding:8px 20px;">
+    <i class="bi bi-mortarboard-fill"></i>
+    Cavendish University Hostel Management Portal
+  </div>
+  <h1 style="font-size:clamp(1.2rem, 2.5vw, 1.8rem);">Manage Student <span>Accommodation</span> with Ease</h1>
+  <p>A centralised, digital platform for handling hostel allocations, payment verification, and occupancy reporting — all in one place.</p>
+  <div class="hero-actions">
+    <a href="{% url 'register' %}" class="btn btn-gold btn-lg">
+      <i class="bi bi-person-plus-fill"></i> Register as Student
+    </a>
+    <a href="{% url 'login' %}" class="btn btn-lg" style="background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.25);">
+      <i class="bi bi-box-arrow-in-right"></i> Sign In
+    </a>
+  </div>
+
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-value">Digital</div>
+      <div class="hero-stat-label">Allocation Records</div>
+    </div>
+    <div>
+      <div class="hero-stat-value">Real-Time</div>
+      <div class="hero-stat-label">Occupancy Tracking</div>
+    </div>
+    <div>
+      <div class="hero-stat-value">Instant</div>
+      <div class="hero-stat-label">Payment Verification</div>
+    </div>
+    <div>
+      <div class="hero-stat-value">CSV</div>
+      <div class="hero-stat-label">Report Exports</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" style="background:#fff;">
+  <div style="text-align:center;margin-bottom:36px;">
+    <p class="section-title" style="justify-content:center;display:flex;">Core Features</p>
+    <h2 style="font-size:1.6rem;color:var(--navy);margin-bottom:10px;">Everything you need, built in</h2>
+    <p style="color:var(--text-2);max-width:520px;margin:0 auto;font-size:.9rem;line-height:1.65;">
+      Designed to meet all four objectives: identify requirements, design, implement, and evaluate the system.
+    </p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:var(--primary-light);color:var(--primary);">
+        <i class="bi bi-buildings-fill"></i>
+      </div>
+      <h4>Hostel &amp; Room Management</h4>
+      <p>Create and manage hostel blocks and individual rooms with real-time bed capacity tracking.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:var(--success-light);color:var(--success);">
+        <i class="bi bi-house-check-fill"></i>
+      </div>
+      <h4>Smart Allocation</h4>
+      <p>Automatically validates gender policy and room capacity before allocating any student.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:var(--warning-light);color:var(--warning);">
+        <i class="bi bi-cash-coin"></i>
+      </div>
+      <h4>Payment Tracking</h4>
+      <p>Students submit payment records; managers verify or reject them with a full audit trail.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:var(--purple-light);color:var(--purple);">
+        <i class="bi bi-bar-chart-line-fill"></i>
+      </div>
+      <h4>Reports &amp; Analytics</h4>
+      <p>Visualise occupancy, allocation trends, and payment summaries. Export to CSV anytime.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:var(--teal-light);color:var(--teal);">
+        <i class="bi bi-person-badge-fill"></i>
+      </div>
+      <h4>Role-Based Access</h4>
+      <p>Students see only their own data. Managers have full administrative control over the system.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#fce7f3;color:#be185d;">
+        <i class="bi bi-shield-check-fill"></i>
+      </div>
+      <h4>Secure &amp; Validated</h4>
+      <p>CSRF protection, login-required views, gender-matching rules, and duplicate allocation prevention.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section style="padding:60px 40px;background:var(--bg-body);">
+  <div style="max-width:900px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:36px;">
+      <p class="section-title" style="justify-content:center;display:flex;">How It Works</p>
+      <h2 style="font-size:1.5rem;color:var(--navy);">Three simple steps</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px;">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">1</div>
+        <div>
+          <h5 style="font-size:.95rem;margin-bottom:6px;">Register Your Account</h5>
+          <p style="font-size:.84rem;color:var(--text-2);line-height:1.6;margin:0;">Students sign up with their academic details to be assigned a hostel place.</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">2</div>
+        <div>
+          <h5 style="font-size:.95rem;margin-bottom:6px;">Get Allocated a Room</h5>
+          <p style="font-size:.84rem;color:var(--text-2);line-height:1.6;margin:0;">The hostel manager assigns you a room, validated against gender policy and capacity.</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">3</div>
+        <div>
+          <h5 style="font-size:.95rem;margin-bottom:6px;">Submit &amp; Track Payments</h5>
+          <p style="font-size:.84rem;color:var(--text-2);line-height:1.6;margin:0;">Submit your payment reference; track verification status in real time from your dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<section style="background:linear-gradient(135deg,var(--navy) 0%,#1a3a6e 100%);padding:50px 40px;text-align:center;color:#fff;">
+  <h2 style="font-size:1.5rem;margin-bottom:10px;">Ready to get started?</h2>
+  <p style="opacity:.7;margin-bottom:24px;font-size:.9rem;">Create your student account today and manage your hostel stay digitally.</p>
+  <a href="{% url 'register' %}" class="btn btn-gold btn-lg">
+    <i class="bi bi-arrow-right-circle-fill"></i> Create Your Account
+  </a>
+</section>
+
+{% endblock %}

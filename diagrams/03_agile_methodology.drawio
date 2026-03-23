@@ -1,0 +1,132 @@
+<mxfile host="app.diagrams.net" version="21.0.2">
+  <diagram id="agile" name="Agile Development Methodology">
+    <mxGraphModel width="1300" height="900" dx="0" dy="0" grid="1" gridSize="10" pageWidth="1300" pageHeight="900">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- TITLE -->
+        <mxCell id="2" value="AGILE DEVELOPMENT METHODOLOGY — Scrum Framework" style="text;html=1;strokeColor=#0d1f3c;fillColor=#0d1f3c;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontColor=#ffffff;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1260" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- PRODUCT BACKLOG -->
+        <mxCell id="10" value="PRODUCT BACKLOG" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a3a6b;fontColor=#ffffff;strokeColor=#0d1f3c;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="120" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="• User Registration &amp; Auth&#xa;• Hostel/Room Management&#xa;• Room Allocation&#xa;• Booking Requests&#xa;• Payment Submission&#xa;• Payment Verification&#xa;• Receipt Printing&#xa;• Profile Photo Upload&#xa;• Reports &amp; CSV Export&#xa;• UI/UX Design" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="50" y="180" width="200" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- SPRINT PLANNING -->
+        <mxCell id="20" value="SPRINT PLANNING" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="120" width="180" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="Sprint Goal Setting&#xa;Task Prioritization&#xa;Effort Estimation&#xa;Team Assignment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="180" width="180" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrow: Backlog to Sprint Planning -->
+        <mxCell id="22" value="Sprint Items" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;" edge="1" source="10" target="20" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- SPRINT ITERATIONS -->
+        <mxCell id="30" value="SPRINT 1 — Foundation (2 Weeks)" style="swimlane;fontStyle=1;align=center;startSize=35;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="560" y="100" width="680" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="31" value="User Registration&#xa;&amp; Login" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="30">
+          <mxGeometry x="20" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="32" value="Custom User Model&#xa;&amp; Roles" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="30">
+          <mxGeometry x="185" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="33" value="Hostel/Block/Room&#xa;Models &amp; Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="30">
+          <mxGeometry x="350" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="34" value="Base Template&#xa;&amp; Design System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="30">
+          <mxGeometry x="515" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="40" value="SPRINT 2 — Core Features (2 Weeks)" style="swimlane;fontStyle=1;align=center;startSize=35;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="560" y="250" width="680" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="41" value="Room Allocation&#xa;System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="40">
+          <mxGeometry x="20" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="42" value="Payment Submission&#xa;&amp; Verification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="40">
+          <mxGeometry x="185" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="43" value="Booking Request&#xa;Workflow" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="40">
+          <mxGeometry x="350" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="44" value="Reports &amp;&#xa;CSV Export" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="40">
+          <mxGeometry x="515" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="50" value="SPRINT 3 — Enhancement (2 Weeks)" style="swimlane;fontStyle=1;align=center;startSize=35;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="560" y="400" width="680" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="51" value="Profile Photo&#xa;Upload" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=10;" vertex="1" parent="50">
+          <mxGeometry x="20" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="52" value="Printable Receipt&#xa;(Print CSS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=10;" vertex="1" parent="50">
+          <mxGeometry x="185" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="53" value="Public Hostel Page&#xa;&amp; Pricing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=10;" vertex="1" parent="50">
+          <mxGeometry x="350" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="54" value="Bug Fixes&#xa;&amp; N+1 Optimisation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=10;" vertex="1" parent="50">
+          <mxGeometry x="515" y="50" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- SPRINT REVIEW & RETROSPECTIVE -->
+        <mxCell id="60" value="SPRINT REVIEW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="580" width="180" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="61" value="Demo to Supervisor&#xa;Feedback Collection&#xa;Acceptance Testing&#xa;Feature Sign-off" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="640" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="62" value="SPRINT RETROSPECTIVE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="580" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="63" value="What Went Well?&#xa;What to Improve?&#xa;Action Items&#xa;Process Refinement" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="560" y="640" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- PRODUCT INCREMENT -->
+        <mxCell id="70" value="PRODUCT INCREMENT&#xa;(Working Software)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a3a6b;fontColor=#ffffff;strokeColor=#0d1f3c;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="830" y="590" width="200" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- FINAL DELIVERY -->
+        <mxCell id="80" value="FINAL DELIVERY&#xa;Hostel Management System v1.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0d1f3c;fontColor=#f0a500;strokeColor=#f0a500;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="590" width="200" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Feedback loop arrow (Sprint back to Backlog) -->
+        <mxCell id="90" value="Update Backlog" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;fontStyle=2;strokeColor=#b85450;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="560" y="665" as="sourcePoint"/>
+            <mxPoint x="150" y="665" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="150" y="665"/>
+              <mxPoint x="150" y="295"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Arrows connecting sprint phases -->
+        <mxCell id="91" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="20" target="30" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="92" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="30" target="40" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="93" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="40" target="50" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="94" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="50" target="60" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="95" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="60" target="62" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="96" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="62" target="70" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="97" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="70" target="80" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

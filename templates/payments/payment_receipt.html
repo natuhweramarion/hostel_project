@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Payment Receipt — {{ payment.reference_number }}{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'student_dashboard' %}" style="color:inherit;opacity:.6;text-decoration:none;">Dashboard</a> / Receipt
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── Screen styles ── */
+  .receipt-wrapper {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .receipt-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  /* ── Receipt document ── */
+  .receipt-doc {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    position: relative;
+  }
+
+  /* Verified watermark */
+  .receipt-doc.verified::before {
+    content: 'VERIFIED';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-size: 5rem;
+    font-weight: 900;
+    color: rgba(34,197,94,.12);
+    letter-spacing: .3em;
+    pointer-events: none;
+    z-index: 0;
+    white-space: nowrap;
+  }
+  .receipt-doc.pending::before {
+    content: 'PENDING';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-size: 5rem;
+    font-weight: 900;
+    color: rgba(245,158,11,.10);
+    letter-spacing: .3em;
+    pointer-events: none;
+    z-index: 0;
+    white-space: nowrap;
+  }
+
+  .receipt-header {
+    background: linear-gradient(135deg, #0d1f3c 0%, #1a3a6b 60%, #1a6fe3 100%);
+    color: #fff;
+    padding: 28px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .receipt-header .uni-name { font-size: 1.1rem; font-weight: 800; }
+  .receipt-header .uni-sub  { font-size: .78rem; opacity: .7; margin-top: 2px; }
+  .receipt-header .receipt-no { text-align: right; }
+  .receipt-header .receipt-no .label { font-size: .72rem; opacity: .65; text-transform: uppercase; letter-spacing: .07em; }
+  .receipt-header .receipt-no .value { font-size: 1rem; font-weight: 700; font-family: monospace; margin-top: 2px; }
+
+  .receipt-status-bar {
+    padding: 10px 36px;
+    text-align: center;
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .receipt-status-bar.verified { background: #dcfce7; color: #15803d; }
+  .receipt-status-bar.pending  { background: #fef9c3; color: #92400e; }
+  .receipt-status-bar.rejected { background: #fee2e2; color: #b91c1c; }
+
+  .receipt-body { padding: 28px 36px; position: relative; z-index: 1; }
+
+  .section-title {
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #94a3b8;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+    margin-bottom: 24px;
+  }
+  .info-item .lbl { font-size: .74rem; color: #64748b; margin-bottom: 2px; }
+  .info-item .val { font-size: .9rem; font-weight: 600; color: #0f172a; }
+
+  .receipt-footer {
+    border-top: 2px dashed #e2e8f0;
+    padding: 20px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .stamp-box {
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 20px;
+    text-align: center;
+    min-width: 160px;
+  }
+  .stamp-box .stamp-label { font-size: .7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: .08em; }
+  .stamp-box .stamp-val   { font-size: .82rem; font-weight: 600; color: #0f172a; margin-top: 4px; }
+
+  /* ── Print styles ── */
+  @media print {
+    /* Hide everything except the receipt document */
+    body * { visibility: hidden; }
+    .receipt-doc, .receipt-doc * { visibility: visible; }
+    .receipt-doc {
+      position: fixed;
+      inset: 0;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      width: 100%;
+      height: auto;
+    }
+    .receipt-actions { display: none !important; }
+    /* Force colours to print */
+    .receipt-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .receipt-status-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="receipt-wrapper animate-in">
+
+  <!-- Action buttons (hidden on print) -->
+  <div class="receipt-actions">
+    <button onclick="window.print()" class="btn btn-primary">
+      <i class="bi bi-printer-fill"></i> Print Receipt
+    </button>
+    {% if is_manager %}
+    <a href="{% url 'payment_list' %}" class="btn btn-outline">
+      <i class="bi bi-arrow-left"></i> Back to Payments
+    </a>
+    {% else %}
+    <a href="{% url 'student_dashboard' %}" class="btn btn-outline">
+      <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+    {% endif %}
+  </div>
+
+  <!-- Receipt document -->
+  <div class="receipt-doc {{ payment.status }}">
+
+    <!-- Header -->
+    <div class="receipt-header">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <img src="{% static 'images/logo.png' %}" alt="HMS Logo"
+               style="height:44px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));">
+          <div>
+            <div class="uni-name">Cavendish University Uganda</div>
+            <div class="uni-sub">Department of Student Affairs — Hostel Management</div>
+          </div>
+        </div>
+        <div style="font-size:.75rem;opacity:.55;margin-top:4px;">
+          Plot 1469, Ggaba Road, Nsambya &bull; Opposite American Embassy &bull; Kampala, Uganda
+        </div>
+      </div>
+      <div class="receipt-no">
+        <div class="label">Official Receipt</div>
+        <div class="value">#{{ payment.reference_number }}</div>
+        <div style="font-size:.72rem;opacity:.6;margin-top:4px;">Issued: {% now "F d, Y" %}</div>
+      </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="receipt-status-bar {{ payment.status }}">
+      {% if payment.status == 'verified' %}
+        <i class="bi bi-check-circle-fill me-2"></i>Payment Verified &amp; Confirmed
+      {% elif payment.status == 'pending' %}
+        <i class="bi bi-hourglass-split me-2"></i>Payment Pending Verification
+      {% else %}
+        <i class="bi bi-x-circle-fill me-2"></i>Payment Rejected
+      {% endif %}
+    </div>
+
+    <div class="receipt-body">
+
+      <!-- Student information -->
+      <div class="section-title"><i class="bi bi-person-fill me-1"></i>Student Information</div>
+
+      <!-- Photo + details side by side -->
+      <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:24px;">
+        <!-- Student photo -->
+        <div style="flex-shrink:0;">
+          {% if student.photo %}
+          <img src="{{ student.photo.url }}" alt="Student photo"
+               style="width:90px;height:110px;object-fit:cover;border-radius:8px;border:2px solid #e2e8f0;">
+          {% else %}
+          <div style="width:90px;height:110px;border-radius:8px;border:2px solid #e2e8f0;
+                      background:linear-gradient(135deg,#1a3a6b,#1a6fe3);
+                      display:flex;align-items:center;justify-content:center;
+                      font-size:2rem;font-weight:800;color:#fff;">
+            {{ student.get_full_name|slice:":1"|upper }}{{ student.last_name|slice:":1"|upper }}
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="info-grid" style="flex:1;margin-bottom:0;">
+          <div class="info-item">
+            <div class="lbl">Full Name</div>
+            <div class="val">{{ student.get_full_name|default:student.username }}</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">Student ID</div>
+            <div class="val">{{ student.student_id|default:"N/A" }}</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">Department</div>
+            <div class="val">{{ student.department|default:"N/A" }}</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">Year of Study</div>
+            <div class="val">{{ student.level|default:"N/A" }}</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">Gender</div>
+            <div class="val">{{ student.gender|default:"N/A" }}</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">Phone</div>
+            <div class="val">{{ student.phone_number|default:"N/A" }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment information -->
+      <div class="section-title"><i class="bi bi-cash-coin me-1"></i>Payment Details</div>
+      <div class="info-grid" style="margin-bottom:24px;">
+        <div class="info-item">
+          <div class="lbl">Transaction / Reference No.</div>
+          <div class="val" style="font-family:monospace;font-size:1rem;color:var(--primary);">{{ payment.reference_number }}</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Amount Paid</div>
+          <div class="val" style="font-size:1.15rem;color:#15803d;">UGX {{ payment.amount|floatformat:0 }}</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Payment Method</div>
+          <div class="val">{{ payment.payment_method|default:"N/A" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Academic Year</div>
+          <div class="val">{{ payment.academic_year|default:"N/A" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Date of Payment</div>
+          <div class="val">{{ payment.date_paid|date:"F d, Y \a\t H:i" }}</div>
+        </div>
+        {% if payment.date_verified %}
+        <div class="info-item">
+          <div class="lbl">Date Verified</div>
+          <div class="val">{{ payment.date_verified|date:"F d, Y \a\t H:i" }}</div>
+        </div>
+        {% endif %}
+        {% if payment.verified_by %}
+        <div class="info-item">
+          <div class="lbl">Verified By</div>
+          <div class="val">{{ payment.verified_by.get_full_name|default:payment.verified_by.username }}</div>
+        </div>
+        {% endif %}
+        {% if payment.notes %}
+        <div class="info-item" style="grid-column:1/-1;">
+          <div class="lbl">Notes</div>
+          <div class="val">{{ payment.notes }}</div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Room Allocation -->
+      {% if allocation %}
+      <div class="section-title"><i class="bi bi-house-check-fill me-1"></i>Room Allocation</div>
+      <div class="info-grid" style="margin-bottom:8px;">
+        <div class="info-item">
+          <div class="lbl">Hostel</div>
+          <div class="val">{{ allocation.room.block.hostel.name }}</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Location</div>
+          <div class="val">{{ allocation.room.block.hostel.location }}</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Block</div>
+          <div class="val">{{ allocation.room.block.name }}</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Room Number</div>
+          <div class="val" style="font-size:1rem;font-weight:800;color:var(--primary);">Room {{ allocation.room.room_number }}</div>
+        </div>
+        {% if allocation.room.room_type %}
+        <div class="info-item">
+          <div class="lbl">Room Type</div>
+          <div class="val">{{ allocation.room.room_type }}</div>
+        </div>
+        {% endif %}
+        <div class="info-item">
+          <div class="lbl">Date Allocated</div>
+          <div class="val">{{ allocation.date_allocated|date:"F d, Y" }}</div>
+        </div>
+        {% if allocation.academic_year %}
+        <div class="info-item">
+          <div class="lbl">Academic Year</div>
+          <div class="val">{{ allocation.academic_year }}</div>
+        </div>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="section-title"><i class="bi bi-house me-1"></i>Room Allocation</div>
+      <p style="font-size:.85rem;color:#94a3b8;margin-bottom:20px;">No room allocation on record at time of receipt.</p>
+      {% endif %}
+
+    </div><!-- /receipt-body -->
+
+    <!-- Footer / signatures -->
+    <div class="receipt-footer">
+      <div>
+        <div style="font-size:.72rem;color:#94a3b8;max-width:280px;line-height:1.6;">
+          This receipt is computer-generated and serves as an official record of payment to Cavendish University Uganda Hostel Management.
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        {% if payment.status == 'verified' %}
+        <div class="stamp-box" style="border-color:#bbf7d0;">
+          <div style="font-size:1.6rem;color:#16a34a;"><i class="bi bi-patch-check-fill"></i></div>
+          <div class="stamp-label">Official Stamp</div>
+          <div class="stamp-val" style="color:#15803d;">VERIFIED</div>
+          <div style="font-size:.7rem;color:#86efac;margin-top:2px;">{{ payment.date_verified|date:"d/m/Y"|default:"" }}</div>
+        </div>
+        {% endif %}
+        <div class="stamp-box">
+          <div style="height:40px;border-bottom:1px solid #e2e8f0;margin-bottom:6px;"></div>
+          <div class="stamp-label">Authorised Signature</div>
+          <div class="stamp-val">Hostel Manager</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /receipt-doc -->
+
+</div>
+{% endblock %}
