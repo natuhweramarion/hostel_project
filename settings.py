@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -33,6 +34,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,10 +65,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'hostel_system.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3'
+    
+    
+    )
+       
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -89,8 +93,14 @@ TIME_ZONE = 'Africa/Kampala'
 USE_I18N = True
 USE_TZ = True
 
+#STATIC FILES
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT= BASE_DIR/'staticfiles'
+
+STATICFILES_STORAGE= 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+#MEDIA FILES
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -104,3 +114,11 @@ AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'home'
+
+
+# SECURITY SETTINGS (✅ ONLY IN PRODUCTION)
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
