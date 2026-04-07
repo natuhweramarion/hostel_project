@@ -1,0 +1,64 @@
+# Render Blueprint for the Hostel Information Management System (FREE TIER).
+#
+# Provisions: managed PostgreSQL + Python web service.
+#
+# FREE TIER LIMITATIONS you must be aware of:
+#   * No persistent disk → uploaded payment receipts are wiped on every deploy.
+#   * Web service sleeps after 15 min of inactivity (first request takes ~30s to wake).
+#   * Free Postgres expires after ~30 days; you must recreate it before then.
+#   * No shell access — that's why we use the ensure_superuser management command.
+
+databases:
+  - name: hostel-system-db
+    plan: free
+    databaseName: hostel_system
+    user: hostel_system
+
+services:
+  - type: web
+    name: hostel-system
+    runtime: python
+    plan: free
+    region: oregon            # change if a closer region is available on free
+    branch: main
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn hostel_system.wsgi:application --log-file -"
+
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+
+      - key: DJANGO_DEBUG
+        value: "False"
+
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ".onrender.com"
+
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        value: "https://hostel-system.onrender.com"
+        # NOTE: replace this with your real .onrender.com URL once Render assigns it,
+        # OR use a wildcard like "https://hostel-system-xxxx.onrender.com" after first deploy.
+
+      - key: DJANGO_SECURE_SSL_REDIRECT
+        value: "True"
+
+      - key: DJANGO_SECURE_HSTS_SECONDS
+        value: "3600"
+
+      # Superuser auto-creation (used by ensure_superuser management command in build.sh).
+      # CHANGE THESE VALUES in the Render dashboard after first deploy, or set them here
+      # before applying the blueprint. The password should be strong.
+      - key: DJANGO_SUPERUSER_USERNAME
+        sync: false           # forces you to set it manually in the dashboard
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hostel-system-db
+          property: connectionString
