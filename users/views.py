@@ -217,6 +217,16 @@ def profile(request):
 
 
 @login_required
+def update_photo(request):
+    """Quick photo upload — only updates the photo field, preserves everything else."""
+    if request.method == 'POST' and request.FILES.get('photo'):
+        request.user.photo = request.FILES['photo']
+        request.user.save(update_fields=['photo'])
+        messages.success(request, 'Profile photo updated.')
+    return redirect('profile')
+
+
+@login_required
 def notifications_view(request):
     """Full notifications list — marks all as read on visit."""
     from users.models import Notification

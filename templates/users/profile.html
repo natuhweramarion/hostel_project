@@ -32,7 +32,7 @@
         {% endif %}
 
         <!-- Quick photo upload -->
-        <form method="post" enctype="multipart/form-data" style="margin-top:16px;">
+        <form method="post" action="{% url 'update_photo' %}" enctype="multipart/form-data" style="margin-top:16px;">
           {% csrf_token %}
           <label for="quick-photo-input"
                  style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;
