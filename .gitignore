@@ -30,5 +30,12 @@ media/
 .DS_Store
 Thumbs.db
 
-# Word lockfiles
+# Word lockfiles and temp files
 ~$*.docx
+~$*.txt
+*.tmp
+
+# Draw.io backup and temp files
+diagrams/.$*.bkp
+diagrams/.$*.dtmp
+diagrams/.~*
