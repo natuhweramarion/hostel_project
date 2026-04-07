@@ -85,7 +85,7 @@
 
       <!-- Banner -->
       <div class="hostel-banner {% if h.gender == 'Male' %}male{% elif h.gender == 'Female' %}female{% else %}mixed{% endif %}">
-        {% if h.image_url %}<img src="{{ h.image_url }}" alt="{{ h.name }}"><div class="banner-overlay"></div>{% endif %}
+        {% if h.image %}<img src="{{ h.image.url }}" alt="{{ h.name }}"><div class="banner-overlay"></div>{% endif %}
         <div class="banner-title">{{ h.name }}</div>
         <span class="gender-badge">
           {% if h.gender == 'Male' %}<i class="bi bi-gender-male me-1"></i>Male Only

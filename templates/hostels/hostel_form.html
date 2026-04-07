@@ -17,7 +17,8 @@
       </div>
     </div>
     <div class="card-body">
-      <form method="post" novalidate>
+      {# enctype="multipart/form-data" is required for file uploads #}
+      <form method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
 
         {% if form.non_field_errors %}
@@ -47,6 +48,41 @@
           </label>
           {{ form.location }}
           {% if form.location.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.location.errors }}</div>{% endif %}
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label class="form-label" for="{{ form.price_per_semester.id_for_label }}">
+            <i class="bi bi-cash-coin" style="margin-right:4px;color:var(--primary);"></i>Price per Semester (UGX)
+          </label>
+          {{ form.price_per_semester }}
+          {% if form.price_per_semester.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.price_per_semester.errors }}</div>{% endif %}
+        </div>
+
+        {# ---- Banner image upload ---- #}
+        <div style="margin-bottom:16px;">
+          <label class="form-label" for="{{ form.image.id_for_label }}">
+            <i class="bi bi-image" style="margin-right:4px;color:var(--primary);"></i>Banner Image
+          </label>
+
+          {# Show current image with option to replace or clear #}
+          {% if hostel.image %}
+          <div style="margin-bottom:10px;border-radius:10px;overflow:hidden;max-height:160px;background:#f0f0f0;">
+            <img src="{{ hostel.image.url }}" alt="Current banner"
+                 style="width:100%;max-height:160px;object-fit:cover;display:block;">
+          </div>
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:6px;">
+            <i class="bi bi-info-circle" style="margin-right:3px;"></i>
+            Select a new file below to replace the current image, or leave blank to keep it.
+          </p>
+          {% else %}
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:6px;">
+            <i class="bi bi-info-circle" style="margin-right:3px;"></i>
+            Optional — choose a JPG, PNG, or WebP image from your computer (max 5 MB recommended).
+          </p>
+          {% endif %}
+
+          {{ form.image }}
+          {% if form.image.errors %}<div class="text-danger" style="font-size:.8rem;margin-top:4px;">{{ form.image.errors }}</div>{% endif %}
         </div>
 
         <div style="margin-bottom:24px;">

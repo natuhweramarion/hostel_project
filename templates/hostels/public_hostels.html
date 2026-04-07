@@ -230,8 +230,8 @@
 
             <!-- Banner: photo if set, else gradient -->
             <div class="hostel-banner {% if h.gender == 'Male' %}male{% elif h.gender == 'Female' %}female{% else %}mixed{% endif %}">
-              {% if h.image_url %}
-              <img src="{{ h.image_url }}" alt="{{ h.name }}" class="banner-photo">
+              {% if h.image %}
+              <img src="{{ h.image.url }}" alt="{{ h.name }}" class="banner-photo">
               <div class="banner-overlay"></div>
               {% else %}
               <i class="bi bi-building-fill banner-icon"></i>

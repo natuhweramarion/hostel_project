@@ -4,10 +4,15 @@ from .models import Hostel, Block, Room
 @admin.register(Hostel)
 class HostelAdmin(admin.ModelAdmin):
     """Admin for Hostel model"""
-    list_display = ['name', 'location', 'gender', 'price_per_semester', 'created_at']
+    list_display = ['name', 'location', 'gender', 'price_per_semester', 'has_image', 'created_at']
     list_filter = ['gender', 'created_at']
     search_fields = ['name', 'location', 'description']
     ordering = ['name']
+
+    def has_image(self, obj):
+        return bool(obj.image)
+    has_image.boolean = True
+    has_image.short_description = 'Banner'
 
 @admin.register(Block)
 class BlockAdmin(admin.ModelAdmin):

@@ -56,7 +56,7 @@ def hostel_list(request):
 def hostel_create(request):
     """Create a new hostel."""
     if request.method == 'POST':
-        form = HostelForm(request.POST)
+        form = HostelForm(request.POST, request.FILES)
         if form.is_valid():
             hostel = form.save()
             messages.success(request, f'Hostel "{hostel.name}" created successfully.')
@@ -72,7 +72,7 @@ def hostel_edit(request, hostel_id):
     """Edit an existing hostel."""
     hostel = get_object_or_404(Hostel, pk=hostel_id)
     if request.method == 'POST':
-        form = HostelForm(request.POST, instance=hostel)
+        form = HostelForm(request.POST, request.FILES, instance=hostel)
         if form.is_valid():
             form.save()
             messages.success(request, f'Hostel "{hostel.name}" updated.')

@@ -15,7 +15,7 @@ class Hostel(models.Model):
     location = models.CharField(max_length=300)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     description = models.TextField(blank=True, null=True)
-    image_url = models.URLField(max_length=500, blank=True, null=True, help_text="URL of the hostel banner image")
+    image = models.ImageField(upload_to='hostel_images/', blank=True, null=True, help_text="Hostel banner image")
     price_per_semester = models.DecimalField(
         max_digits=12, decimal_places=2, null=True, blank=True,
         help_text="Hostel fee per semester (UGX)"
