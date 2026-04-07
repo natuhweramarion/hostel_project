@@ -52,7 +52,13 @@
     <div class="card-body">
       {% if allocation %}
       <div class="room-hero">
+        {% if allocation.room.block.hostel.image %}
+        <img src="{{ allocation.room.block.hostel.image.url }}"
+             alt="{{ allocation.room.block.hostel.name }}"
+             style="width:64px;height:64px;border-radius:var(--radius);object-fit:cover;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.18);">
+        {% else %}
         <div class="room-hero-icon"><i class="bi bi-door-closed-fill"></i></div>
+        {% endif %}
         <div style="min-width:0;">
           <div class="room-hero-number">Room {{ allocation.room.room_number }}</div>
           <div class="room-hero-hostel">{{ allocation.room.block.hostel.name }}</div>

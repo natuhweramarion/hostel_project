@@ -157,7 +157,7 @@ MEDIA_URL = '/media/'
 if os.environ.get('CLOUDINARY_URL'):
     # Production: files go to Cloudinary and survive deploys.
     # cloudinary.storage is part of the 'cloudinary' SDK package itself.
-    _DEFAULT_STORAGE = 'cloudinary.storage.MediaCloudinaryStorage'
+    _DEFAULT_STORAGE = 'hostel_system.cloudinary_backend.CloudinaryMediaStorage'
 else:
     # Local dev: store files on disk.
     _DEFAULT_STORAGE = 'django.core.files.storage.FileSystemStorage'
