@@ -51,7 +51,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',        # must come before staticfiles
     'django.contrib.staticfiles',
+    'cloudinary',
 
     # Custom apps
     'users',
@@ -144,27 +146,37 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Django 5.x storages API: WhiteNoise compressed + manifest storage.
+# ---------------------------------------------------------------------------
+# Cloudinary — persistent media storage (survives Render deploys)
+#   Set CLOUDINARY_CLOUD_NAME / _API_KEY / _API_SECRET in the environment.
+#   When not set (local dev) falls back to local filesystem automatically.
+# ---------------------------------------------------------------------------
+
+_CLOUDINARY_CLOUD = os.environ.get('CLOUDINARY_CLOUD_NAME', '')
+
+if _CLOUDINARY_CLOUD:
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': _CLOUDINARY_CLOUD,
+        'API_KEY':    os.environ.get('CLOUDINARY_API_KEY', ''),
+        'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+    }
+    _DEFAULT_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    MEDIA_URL = '/media/'  # Cloudinary overrides the actual URL; this is just a fallback
+else:
+    # Local development: store files on disk as usual
+    _DEFAULT_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = Path(os.environ.get('DJANGO_MEDIA_ROOT', str(BASE_DIR / 'media')))
+
+# Django 5.x storages API
 STORAGES = {
     'default': {
-        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        'BACKEND': _DEFAULT_STORAGE,
     },
     'staticfiles': {
         'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
-
-
-# ---------------------------------------------------------------------------
-# Media files
-#   NOTE: Render's filesystem is ephemeral on the free / non-disk plans.
-#   Uploaded payment receipts will be lost on every deploy unless you:
-#     (a) attach a persistent disk to the Web Service in render.yaml, OR
-#     (b) move uploads to an object store (S3, Cloudinary, etc.)
-# ---------------------------------------------------------------------------
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = Path(os.environ.get('DJANGO_MEDIA_ROOT', BASE_DIR / 'media'))
 
 
 # ---------------------------------------------------------------------------
