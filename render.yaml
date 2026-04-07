@@ -59,13 +59,10 @@ services:
         sync: false
 
       # Cloudinary — persistent media/image storage (survives deploys).
-      # Create a free account at https://cloudinary.com and paste the values below
-      # (or set them manually in the Render dashboard under Environment).
-      - key: CLOUDINARY_CLOUD_NAME
-        sync: false
-      - key: CLOUDINARY_API_KEY
-        sync: false
-      - key: CLOUDINARY_API_SECRET
+      # Format: cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+      # Get these three values from your Cloudinary dashboard and combine them.
+      # Set this in the Render dashboard Environment tab.
+      - key: CLOUDINARY_URL
         sync: false
 
       - key: DATABASE_URL

@@ -51,9 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',        # must come before staticfiles
     'django.contrib.staticfiles',
-    'cloudinary',
 
     # Custom apps
     'users',
@@ -147,25 +145,22 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # ---------------------------------------------------------------------------
-# Cloudinary — persistent media storage (survives Render deploys)
-#   Set CLOUDINARY_CLOUD_NAME / _API_KEY / _API_SECRET in the environment.
-#   When not set (local dev) falls back to local filesystem automatically.
+# Media storage — Cloudinary in production, local filesystem in dev
+#
+# Set CLOUDINARY_URL in the environment (format: cloudinary://key:secret@cloud).
+# The cloudinary SDK reads it automatically — no extra Django package needed.
+# When not set Django stores files locally (fine for development).
 # ---------------------------------------------------------------------------
 
-_CLOUDINARY_CLOUD = os.environ.get('CLOUDINARY_CLOUD_NAME', '')
+MEDIA_URL = '/media/'
 
-if _CLOUDINARY_CLOUD:
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': _CLOUDINARY_CLOUD,
-        'API_KEY':    os.environ.get('CLOUDINARY_API_KEY', ''),
-        'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
-    }
-    _DEFAULT_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    MEDIA_URL = '/media/'  # Cloudinary overrides the actual URL; this is just a fallback
+if os.environ.get('CLOUDINARY_URL'):
+    # Production: files go to Cloudinary and survive deploys.
+    # cloudinary.storage is part of the 'cloudinary' SDK package itself.
+    _DEFAULT_STORAGE = 'cloudinary.storage.MediaCloudinaryStorage'
 else:
-    # Local development: store files on disk as usual
+    # Local dev: store files on disk.
     _DEFAULT_STORAGE = 'django.core.files.storage.FileSystemStorage'
-    MEDIA_URL = '/media/'
     MEDIA_ROOT = Path(os.environ.get('DJANGO_MEDIA_ROOT', str(BASE_DIR / 'media')))
 
 # Django 5.x storages API
