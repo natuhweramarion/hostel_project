@@ -3,14 +3,15 @@
 {% block breadcrumb %}My Dashboard{% endblock %}
 
 {% block content %}
+
 <!-- Welcome Banner -->
-<div style="background:linear-gradient(135deg,var(--navy) 0%,#1a3a6e 100%);border-radius:var(--radius-lg);padding:24px 28px;color:#fff;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;" class="animate-in">
+<div class="welcome-banner animate-in">
   <div>
-    <div style="font-size:.8rem;opacity:.6;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Welcome back</div>
-    <h2 style="margin:0;font-size:1.4rem;">{{ user.get_full_name|default:user.username }}</h2>
-    <p style="margin:6px 0 0;opacity:.7;font-size:.875rem;">
-      {% if user.student_id %}Student ID: {{ user.student_id }} &bull; {% endif %}
-      {% if user.department %}{{ user.department }}{% endif %}
+    <div class="welcome-greeting">Welcome back</div>
+    <h2 class="welcome-name">{{ user.get_full_name|default:user.username }}</h2>
+    <p class="welcome-meta">
+      {% if user.student_id %}ID: {{ user.student_id }}{% endif %}
+      {% if user.department %} &bull; {{ user.department }}{% endif %}
       {% if user.level %} &bull; Year {{ user.level }}{% endif %}
     </p>
   </div>
@@ -19,9 +20,28 @@
   </a>
 </div>
 
-<!-- Allocation Status Card -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;" class="animate-in animate-in-d1">
+<!-- Rejected payment alerts -->
+{% for p in rejected_payments %}
+<div class="alert-banner alert-danger-banner animate-in">
+  <i class="bi bi-exclamation-triangle-fill"></i>
+  Your payment <strong>{{ p.reference_number }}</strong> was <strong>rejected</strong>.
+  Please check your transaction reference and resubmit.
+  <a href="{% url 'create_payment' %}" class="alert-link">Resubmit</a>
+</div>
+{% endfor %}
 
+<!-- Pending payment reminder -->
+{% for p in pending_payments %}
+<div class="alert-banner alert-info-banner animate-in">
+  <i class="bi bi-hourglass-split"></i>
+  Payment <strong>{{ p.reference_number }}</strong> (UGX {{ p.amount }}) is awaiting verification by the hostel office.
+</div>
+{% endfor %}
+
+<!-- Main grid: Allocation + Profile -->
+<div class="dash-grid animate-in animate-in-d1">
+
+  <!-- Allocation Card -->
   <div class="card">
     <div class="card-header">
       <span class="card-header-title">
@@ -31,38 +51,21 @@
     </div>
     <div class="card-body">
       {% if allocation %}
-      <div style="display:flex;align-items:center;gap:14px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--border);">
-        <div style="width:52px;height:52px;background:var(--primary-light);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:1.5rem;flex-shrink:0;">
-          <i class="bi bi-door-closed-fill"></i>
-        </div>
-        <div>
-          <div style="font-size:1.35rem;font-weight:800;color:var(--text-1);">Room {{ allocation.room.room_number }}</div>
-          <div style="font-size:.84rem;color:var(--text-2);">{{ allocation.room.block.hostel.name }}</div>
+      <div class="room-hero">
+        <div class="room-hero-icon"><i class="bi bi-door-closed-fill"></i></div>
+        <div style="min-width:0;">
+          <div class="room-hero-number">Room {{ allocation.room.room_number }}</div>
+          <div class="room-hero-hostel">{{ allocation.room.block.hostel.name }}</div>
         </div>
         <span class="badge-status badge-active ms-auto">Active</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;">
-        <div class="info-row">
-          <span class="info-label"><i class="bi bi-buildings"></i> Hostel</span>
-          <span class="info-value">{{ allocation.room.block.hostel.name }}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label"><i class="bi bi-grid"></i> Block</span>
-          <span class="info-value">{{ allocation.room.block.name }}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label"><i class="bi bi-door-closed"></i> Room</span>
-          <span class="info-value">{{ allocation.room.room_number }}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label"><i class="bi bi-calendar-check"></i> Allocated</span>
-          <span class="info-value">{{ allocation.date_allocated|date:"F d, Y" }}</span>
-        </div>
+        <div class="info-row"><span class="info-label"><i class="bi bi-buildings"></i> Hostel</span><span class="info-value">{{ allocation.room.block.hostel.name }}</span></div>
+        <div class="info-row"><span class="info-label"><i class="bi bi-grid"></i> Block</span><span class="info-value">{{ allocation.room.block.name }}</span></div>
+        <div class="info-row"><span class="info-label"><i class="bi bi-door-closed"></i> Room</span><span class="info-value">{{ allocation.room.room_number }}</span></div>
+        <div class="info-row"><span class="info-label"><i class="bi bi-calendar-check"></i> Allocated</span><span class="info-value">{{ allocation.date_allocated|date:"F d, Y" }}</span></div>
         {% if allocation.academic_year %}
-        <div class="info-row">
-          <span class="info-label"><i class="bi bi-mortarboard"></i> Academic Year</span>
-          <span class="info-value">{{ allocation.academic_year }}</span>
-        </div>
+        <div class="info-row"><span class="info-label"><i class="bi bi-mortarboard"></i> Year</span><span class="info-value">{{ allocation.academic_year }}</span></div>
         {% endif %}
       </div>
       {% else %}
@@ -70,24 +73,22 @@
         <i class="bi bi-house-exclamation empty-state-icon"></i>
         <h4>No Room Allocated</h4>
         {% if booking_request %}
-          <p>Your <strong>{{ booking_request.get_status_display }}</strong> booking request for
-            <strong>{{ booking_request.preferred_hostel.name }}</strong>
-            ({{ booking_request.academic_year }}) is being reviewed.</p>
-          <a href="{% url 'student_hostels' %}" class="btn btn-primary mt-2">
-            <i class="bi bi-buildings"></i> View Hostels
-          </a>
+          <p>Booking request for <strong>{{ booking_request.preferred_hostel.name }}</strong>:
+            <span class="badge-status badge-{{ booking_request.status }}">{{ booking_request.get_status_display }}</span>
+          </p>
+          {% if booking_request.status == 'approved' %}
+          <p style="font-size:.82rem;color:var(--text-2);">Your request is approved. Once your payment is verified, the hostel office will assign your room.</p>
+          {% endif %}
         {% else %}
-          <p>You have not been assigned a room yet. Browse available hostels and submit a booking request.</p>
-          <a href="{% url 'student_hostels' %}" class="btn btn-primary mt-2">
-            <i class="bi bi-buildings"></i> Browse Hostels
-          </a>
+          <p>No room assigned yet. Browse hostels to submit a booking request.</p>
+          <a href="{% url 'student_hostels' %}" class="btn btn-primary mt-2"><i class="bi bi-buildings"></i> Browse Hostels</a>
         {% endif %}
       </div>
       {% endif %}
     </div>
   </div>
 
-  <!-- My Profile Summary -->
+  <!-- Profile Summary -->
   <div class="card">
     <div class="card-header">
       <span class="card-header-title">
@@ -103,34 +104,96 @@
         <div style="font-size:.8rem;color:var(--text-2);">{{ user.email }}</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:2px;">
-        <div class="info-row">
-          <span class="info-label"><i class="bi bi-card-text"></i> Student ID</span>
-          <span class="info-value">{{ user.student_id|default:"Not set" }}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label"><i class="bi bi-building"></i> Department</span>
-          <span class="info-value">{{ user.department|default:"Not set" }}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label"><i class="bi bi-mortarboard"></i> Year</span>
-          <span class="info-value">{{ user.level|default:"Not set" }}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label"><i class="bi bi-phone"></i> Phone</span>
-          <span class="info-value">{{ user.phone_number|default:"Not set" }}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label"><i class="bi bi-gender-ambiguous"></i> Gender</span>
-          <span class="info-value">{{ user.gender|default:"Not set" }}</span>
-        </div>
+        <div class="info-row"><span class="info-label"><i class="bi bi-card-text"></i> Student ID</span><span class="info-value">{{ user.student_id|default:"Not set" }}</span></div>
+        <div class="info-row"><span class="info-label"><i class="bi bi-building"></i> Department</span><span class="info-value">{{ user.department|default:"Not set" }}</span></div>
+        <div class="info-row"><span class="info-label"><i class="bi bi-mortarboard"></i> Year</span><span class="info-value">{{ user.level|default:"Not set" }}</span></div>
+        <div class="info-row"><span class="info-label"><i class="bi bi-phone"></i> Phone</span><span class="info-value">{{ user.phone_number|default:"Not set" }}</span></div>
+        <div class="info-row"><span class="info-label"><i class="bi bi-gender-ambiguous"></i> Gender</span><span class="info-value">{{ user.gender|default:"Not set" }}</span></div>
       </div>
     </div>
   </div>
 
-</div>
+</div><!-- /.dash-grid -->
 
-<!-- Payment Summary + History -->
-<div class="card animate-in animate-in-d2">
+<!-- Booking Requests + Notifications row -->
+<div class="dash-grid animate-in animate-in-d2" style="margin-top:20px;">
+
+  <!-- Booking Requests -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-header-title">
+        <div class="card-header-icon" style="background:var(--warning-light);color:var(--warning);"><i class="bi bi-calendar-check-fill"></i></div>
+        Booking Requests
+      </span>
+      <a href="{% url 'student_hostels' %}" class="btn btn-ghost btn-sm"><i class="bi bi-plus"></i> New</a>
+    </div>
+    {% if all_booking_requests %}
+    <div style="overflow-x:auto;">
+      <table class="data-table" style="font-size:.82rem;">
+        <thead><tr><th>Hostel</th><th>Year</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>
+          {% for br in all_booking_requests %}
+          <tr>
+            <td style="font-weight:600;">{{ br.preferred_hostel.name }}</td>
+            <td>{{ br.academic_year }}</td>
+            <td><span class="badge-status badge-{{ br.status }}">{{ br.get_status_display }}</span></td>
+            <td>{{ br.created_at|date:"M d, Y" }}</td>
+          </tr>
+          {% if br.admin_notes %}
+          <tr>
+            <td colspan="4" style="padding:2px 16px 10px;font-size:.77rem;color:var(--text-2);font-style:italic;">
+              <i class="bi bi-chat-left-text" style="margin-right:3px;"></i>{{ br.admin_notes }}
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state" style="padding:28px 16px;">
+      <i class="bi bi-calendar-plus empty-state-icon" style="font-size:1.6rem;"></i>
+      <p style="margin:6px 0 0;font-size:.875rem;">No booking requests yet.</p>
+      <a href="{% url 'student_hostels' %}" class="btn btn-primary btn-sm mt-2"><i class="bi bi-buildings"></i> Browse Hostels</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Notifications widget -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-header-title">
+        <div class="card-header-icon" style="background:var(--primary-light);color:var(--primary);"><i class="bi bi-bell-fill"></i></div>
+        Notifications
+        {% if unread_notif_count %}<span class="sb-badge" style="margin-left:6px;">{{ unread_notif_count }}</span>{% endif %}
+      </span>
+      <a href="{% url 'notifications' %}" class="btn btn-ghost btn-sm">View all</a>
+    </div>
+    <div style="max-height:270px;overflow-y:auto;">
+      {% if notifications %}
+      {% for notif in notifications %}
+      <a href="{% url 'mark_notification_read' notif.pk %}"
+         style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);text-decoration:none;background:{% if not notif.is_read %}rgba(26,111,227,.04){% else %}transparent{% endif %};">
+        <div style="width:7px;height:7px;border-radius:50%;background:{% if not notif.is_read %}var(--primary){% else %}transparent{% endif %};flex-shrink:0;margin-top:6px;"></div>
+        <div style="flex:1;min-width:0;">
+          <p style="margin:0 0 2px;font-size:.82rem;color:var(--text-1);line-height:1.4;{% if not notif.is_read %}font-weight:600;{% endif %}">{{ notif.message|truncatechars:85 }}</p>
+          <span style="font-size:.72rem;color:var(--text-3);">{{ notif.created_at|timesince }} ago</span>
+        </div>
+      </a>
+      {% endfor %}
+      {% else %}
+      <div style="padding:28px 16px;text-align:center;color:var(--text-3);font-size:.84rem;">
+        <i class="bi bi-bell-slash" style="font-size:1.4rem;display:block;margin-bottom:6px;"></i>
+        No notifications yet
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div><!-- /.dash-grid row 2 -->
+
+<!-- Payments -->
+<div class="card animate-in animate-in-d3" style="margin-top:20px;">
   <div class="card-header">
     <span class="card-header-title">
       <div class="card-header-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-cash-coin"></i></div>
@@ -140,47 +203,34 @@
       <i class="bi bi-plus-circle-fill"></i> Submit Payment
     </a>
   </div>
-
   {% if payment_total %}
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-bottom:1px solid var(--border);">
-    <div style="background:var(--bg-card);padding:16px 20px;text-align:center;">
-      <div style="font-size:.75rem;color:var(--text-2);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Total Submitted</div>
-      <div style="font-size:1.35rem;font-weight:800;color:var(--text-1);">UGX {{ payment_total|floatformat:0 }}</div>
+  <div class="payment-stats-bar">
+    <div class="payment-stat">
+      <div class="payment-stat-label">Total Submitted</div>
+      <div class="payment-stat-value">UGX {{ payment_total|floatformat:0 }}</div>
     </div>
-    <div style="background:var(--bg-card);padding:16px 20px;text-align:center;">
-      <div style="font-size:.75rem;color:var(--success);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Verified Amount</div>
-      <div style="font-size:1.35rem;font-weight:800;color:var(--success);">UGX {{ payment_verified|floatformat:0 }}</div>
+    <div class="payment-stat">
+      <div class="payment-stat-label" style="color:var(--success);">Verified</div>
+      <div class="payment-stat-value" style="color:var(--success);">UGX {{ payment_verified|floatformat:0 }}</div>
     </div>
   </div>
   {% endif %}
-
   <div style="overflow-x:auto;">
     {% if payments %}
     <table class="data-table">
-      <thead>
-        <tr>
-          <th>Reference</th>
-          <th>Amount</th>
-          <th>Method</th>
-          <th>Date</th>
-          <th>Status</th>
-          <th>Receipt</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Reference</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th><th>Receipt</th></tr></thead>
       <tbody>
         {% for payment in payments %}
         <tr>
-          <td style="font-weight:600;font-family:monospace;">{{ payment.reference_number }}</td>
+          <td style="font-weight:600;font-family:monospace;font-size:.81rem;">{{ payment.reference_number }}</td>
           <td style="font-weight:700;">UGX {{ payment.amount }}</td>
           <td>{{ payment.payment_method|default:"—" }}</td>
           <td>{{ payment.date_paid|date:"M d, Y" }}</td>
           <td><span class="badge-status badge-{{ payment.status }}">{{ payment.get_status_display }}</span></td>
           <td>
-            <a href="{% url 'payment_receipt' payment.pk %}"
-               class="btn btn-sm"
-               style="background:{% if payment.status == 'verified' %}var(--primary-light);color:var(--primary);{% else %}var(--bg-2);color:var(--text-3);{% endif %};border:1px solid {% if payment.status == 'verified' %}rgba(26,111,227,.2){% else %}var(--border){% endif %};padding:4px 10px;font-size:.76rem;">
-              <i class="bi bi-printer{% if payment.status == 'verified' %}-fill{% endif %}"></i>
-              Receipt
+            <a href="{% url 'payment_receipt' payment.pk %}" class="btn btn-sm"
+               style="background:{% if payment.status == 'verified' %}var(--primary-light);color:var(--primary){% else %}var(--bg-2);color:var(--text-3){% endif %};border:1px solid var(--border);padding:4px 10px;font-size:.76rem;">
+              <i class="bi bi-printer{% if payment.status == 'verified' %}-fill{% endif %}"></i> Receipt
             </a>
           </td>
         </tr>
@@ -191,10 +241,11 @@
     <div class="empty-state">
       <i class="bi bi-receipt empty-state-icon"></i>
       <h4>No Payments Yet</h4>
-      <p>Submit your hostel fee payment to get started.</p>
+      <p>Submit your hostel fee to get started.</p>
       <a href="{% url 'create_payment' %}" class="btn btn-primary mt-2"><i class="bi bi-plus-circle-fill"></i> Submit First Payment</a>
     </div>
     {% endif %}
   </div>
 </div>
+
 {% endblock %}

@@ -45,17 +45,49 @@ def create_allocation(request):
     if request.method == 'POST':
         form = AllocationForm(request.POST)
         if form.is_valid():
-            try:
-                allocation = form.save()
-                # Mark related booking request as approved, if any
-                BookingRequest.objects.filter(
-                    student=allocation.user,
-                    status='pending'
-                ).update(status='approved')
-                messages.success(request, f'Allocation created successfully for {allocation.user.get_full_name() or allocation.user.username}')
-                return redirect('allocation_list')
-            except ValidationError as e:
-                messages.error(request, str(e))
+            from payments.models import Payment
+            from users.models import create_notification
+            student = form.cleaned_data['user']
+            academic_year = form.cleaned_data.get('academic_year', '')
+
+            # Block allocation if student has no verified payment
+            has_verified_payment = Payment.objects.filter(
+                user=student, status='verified'
+            ).exists()
+            if not has_verified_payment:
+                messages.error(
+                    request,
+                    f'Cannot allocate room: {student.get_full_name() or student.username} '
+                    f'has no verified payment on record. Ask the student to submit and '
+                    f'verify their payment first.'
+                )
+            else:
+                try:
+                    allocation = form.save()
+                    # Mark related pending booking request as approved
+                    BookingRequest.objects.filter(
+                        student=allocation.user,
+                        status__in=['pending', 'approved']
+                    ).update(status='approved')
+                    # Notify the student
+                    create_notification(
+                        user=allocation.user,
+                        message=(
+                            f'You have been allocated Room {allocation.room.room_number} '
+                            f'in {allocation.room.block.hostel.name}, {allocation.room.block.name}. '
+                            f'Welcome to your new home!'
+                        ),
+                        notif_type='allocation',
+                        link='/dashboard/student/',
+                    )
+                    messages.success(
+                        request,
+                        f'Room allocated successfully for '
+                        f'{allocation.user.get_full_name() or allocation.user.username}.'
+                    )
+                    return redirect('allocation_list')
+                except ValidationError as e:
+                    messages.error(request, str(e))
     else:
         # Pre-fill form from booking request query params
         initial = {}
@@ -251,3 +283,47 @@ def booking_requests_admin(request):
         'request_statuses': [('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected'), ('cancelled', 'Cancelled')],
     }
     return render(request, 'allocations/booking_requests_admin.html', context)
+
+
+@login_required
+@manager_required
+def review_booking_request(request, request_id):
+    """Admin rejects (or re-opens) a booking request with an optional note."""
+    booking = get_object_or_404(BookingRequest, pk=request_id)
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        note   = request.POST.get('admin_notes', '').strip()
+        from users.models import create_notification
+        if action == 'reject':
+            booking.status       = 'rejected'
+            booking.reviewed_by  = request.user
+            booking.admin_notes  = note or 'Your booking request has been rejected.'
+            booking.save()
+            create_notification(
+                user=booking.student,
+                message=(
+                    f'Your booking request for {booking.preferred_hostel.name} '
+                    f'({booking.academic_year}) was rejected. '
+                    f'Reason: {booking.admin_notes}'
+                ),
+                notif_type='booking',
+                link='/dashboard/student/',
+            )
+            messages.warning(request, f'Booking request for {booking.student.get_full_name()} rejected.')
+        elif action == 'approve':
+            booking.status       = 'approved'
+            booking.reviewed_by  = request.user
+            booking.admin_notes  = note or ''
+            booking.save()
+            create_notification(
+                user=booking.student,
+                message=(
+                    f'Your booking request for {booking.preferred_hostel.name} '
+                    f'({booking.academic_year}) has been approved. '
+                    f'Please ensure your payment is submitted and verified so a room can be allocated to you.'
+                ),
+                notif_type='booking',
+                link='/dashboard/student/',
+            )
+            messages.success(request, f'Booking request for {booking.student.get_full_name()} approved.')
+    return redirect('booking_requests_admin')

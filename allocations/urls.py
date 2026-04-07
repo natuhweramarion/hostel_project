@@ -12,4 +12,5 @@ urlpatterns = [
     path('booking-requests/<int:request_id>/cancel/', views.cancel_booking_request, name='cancel_booking_request'),
     # Admin booking requests
     path('booking-requests/', views.booking_requests_admin, name='booking_requests_admin'),
+    path('booking-requests/<int:request_id>/review/', views.review_booking_request, name='review_booking_request'),
 ]

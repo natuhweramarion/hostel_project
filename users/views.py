@@ -93,6 +93,18 @@ def student_dashboard(request):
     )
     all_allocations = Allocation.objects.filter(user=request.user).select_related('room__block__hostel').order_by('-date_allocated')
 
+    # Pending items that need the student's attention
+    pending_payments = all_payments.filter(status='pending')
+    rejected_payments = all_payments.filter(status='rejected')
+    all_booking_requests = BookingRequest.objects.filter(
+        student=request.user
+    ).select_related('preferred_hostel').order_by('-created_at')
+
+    # Unread notifications (latest 8 for dashboard widget)
+    from users.models import Notification
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:8]
+    unread_count = Notification.objects.filter(user=request.user, is_read=False).count()
+
     context = {
         'allocation': allocation,
         'booking_request': booking_request,
@@ -100,6 +112,11 @@ def student_dashboard(request):
         'all_allocations': all_allocations,
         'payment_total': payment_summary['total'] or 0,
         'payment_verified': payment_summary['verified'] or 0,
+        'pending_payments': pending_payments,
+        'rejected_payments': rejected_payments,
+        'all_booking_requests': all_booking_requests,
+        'notifications': notifications,
+        'unread_notif_count': unread_count,
     }
     return render(request, 'users/student_dashboard.html', context)
 
@@ -197,3 +214,25 @@ def profile(request):
         'allocation_history': allocation_history,
     }
     return render(request, 'users/profile.html', context)
+
+
+@login_required
+def notifications_view(request):
+    """Full notifications list — marks all as read on visit."""
+    from users.models import Notification
+    # Mark all unread as read when the page is opened
+    Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'users/notifications.html', {'notifications': notifications})
+
+
+@login_required
+def mark_notification_read(request, notif_id):
+    """Mark a single notification as read and redirect to its link."""
+    from users.models import Notification
+    notif = get_object_or_404(Notification, pk=notif_id, user=request.user)
+    notif.is_read = True
+    notif.save()
+    if notif.link:
+        return redirect(notif.link)
+    return redirect('notifications')

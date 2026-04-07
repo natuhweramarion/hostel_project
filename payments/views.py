@@ -42,17 +42,39 @@ def verify_payment(request, payment_id):
     
     if request.method == 'POST':
         action = request.POST.get('action')
+        from users.models import create_notification
         if action == 'verify':
             payment.status = 'verified'
             payment.verified_by = request.user
             payment.date_verified = timezone.now()
             payment.save()
+            create_notification(
+                user=payment.user,
+                message=(
+                    f'Your payment of UGX {payment.amount:,.0f} '
+                    f'(Ref: {payment.reference_number}) has been verified. '
+                    f'You are now eligible for room allocation.'
+                ),
+                notif_type='payment',
+                link='/dashboard/student/',
+            )
             messages.success(request, f'Payment {payment.reference_number} verified successfully.')
         elif action == 'reject':
             payment.status = 'rejected'
+            payment.verified_by = request.user
+            payment.date_verified = timezone.now()
             payment.save()
+            create_notification(
+                user=payment.user,
+                message=(
+                    f'Your payment (Ref: {payment.reference_number}) was rejected. '
+                    f'Please check your transaction reference number and resubmit.'
+                ),
+                notif_type='payment',
+                link='/payments/create/',
+            )
             messages.warning(request, f'Payment {payment.reference_number} rejected.')
-        
+
         return redirect('payment_list')
     
     return render(request, 'payments/verify_payment.html', {'payment': payment})
