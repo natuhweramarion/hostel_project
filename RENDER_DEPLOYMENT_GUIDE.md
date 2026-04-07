@@ -1,215 +1,380 @@
-# Render.com Deployment Guide
-## Hostel Information Management System
+# Render.com Deployment Guide — Hostel Information Management System
 
-Follow these steps in order. Do not skip any.
+**Platform:** Render.com (free tier)
+**Framework:** Django 5.2 / Python 3.12
+**Database:** PostgreSQL (Render managed)
+**Static files:** WhiteNoise
+**Last updated:** 2026-04-07
+
+Follow every step in order. Do not skip any step.
 
 ---
 
-## 1. Files created or changed in this audit
+## Table of Contents
 
-| File | Status | Why it exists |
-|------|--------|---------------|
-| `hostel_system/hostel_system/settings.py` | **Rewritten** | The active Django settings file. Now reads every secret/host from environment variables, configures WhiteNoise, dj-database-url, CSRF trusted origins, and the Render TLS proxy header. |
-| `requirements.txt` | **Rewritten** | Pinned to versions that actually exist on PyPI. Includes `gunicorn`, `whitenoise`, `psycopg2-binary`, `dj-database-url`, `pillow`. |
-| `Procfile` | **Rewritten** | Render reads this as a fallback if `render.yaml` is absent. Format: `web: gunicorn hostel_system.wsgi:application --log-file -`. |
-| `build.sh` | **Rewritten** | Runs on every deploy: `pip install`, `collectstatic`, `migrate`. |
-| `runtime.txt` | **New** | Pins the Python interpreter to `3.12.7`. |
-| `render.yaml` | **New** | Infrastructure-as-Code blueprint. One click provisions the web service, the Postgres database, and a 1 GB persistent media disk. |
-| `.env.example` | **New** | Documents every environment variable the project reads. |
-| `.gitignore` | **Expanded** | Now excludes `.env`, `staticfiles/`, `media/`, IDE files. |
-| `DEPLOYMENT_AUDIT.md` | **New** | Full record of what was wrong and what was fixed. |
-| `RENDER_DEPLOYMENT_GUIDE.md` | **New** | This file. |
+1. [Files created or changed](#1-files-created-or-changed)
+2. [Prerequisites](#2-prerequisites)
+3. [Service type to use on Render](#3-service-type-to-use-on-render)
+4. [Connect GitHub to Render](#4-connect-github-to-render)
+5. [Deploy using the Blueprint (render.yaml)](#5-deploy-using-the-blueprint-renderyaml)
+6. [Set required environment variables](#6-set-required-environment-variables)
+7. [Trigger first deploy and verify build](#7-trigger-first-deploy-and-verify-build)
+8. [Migrations (automatic)](#8-migrations-automatic)
+9. [Static files (automatic)](#9-static-files-automatic)
+10. [Create the admin account](#10-create-the-admin-account)
+11. [Media files and payment receipts](#11-media-files-and-payment-receipts)
+12. [Custom domain (optional)](#12-custom-domain-optional)
+13. [Subsequent deploys](#13-subsequent-deploys)
+14. [Troubleshooting common failures](#14-troubleshooting-common-failures)
 
-**Files that must be deleted manually** (tracked in git, so `git rm` is required):
+---
+
+## 1. Files Created or Changed
+
+The following deployment files were audited and updated. No application code
+(models, views, templates, migrations) was modified.
+
+| File | Change | Why |
+|------|--------|-----|
+| `settings.py` (root level) | **Deleted** | Stale duplicate; the real settings is `hostel_system/hostel_system/settings.py`. The root file was never loaded by Django (`DJANGO_SETTINGS_MODULE` resolves to the inner package) but caused confusion. |
+| `Procfile` | **Fixed** | Removed the `release:` line — it is a Heroku-only convention silently ignored by Render. Updated gunicorn flags to `--workers 2 --threads 2`. |
+| `render.yaml` | **Fixed** | Changed `DJANGO_CSRF_TRUSTED_ORIGINS` from a hardcoded, wrong URL to the wildcard `https://*.onrender.com`. Updated gunicorn flags to match. |
+| `.env.example` | **Updated** | Added the three missing `DJANGO_SUPERUSER_*` variables that `build.sh` needs to create the admin account. Fixed `DJANGO_DEBUG` default for local dev. |
+| `DEPLOYMENT_AUDIT.md` | **Rewritten** | Replaced the outdated audit with an accurate one. |
+| `RENDER_DEPLOYMENT_GUIDE.md` | **Created** | This file. |
+
+**Already correct — no changes:**
+- `hostel_system/hostel_system/settings.py` — complete production config
+- `requirements.txt` — all packages at correct versions
+- `build.sh` — correct build sequence
+- `runtime.txt` — pins Python 3.12.7
+- `users/management/commands/ensure_superuser.py` — idempotent superuser creation
+
+---
+
+## 2. Prerequisites
+
+Before you start:
+
+- [ ] A free [Render.com](https://render.com) account
+- [ ] A [GitHub](https://github.com) account
+- [ ] This project pushed to a GitHub repository (public or private)
+
+If you have not pushed yet:
+```bash
+git add .
+git commit -m "Clean up deployment configuration"
+git push origin main
+```
+
+---
+
+## 3. Service Type to Use on Render
+
+Use a **Web Service** (Python runtime) + **PostgreSQL database**.
+
+Do NOT use:
+- Static Site — wrong, Django is server-side rendered
+- Background Worker — wrong, this is the main web process
+- Docker — not needed, Render supports Python natively
+
+`render.yaml` provisions both services automatically as a **Blueprint**.
+You do not need to create anything in the dashboard manually.
+
+---
+
+## 4. Connect GitHub to Render
+
+1. Log in to [render.com](https://render.com).
+2. Click your avatar (top right) → **Account Settings** → **Git Providers** → **Connect** next to GitHub.
+3. Authorize Render to access your repository.
+4. Done. Render can now read your code and auto-deploy on push.
+
+---
+
+## 5. Deploy Using the Blueprint (render.yaml)
+
+`render.yaml` is a **Render Blueprint** — a single file that defines the
+PostgreSQL database and the web service together.
+
+Steps:
+
+1. In the Render dashboard click **New +** → **Blueprint**.
+2. Select your GitHub repository from the list.
+3. Render reads `render.yaml` and shows a preview:
+   - 1 PostgreSQL database: `hostel-system-db` (free)
+   - 1 Web Service: `hostel-system` (free, Python)
+4. Click **Apply**.
+5. Render starts provisioning. Do not wait — go to Step 6 immediately to set
+   environment variables **before** the first build finishes.
+
+> **Why use Blueprint instead of "New Web Service"?**
+> Blueprint creates the database and links `DATABASE_URL` automatically.
+> Manual creation requires you to copy-paste the connection string yourself.
+
+---
+
+## 6. Set Required Environment Variables
+
+Go to: **Render Dashboard → hostel-system (web service) → Environment**
+
+### Variables set automatically by render.yaml
+
+You do not need to touch these — they are already in `render.yaml`:
+
+| Variable | Value |
+|----------|-------|
+| `DJANGO_SECRET_KEY` | Auto-generated (random, unique per service) |
+| `DJANGO_DEBUG` | `False` |
+| `DJANGO_ALLOWED_HOSTS` | `.onrender.com` |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://*.onrender.com` |
+| `DJANGO_SECURE_SSL_REDIRECT` | `True` |
+| `DJANGO_SECURE_HSTS_SECONDS` | `3600` |
+| `DATABASE_URL` | Auto-linked from `hostel-system-db` |
+| `PYTHON_VERSION` | `3.12.7` |
+
+### Variables you must set manually
+
+These have `sync: false` in `render.yaml` — Render will not set them for you:
+
+| Variable | What to put |
+|----------|-------------|
+| `DJANGO_SUPERUSER_USERNAME` | The login username for your Django admin account |
+| `DJANGO_SUPERUSER_EMAIL` | Your email address |
+| `DJANGO_SUPERUSER_PASSWORD` | A strong password (12+ characters, mix of types) |
+
+To add them:
+1. In the Render dashboard: **hostel-system → Environment → Add Environment Variable**
+2. Add each of the three variables above.
+3. Click **Save Changes**.
+
+---
+
+## 7. Trigger First Deploy and Verify Build
+
+After saving environment variables:
+
+1. Go to **hostel-system → Manual Deploy → Deploy latest commit**.
+2. Click **View Logs** and watch the build output.
+
+Expected output (in this order):
+
+```
+==> Running build command './build.sh'
+
+Collecting pip ...
+Successfully installed pip-...
+
+Collecting Django==5.2.6
+...
+Successfully installed Django-5.2.6 gunicorn-23.0.0 whitenoise-6.8.2 psycopg2-binary-2.9.10 dj-database-url-2.3.0 pillow-11.1.0
+
+128 static files copied to '/opt/render/project/src/staticfiles', ...
+
+Operations to perform:
+  Apply all migrations: admin, allocations, auth, contenttypes, hostels, payments, reports, sessions, users
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying users.0001_initial... OK
+  ...
+
+ensure_superuser: created superuser "your-username".
+
+==> Build successful 🎉
+==> Deploying...
+==> Your service is live 🚀
+```
+
+3. Click the URL shown at the top of the service page.
+4. You should see the hostel system home page with the Bootstrap UI.
+
+---
+
+## 8. Migrations (Automatic)
+
+Migrations run automatically on every deploy via `build.sh`:
 
 ```bash
-git rm settings.py urls.py wsgi.py asgi.py __init__.py
-rm -rf hostel_system/.git              # stale nested .git inside the package
-git commit -m "chore: remove duplicate Django package files at repo root"
+python manage.py migrate --noinput
 ```
 
-These were orphan duplicates of the real files inside `hostel_system/hostel_system/`. They were never imported, but they confused every previous attempt at deployment because earlier edits landed on them instead of the active files. See `DEPLOYMENT_AUDIT.md` § 1 for the full explanation.
+- Django only applies migrations that have not been applied yet — safe to run repeatedly.
+- If a migration fails, the build fails and Render keeps the previous live version.
+- You never need to run `migrate` manually on Render.
 
 ---
 
-## 2. Environment variables to set in Render
+## 9. Static Files (Automatic)
 
-If you use `render.yaml` (recommended), most of these are set automatically. The list below is the source of truth either way.
-
-| Variable | Set automatically by `render.yaml`? | Value |
-|----------|-------------------------------------|-------|
-| `DJANGO_SECRET_KEY` | Yes — `generateValue: true` | (random) |
-| `DJANGO_DEBUG` | Yes | `False` |
-| `DJANGO_ALLOWED_HOSTS` | Yes | `.onrender.com` |
-| `DJANGO_CSRF_TRUSTED_ORIGINS` | Yes | `https://*.onrender.com` |
-| `DJANGO_SECURE_SSL_REDIRECT` | Yes | `True` |
-| `DJANGO_SECURE_HSTS_SECONDS` | Yes | `3600` |
-| `DJANGO_MEDIA_ROOT` | Yes | `/opt/render/project/src/media` |
-| `DATABASE_URL` | Yes — linked from `hostel-system-db` | (managed) |
-| `PYTHON_VERSION` | Yes | `3.12.7` |
-
-If you ever attach a custom domain (e.g. `hostels.example.ac.ug`), update `DJANGO_ALLOWED_HOSTS` and `DJANGO_CSRF_TRUSTED_ORIGINS` to include it.
-
----
-
-## 3. Render service type
-
-- **Web Service** (Python runtime). Not a Background Worker, not a Static Site.
-- **Database**: Render's managed **PostgreSQL**.
-- **Persistent disk**: 1 GB attached to the web service for `/media` uploads.
-
----
-
-## 4. Create the PostgreSQL database
-
-**Option A — Blueprint (recommended).** Skip to section 7; `render.yaml` provisions everything in one step.
-
-**Option B — Manual.**
-1. Render dashboard → **New +** → **PostgreSQL**.
-2. Name: `hostel-system-db`. Region: same as your web service. Plan: Free.
-3. Click **Create Database**. Wait for status = **Available**.
-4. Open the database page → copy the **Internal Database URL** (starts with `postgres://`).
-5. You will paste this into the web service as `DATABASE_URL` in section 5.
-
----
-
-## 5. Build command
+Static files are collected automatically on every deploy via `build.sh`:
 
 ```bash
-./build.sh
-```
-
-This runs `pip install -r requirements.txt`, `collectstatic --noinput`, and `migrate --noinput`.
-
-> Make `build.sh` executable before pushing: `git update-index --chmod=+x build.sh && git commit -m "chore: mark build.sh executable"`
-
----
-
-## 6. Start command
-
-```bash
-gunicorn hostel_system.wsgi:application --log-file -
-```
-
-This binds gunicorn to the port Render injects via `$PORT` automatically (gunicorn auto-detects it).
-
----
-
-## 7. Connect GitHub and deploy
-
-### Path A — Blueprint (one click, recommended)
-
-1. Push the project to GitHub (`main` branch).
-2. Render dashboard → **New +** → **Blueprint**.
-3. Connect your GitHub account if you haven't already, and select the repo.
-4. Render reads `render.yaml`, shows you a preview of "1 web service + 1 database + 1 disk".
-5. Click **Apply**. Wait for the build to finish (3–6 minutes).
-
-### Path B — Manual
-
-1. Render dashboard → **New +** → **Web Service** → Connect GitHub repo.
-2. Settings:
-   - **Environment:** Python 3
-   - **Region:** same as your database
-   - **Branch:** `main`
-   - **Build Command:** `./build.sh`
-   - **Start Command:** `gunicorn hostel_system.wsgi:application --log-file -`
-3. Add the environment variables from section 2.
-4. Click **Advanced** → **Add Disk**: name `hostel-media`, mount path `/opt/render/project/src/media`, size 1 GB.
-5. Click **Create Web Service**.
-
----
-
-## 8. Deploy
-
-Render builds automatically on every push to the configured branch. Your first build kicks off the moment you click **Apply** (Blueprint) or **Create Web Service** (manual).
-
-Watch the build logs in real time. A successful build ends with:
-
-```
-==> Build successful
-==> Starting service with 'gunicorn hostel_system.wsgi:application --log-file -'
-==> Your service is live at https://hostel-system-XXXX.onrender.com
-```
-
----
-
-## 9. Run migrations
-
-Migrations run automatically as part of `build.sh` (`python manage.py migrate --noinput`). You do not need to run them manually unless something fails.
-
-If you ever need to run a one-off migration manually:
-
-1. Render dashboard → web service → **Shell** tab.
-2. Run:
-   ```bash
-   python manage.py migrate
-   ```
-
-To create the first superuser:
-```bash
-python manage.py createsuperuser
-```
-
----
-
-## 10. Collect static files
-
-Also handled automatically by `build.sh` (`python manage.py collectstatic --noinput`). WhiteNoise serves them at runtime — no CDN required.
-
-If you change static files locally and they don't appear after a deploy, hard-refresh (Ctrl+F5) — `CompressedManifestStaticFilesStorage` produces hashed filenames so the browser cache never lies.
-
----
-
-## 11. Troubleshooting
-
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| Build fails at `pip install` with `Could not find a version that satisfies the requirement gunicorn==25.1.0` | Old `requirements.txt` with non-existent versions | Pull the new `requirements.txt` from this audit |
-| Build succeeds but page returns `DisallowedHost at /` | `DJANGO_ALLOWED_HOSTS` does not include the Render hostname | Add `.onrender.com` (or your custom domain) to the env var |
-| Every form POST returns `403 CSRF verification failed` | `DJANGO_CSRF_TRUSTED_ORIGINS` missing or wrong | Set `https://*.onrender.com` (note the `https://` and the `*.`) |
-| Browser shows infinite redirect / `ERR_TOO_MANY_REDIRECTS` | `SECURE_SSL_REDIRECT=True` without `SECURE_PROXY_SSL_HEADER` | Already fixed in `settings.py`. If you forked the file, ensure `SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')` is present |
-| CSS / JS not loading, admin looks unstyled | WhiteNoise not installed, or `collectstatic` not run, or `STORAGES['staticfiles']` missing | Confirm `whitenoise` is in `requirements.txt`, the middleware is right after `SecurityMiddleware`, and `build.sh` runs `collectstatic` |
-| `psycopg2.OperationalError: SSL connection required` | `dj_database_url` called without `ssl_require=True` | Already fixed in `settings.py` (`ssl_require=not DEBUG`) |
-| `OperationalError: FATAL: database does not exist` | `DATABASE_URL` not linked or pointing at the wrong DB | Re-link the database in the env vars panel |
-| Uploaded payment receipts disappear after a deploy | No persistent disk attached | Add the disk in `render.yaml` (already configured) **or** in the dashboard under Advanced → Disks |
-| `OSError: [Errno 30] Read-only file system: '/opt/render/...'` when uploading | `DJANGO_MEDIA_ROOT` not set, so Django wrote into the read-only build dir | Set `DJANGO_MEDIA_ROOT=/opt/render/project/src/media` |
-| Build hangs or times out | Free plan resource limits | Wait, then retry; consider upgrading to Starter |
-| `ModuleNotFoundError: No module named 'hostel_system'` | The duplicate root `__init__.py` was pushed, turning the repo root into a package and shadowing the real one | Delete the duplicates as described in section 1 |
-
-### How to read the logs
-- **Build logs**: dashboard → web service → **Logs** tab → filter to "Build". Shows everything from `build.sh`.
-- **Runtime logs**: same Logs tab, "Service" filter. Tracebacks from gunicorn workers appear here.
-- **Database logs**: dashboard → database → **Logs**.
-
----
-
-## 12. Local production smoke test (optional but recommended)
-
-Before pushing, verify the new settings work with `DEBUG=False` locally:
-
-```bash
-# Windows PowerShell
-$env:DJANGO_DEBUG="False"
-$env:DJANGO_SECRET_KEY="any-long-random-string-for-local-test"
-$env:DJANGO_ALLOWED_HOSTS="localhost,127.0.0.1"
-$env:DJANGO_CSRF_TRUSTED_ORIGINS="http://localhost:8000"
-$env:DJANGO_SECURE_SSL_REDIRECT="False"   # disable for plain-HTTP local test
 python manage.py collectstatic --noinput
-python manage.py migrate
-python manage.py runserver
 ```
 
-Visit http://localhost:8000 — every page should render with full styling, login should work, and POST forms should not 403.
+- Files are written to `staticfiles/` at build time.
+- WhiteNoise serves them at `/static/` using compressed, cache-busted filenames.
+- The `staticfiles/` directory is in `.gitignore` — it is regenerated each build.
+- No separate static file server, CDN, or Nginx is required.
 
 ---
 
-## 13. Things to do after the first successful deploy
+## 10. Create the Admin Account
 
-- [ ] Create a superuser via the **Shell** tab.
-- [ ] Add at least one Hostel → Block → Room via Django admin or the Hostels UI.
-- [ ] Test student registration end-to-end on the live URL.
-- [ ] Test a payment submission with a file upload, then confirm the receipt survives a redeploy (proves the persistent disk is mounted).
-- [ ] If you plan to scale beyond a single web instance, migrate `/media` to S3 or Cloudinary — a single persistent disk only attaches to one instance.
-- [ ] Replace Render's `*.onrender.com` URL with a custom domain and update `DJANGO_ALLOWED_HOSTS` + `DJANGO_CSRF_TRUSTED_ORIGINS`.
-- [ ] Raise `DJANGO_SECURE_HSTS_SECONDS` from `3600` to `31536000` (1 year) once you're confident HTTPS will stay on.
+If you set `DJANGO_SUPERUSER_*` variables in Step 6 before the build ran,
+your admin account was created automatically.
+
+To verify:
+1. Go to `https://your-service.onrender.com/admin/`
+2. Log in with the username and password you set.
+3. You should see the Django admin interface.
+
+**If you skipped Step 6:**
+1. Go to the Render dashboard → **hostel-system → Environment** → add the three variables.
+2. Click **Manual Deploy → Deploy latest commit**.
+3. The next build will create the account.
+
+`ensure_superuser` is idempotent — it never creates duplicates or overwrites
+an existing password. Re-running it on every deploy is safe.
+
+---
+
+## 11. Media Files and Payment Receipts
+
+**The problem:** Render's free web service uses an ephemeral filesystem.
+Every deploy wipes all files written to disk.
+Payment receipt uploads live in `MEDIA_ROOT/payment_receipts/`.
+They will be deleted after every deployment.
+
+### Option A — Render Persistent Disk (recommended, ~$0.25/GB/month)
+
+1. In the Render dashboard: **hostel-system → Disks → Add Disk**
+2. Settings:
+   - Name: `media`
+   - Mount Path: `/opt/render/project/src/media`
+   - Size: 1 GB
+3. Go to **Environment → Add Environment Variable**:
+   ```
+   DJANGO_MEDIA_ROOT = /opt/render/project/src/media
+   ```
+4. Trigger a new deploy. Uploaded files now survive deploys.
+
+### Option B — Cloud Object Storage (best for production)
+
+Move uploads to Cloudinary, AWS S3, or Backblaze B2 using `django-storages`.
+This requires modifying `settings.py` and `requirements.txt` — outside the scope
+of this guide. Cloudinary has a free tier suitable for small systems.
+
+### Current status
+
+For demos and development, the ephemeral filesystem is acceptable — receipts can
+be re-uploaded. For a live student system, use Option A or B before going live.
+
+---
+
+## 12. Custom Domain (Optional)
+
+To use `hostels.youruniversity.ac.ug` instead of `hostel-system-xxxx.onrender.com`:
+
+1. Render dashboard → **hostel-system → Settings → Custom Domains → Add Custom Domain**.
+2. Enter your domain. Render shows the DNS records to add.
+3. Add those records in your domain registrar's DNS panel.
+4. Wait for DNS propagation (minutes to hours).
+5. Update environment variables in Render:
+   ```
+   DJANGO_ALLOWED_HOSTS=.onrender.com,hostels.youruniversity.ac.ug
+   DJANGO_CSRF_TRUSTED_ORIGINS=https://*.onrender.com,https://hostels.youruniversity.ac.ug
+   ```
+6. Trigger a new deploy.
+
+---
+
+## 13. Subsequent Deploys
+
+Every push to the `main` branch on GitHub triggers an automatic redeploy.
+The sequence on each deploy:
+
+1. `build.sh` runs: pip install, collectstatic, migrate, ensure_superuser
+2. New gunicorn workers start
+3. Traffic switches to new workers (zero-downtime if workers start cleanly)
+
+To deploy manually: **hostel-system → Manual Deploy → Deploy latest commit**.
+
+---
+
+## 14. Troubleshooting Common Failures
+
+### `./build.sh: Permission denied`
+```bash
+chmod +x build.sh
+git add build.sh && git commit -m "Fix build.sh executable" && git push
+```
+
+### `ModuleNotFoundError` during build
+A package is missing from `requirements.txt`. Check the build log for the exact
+module name and add the corresponding package.
+
+### `403 Forbidden` on every page
+CSRF misconfiguration. Check:
+- `DJANGO_CSRF_TRUSTED_ORIGINS` includes `https://*.onrender.com`
+- You are accessing the site over `https://`, not `http://`
+
+### `DisallowedHost at /`
+`DJANGO_ALLOWED_HOSTS` does not cover your URL. Set it to `.onrender.com`
+(leading dot = wildcard for all subdomains). `settings.py` also auto-appends
+`RENDER_EXTERNAL_HOSTNAME` which Render injects at runtime.
+
+### Infinite redirect loop (`ERR_TOO_MANY_REDIRECTS`)
+`SECURE_PROXY_SSL_HEADER` is required because Render terminates TLS at its load
+balancer and passes `X-Forwarded-Proto: https` to Django. Without it, Django
+sees every request as HTTP and keeps redirecting to HTTPS.
+This is already set in `settings.py`:
+```python
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+```
+If you still see this error, check that `DJANGO_DEBUG` is `False` and that
+`DJANGO_SECURE_SSL_REDIRECT` is `True`.
+
+### Broken CSS / JS (static files 404)
+1. Confirm `collectstatic` ran in the build log without errors.
+2. Confirm `whitenoise.middleware.WhiteNoiseMiddleware` is in `MIDDLEWARE`.
+3. Confirm `STATIC_ROOT = BASE_DIR / 'staticfiles'` is in settings.
+4. Confirm `staticfiles/` is in `.gitignore` — if it is committed, old hashed
+   filenames can conflict with the freshly collected ones.
+
+### Uploaded payment receipts disappear after deploy
+See [Section 11](#11-media-files-and-payment-receipts) — attach a persistent disk.
+
+### No admin account / login fails at `/admin/`
+The `DJANGO_SUPERUSER_*` env vars were not set before the build.
+Add them in Render → Environment, then trigger a new deploy.
+
+### `SSL connection has been closed unexpectedly` (intermittent)
+The database idled and the connection went stale. This is transient on the free
+tier — the next request will succeed. `conn_max_age=600` in the database config
+minimises frequency. Not fixable without a paid plan.
+
+### Free PostgreSQL database stopped working
+Render's free Postgres expires after ~90 days. Create a new database in Render,
+link it to the web service, and run `migrate` against it. Back up your data first.
+
+---
+
+## Summary Checklist
+
+Use this as a final check before going live:
+
+- [ ] Code pushed to `main` branch on GitHub
+- [ ] Render Blueprint applied (`render.yaml`)
+- [ ] `DJANGO_SUPERUSER_USERNAME` set in Render dashboard
+- [ ] `DJANGO_SUPERUSER_EMAIL` set in Render dashboard
+- [ ] `DJANGO_SUPERUSER_PASSWORD` set in Render dashboard
+- [ ] First deploy completed successfully (check build logs)
+- [ ] Home page loads at the Render URL
+- [ ] HTTPS padlock shows in browser (no HTTP)
+- [ ] Admin login works at `/admin/`
+- [ ] Student registration and login works
+- [ ] Test allocation can be created
+- [ ] Test payment can be submitted
+- [ ] Decision made on persistent disk for media uploads
+- [ ] Calendar reminder set for free Postgres expiry (~90 days)

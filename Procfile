@@ -1,2 +1,1 @@
-web: gunicorn hostel_system.wsgi:application --log-file -
-release: python manage.py migrate --noinput
+web: gunicorn hostel_system.wsgi:application --workers 2 --threads 2 --log-file -

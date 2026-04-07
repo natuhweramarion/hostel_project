@@ -5,7 +5,7 @@
 # FREE TIER LIMITATIONS you must be aware of:
 #   * No persistent disk → uploaded payment receipts are wiped on every deploy.
 #   * Web service sleeps after 15 min of inactivity (first request takes ~30s to wake).
-#   * Free Postgres expires after ~30 days; you must recreate it before then.
+#   * Free Postgres expires after ~90 days; you must recreate it before then.
 #   * No shell access — that's why we use the ensure_superuser management command.
 
 databases:
@@ -22,7 +22,7 @@ services:
     region: oregon            # change if a closer region is available on free
     branch: main
     buildCommand: "./build.sh"
-    startCommand: "gunicorn hostel_system.wsgi:application --log-file -"
+    startCommand: "gunicorn hostel_system.wsgi:application --workers 2 --threads 2 --log-file -"
 
     envVars:
       - key: PYTHON_VERSION
@@ -37,10 +37,10 @@ services:
       - key: DJANGO_ALLOWED_HOSTS
         value: ".onrender.com"
 
+      # Wildcard covers all *.onrender.com preview and production URLs.
+      # settings.py also auto-appends https://<RENDER_EXTERNAL_HOSTNAME> at runtime.
       - key: DJANGO_CSRF_TRUSTED_ORIGINS
-        value: "https://hostel-system.onrender.com"
-        # NOTE: replace this with your real .onrender.com URL once Render assigns it,
-        # OR use a wildcard like "https://hostel-system-xxxx.onrender.com" after first deploy.
+        value: "https://*.onrender.com"
 
       - key: DJANGO_SECURE_SSL_REDIRECT
         value: "True"
